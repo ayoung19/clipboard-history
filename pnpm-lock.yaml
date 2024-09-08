@@ -14,6 +14,12 @@ dependencies:
   "@mantine/hooks":
     specifier: ^7.12.2
     version: 7.12.2(react@18.2.0)
+  "@plasmohq/messaging":
+    specifier: ^0.6.2
+    version: 0.6.2(react@18.2.0)
+  "@plasmohq/storage":
+    specifier: ^1.12.0
+    version: 1.12.0(react@18.2.0)
   plasmo:
     specifier: 0.89.1
     version: 0.89.1(react-dom@18.2.0)(react@18.2.0)
@@ -23,6 +29,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  zod:
+    specifier: ^3.23.8
+    version: 3.23.8
 
 devDependencies:
   "@ianvs/prettier-plugin-sort-imports":
@@ -2584,6 +2593,21 @@ packages:
       }
     dev: false
 
+  /@plasmohq/messaging@0.6.2(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-CGfcvfVE0wsN/Y/i/jV0nwjkwh2gBCEujZFhLoxJ12N0ScoP3JVEIvUxJSFsAD4ylBQ8IjD2FyjQozwiSxWc4Q==,
+      }
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      nanoid: 5.0.3
+      react: 18.2.0
+    dev: false
+
   /@plasmohq/parcel-bundler@0.5.5:
     resolution:
       {
@@ -2972,6 +2996,21 @@ packages:
       - velocityjs
       - walrus
       - whiskers
+    dev: false
+
+  /@plasmohq/storage@1.12.0(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-LoCyO0PXl609ee8QKVEwVpkTyD/8WjYQhd0sxFomLxbdxsZC0LD4n8nv4nSegP5X8lYQBQnR/LMq4ZXoQh87wA==,
+      }
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      pify: 6.1.0
+      react: 18.2.0
     dev: false
 
   /@pnpm/config.env-replace@1.1.0:
@@ -6536,6 +6575,15 @@ packages:
     hasBin: true
     dev: false
 
+  /nanoid@5.0.3:
+    resolution:
+      {
+        integrity: sha512-I7X2b22cxA4LIHXPSqbBCEQSL+1wv8TuoefejsX4HFWyC6jc5JG7CEaxOltiKjc1M+YCS2YkrZZcj4+dytw9GA==,
+      }
+    engines: { node: ^18 || >=20 }
+    hasBin: true
+    dev: false
+
   /napi-build-utils@1.0.2:
     resolution:
       {
@@ -6859,6 +6907,14 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /pify@6.1.0:
+    resolution:
+      {
+        integrity: sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==,
+      }
+    engines: { node: ">=14.16" }
+    dev: false
 
   /pirates@4.0.6:
     resolution:
@@ -8410,4 +8466,11 @@ packages:
       }
     engines: { node: ">= 14" }
     hasBin: true
+    dev: false
+
+  /zod@3.23.8:
+    resolution:
+      {
+        integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==,
+      }
     dev: false
