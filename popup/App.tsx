@@ -1,14 +1,11 @@
 import {
   ActionIcon,
-  Badge,
   Box,
   Checkbox,
   Divider,
   Group,
   SegmentedControl,
-  Stack,
   Switch,
-  Text,
   TextInput,
 } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
@@ -28,11 +25,10 @@ import {
   watchFavoriteEntryIds,
 } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
-import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries, getEntries, watchEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
 
-import { EntryActions } from "./components/EntryActions";
+import { EntryList } from "./components/EntryList";
 
 export const App = () => {
   const [tab, setTab] = useState("all");
@@ -77,7 +73,7 @@ export const App = () => {
   }
 
   return (
-    <Box w={700}>
+    <Box>
       <Group align="center" position="apart" px="md" py="xs">
         <Group align="center">
           <Switch
@@ -149,70 +145,21 @@ export const App = () => {
         </Group>
       </Group>
       <Divider color="gray.2" />
-      {(tab === "all"
-        ? reversedEntries
-        : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
-      ).map((entry) => (
-        <Stack
-          key={entry.id}
-          spacing={0}
-          sx={(theme) => ({
-            cursor: "pointer",
-            ":hover": { backgroundColor: theme.colors.indigo[0] },
-          })}
-          onClick={async () => {
-            await navigator.clipboard.writeText(entry.content);
+      <EntryList
+        entries={
+          tab === "all"
+            ? reversedEntries
+            : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
+        }
+        clipboardContent={clipboardContent}
+        selectedEntryIds={selectedEntryIds}
+        favoriteEntryIdsSet={favoriteEntryIdsSet}
+        onEntryClick={async (entry) => {
+          await navigator.clipboard.writeText(entry.content);
 
-            setClipboardContent(entry.content);
-          }}
-        >
-          <Group align="center" spacing={0} noWrap px="md" py={4}>
-            <Checkbox
-              size="xs"
-              color="indigo.3"
-              sx={(theme) => ({
-                ".mantine-Checkbox-input": {
-                  cursor: "pointer",
-                  "&:hover": {
-                    borderColor: theme.colors.indigo[3],
-                  },
-                },
-              })}
-              checked={selectedEntryIds.has(entry.id)}
-              onChange={() =>
-                selectedEntryIds.has(entry.id)
-                  ? selectedEntryIds.delete(entry.id)
-                  : selectedEntryIds.add(entry.id)
-              }
-              onClick={(e) => e.stopPropagation()}
-            />
-            <Badge
-              color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
-              variant="filled"
-              w={150}
-              mx="md"
-            >
-              {entry.content === clipboardContent
-                ? "Copied"
-                : badgeDateFormatter(new Date(entry.createdAt))}
-            </Badge>
-            <Text
-              fz="xs"
-              color="gray.8"
-              sx={{
-                width: "100%",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-              }}
-            >
-              {entry.content}
-            </Text>
-            <EntryActions entry={entry} favoriteEntryIds={favoriteEntryIds} />
-          </Group>
-          <Divider color="gray.2" />
-        </Stack>
-      ))}
+          setClipboardContent(entry.content);
+        }}
+      />
     </Box>
   );
 };
