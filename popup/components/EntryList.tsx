@@ -1,7 +1,7 @@
 import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconStar, IconTrash } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FixedSizeList } from "react-window";
 
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
@@ -27,10 +27,11 @@ export const EntryList = ({
   onEntryClick,
 }: Props) => {
   const selectedEntryIds = useSet<string>();
+  const entryIdsStringified = useMemo(() => JSON.stringify(entries.map(({ id }) => id)), [entries]);
 
   useEffect(() => {
     selectedEntryIds.clear();
-  }, [entries]);
+  }, [entryIdsStringified]);
 
   return (
     <>
