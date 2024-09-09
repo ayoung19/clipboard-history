@@ -13,9 +13,14 @@ import {
 } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconSearch, IconStar, IconTrash } from "@tabler/icons-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 import { getClipboardContent, watchClipboardContent } from "~storage/clipboardContent";
+import {
+  getClipboardMonitorIsEnabled,
+  toggleClipboardMonitorIsEnabled,
+} from "~storage/clipboardMonitor";
 import {
   addFavoriteEntryIds,
   deleteFavoriteEntryIds,
@@ -25,6 +30,7 @@ import {
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries, getEntries, watchEntries } from "~utils/storage";
+import { commonActionIconSx } from "~utils/sx";
 
 import { EntryActions } from "./components/EntryActions";
 
@@ -34,12 +40,22 @@ export const App = () => {
   const selectedEntryIds = useSet<string>();
 
   const [entries, setEntries] = useState<Entry[]>([]);
+  const reversedEntries = useMemo(() => entries.toReversed(), [entries]);
+
   const [clipboardContent, setClipboardContent] = useState<string>();
 
   const [favoriteEntryIds, setFavoriteEntryIds] = useState<string[]>([]);
   const favoriteEntryIdsSet = useMemo(() => new Set(favoriteEntryIds), [favoriteEntryIds]);
 
-  const reversedEntries = useMemo(() => entries.toReversed(), [entries]);
+  const queryClient = useQueryClient();
+  const clipboardMonitorIsEnabledQuery = useQuery({
+    queryKey: ["clipboardMonitorIsEnabled"],
+    queryFn: getClipboardMonitorIsEnabled,
+  });
+  const toggleClipboardMonitorIsEnabledMutation = useMutation({
+    mutationFn: toggleClipboardMonitorIsEnabled,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
+  });
 
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
@@ -56,11 +72,20 @@ export const App = () => {
     selectedEntryIds.clear();
   }, [entries]);
 
+  if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
+    return null;
+  }
+
   return (
     <Box w={700}>
       <Group align="center" position="apart" px="md" py="xs">
         <Group align="center">
-          <Switch size="md" color="indigo.4" />
+          <Switch
+            size="md"
+            color="indigo.4"
+            checked={clipboardMonitorIsEnabledQuery.data}
+            onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+          />
           <TextInput placeholder="Search" icon={<IconSearch size="1rem" />} size="xs" />
         </Group>
         <SegmentedControl
@@ -86,7 +111,7 @@ export const App = () => {
               },
             },
           })}
-          checked={selectedEntryIds.size === entries.length}
+          checked={selectedEntryIds.size > 0 && selectedEntryIds.size === entries.length}
           indeterminate={selectedEntryIds.size > 0 && selectedEntryIds.size < entries.length}
           onChange={() =>
             selectedEntryIds.size === 0
@@ -96,13 +121,7 @@ export const App = () => {
         />
         <Group spacing={0}>
           <ActionIcon
-            color="gray.5"
-            sx={(theme) => ({
-              ":hover": {
-                color: theme.colors.gray[7],
-                backgroundColor: theme.colors.indigo[1],
-              },
-            })}
+            sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
             onClick={() =>
               Array.from(selectedEntryIds).every((selectedEntryId) =>
                 favoriteEntryIdsSet.has(selectedEntryId),
@@ -114,13 +133,7 @@ export const App = () => {
             <IconStar size="1rem" />
           </ActionIcon>
           <ActionIcon
-            color="gray.5"
-            sx={(theme) => ({
-              ":hover": {
-                color: theme.colors.gray[7],
-                backgroundColor: theme.colors.indigo[1],
-              },
-            })}
+            sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
             onClick={async () => {
               await deleteEntries(
                 Array.from(selectedEntryIds).filter(
@@ -141,6 +154,7 @@ export const App = () => {
         : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
       ).map((entry) => (
         <Stack
+          key={entry.id}
           spacing={0}
           sx={(theme) => ({
             cursor: "pointer",
@@ -172,17 +186,16 @@ export const App = () => {
               }
               onClick={(e) => e.stopPropagation()}
             />
-            <Group align="center" px="md" noWrap>
-              <Badge
-                color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
-                variant="filled"
-                w={100}
-              >
-                {entry.content === clipboardContent
-                  ? "Copied"
-                  : badgeDateFormatter(new Date(entry.createdAt))}
-              </Badge>
-            </Group>
+            <Badge
+              color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
+              variant="filled"
+              w={150}
+              mx="md"
+            >
+              {entry.content === clipboardContent
+                ? "Copied"
+                : badgeDateFormatter(new Date(entry.createdAt))}
+            </Badge>
             <Text
               fz="xs"
               color="gray.8"

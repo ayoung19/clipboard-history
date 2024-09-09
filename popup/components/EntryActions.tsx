@@ -4,6 +4,7 @@ import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
+import { commonActionIconSx } from "~utils/sx";
 
 interface Props {
   entry: Entry;
@@ -32,14 +33,7 @@ export const EntryActions = ({ entry, favoriteEntryIds }: Props) => {
         {isFavoriteEntry ? <IconStarFilled size="1rem" /> : <IconStar size="1rem" />}
       </ActionIcon>
       <ActionIcon
-        sx={(theme) => ({
-          color: isFavoriteEntry ? theme.colors.gray[3] : theme.colors.gray[5],
-          cursor: isFavoriteEntry ? "not-allowed" : "inherit",
-          ":hover": {
-            color: isFavoriteEntry ? theme.colors.gray[3] : theme.colors.gray[7],
-            backgroundColor: isFavoriteEntry ? "inherit" : theme.colors.indigo[1],
-          },
-        })}
+        sx={(theme) => commonActionIconSx({ theme, disabled: isFavoriteEntry })}
         onClick={(e) => {
           e.stopPropagation();
 
