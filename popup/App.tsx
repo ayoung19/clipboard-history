@@ -1,14 +1,14 @@
 import { Box, Divider, Group, SegmentedControl, Switch, TextInput } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
 import { IconSearch } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { max } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 
 import { getClipboardContent, watchClipboardContent } from "~storage/clipboardContent";
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
-} from "~storage/clipboardMonitor";
+} from "~storage/clipboardMonitorIsEnabled";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { getEntries, watchEntries } from "~utils/storage";
@@ -16,6 +16,8 @@ import { getEntries, watchEntries } from "~utils/storage";
 import { EntryList } from "./components/EntryList";
 
 export const App = () => {
+  const [now] = useState(new Date());
+
   const [tab, setTab] = useState("all");
 
   const [search, setSearch] = useState("");
@@ -83,10 +85,14 @@ export const App = () => {
       </Group>
       <Divider color="gray.2" />
       <EntryList
+        now={max([new Date(reversedEntries[0]?.createdAt || 0), now])}
         entries={(tab === "all"
           ? reversedEntries
           : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
-        ).filter((entry) => search.length === 0 || entry.content.includes(search))}
+        ).filter(
+          (entry) =>
+            search.length === 0 || entry.content.toLowerCase().includes(search.toLowerCase()),
+        )}
         clipboardContent={clipboardContent}
         favoriteEntryIdsSet={favoriteEntryIdsSet}
         onEntryClick={async (entry) => {

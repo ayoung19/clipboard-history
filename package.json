@@ -43,7 +43,8 @@
     "permissions": [
       "offscreen",
       "clipboardRead",
-      "clipboardWrite"
+      "clipboardWrite",
+      "unlimitedStorage"
     ]
   }
 }

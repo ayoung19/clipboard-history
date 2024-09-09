@@ -1,5 +1,6 @@
 import { ActionIcon, Badge, Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
@@ -8,6 +9,7 @@ import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
 
 interface Props {
+  now: Date;
   entry: Entry;
   clipboardContent?: string;
   selectedEntryIds: Set<string>;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export const EntryRow = ({
+  now,
   entry,
   clipboardContent,
   selectedEntryIds,
@@ -39,7 +42,7 @@ export const EntryRow = ({
       })}
       onClick={() => onEntryClick(entry)}
     >
-      <Group align="center" spacing={0} noWrap px="md" py={4}>
+      <Group align="center" spacing="md" noWrap px="md" py={4}>
         <Checkbox
           size="xs"
           color="indigo.3"
@@ -59,18 +62,16 @@ export const EntryRow = ({
           }
           onClick={(e) => e.stopPropagation()}
         />
-        <Box w={150} mx="md">
-          <Badge
-            color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
-            variant="filled"
-            fullWidth
-          >
-            {entry.content === clipboardContent
-              ? "Copied"
-              : badgeDateFormatter(new Date(entry.createdAt))}
-          </Badge>
-        </Box>
-
+        <Badge
+          color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
+          variant="filled"
+          w={100}
+          sx={{ flexShrink: 0 }}
+        >
+          {entry.content === clipboardContent
+            ? "Copied"
+            : badgeDateFormatter(now, new Date(entry.createdAt))}
+        </Badge>
         <Text
           fz="xs"
           color="gray.8"
@@ -79,6 +80,7 @@ export const EntryRow = ({
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
             overflow: "hidden",
+            userSelect: "none",
           }}
         >
           {entry.content}

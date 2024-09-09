@@ -1,6 +1,6 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
-import { setClipboardMonitorIsEnabled } from "~storage/clipboardMonitor";
+import { setClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
 
 chrome.runtime.onInstalled.addListener(async () => {
   await Promise.all([
