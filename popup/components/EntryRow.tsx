@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Badge, Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
@@ -29,8 +29,13 @@ export const EntryRow = ({
       key={entry.id}
       spacing={0}
       sx={(theme) => ({
+        backgroundColor: selectedEntryIds.has(entry.id) ? theme.colors.indigo[0] : undefined,
         cursor: "pointer",
-        ":hover": { backgroundColor: theme.colors.indigo[0] },
+        ":hover": {
+          backgroundColor: selectedEntryIds.has(entry.id)
+            ? theme.colors.indigo[0]
+            : theme.colors.gray[0],
+        },
       })}
       onClick={() => onEntryClick(entry)}
     >
@@ -54,16 +59,18 @@ export const EntryRow = ({
           }
           onClick={(e) => e.stopPropagation()}
         />
-        <Badge
-          color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
-          variant="filled"
-          w={150}
-          mx="md"
-        >
-          {entry.content === clipboardContent
-            ? "Copied"
-            : badgeDateFormatter(new Date(entry.createdAt))}
-        </Badge>
+        <Box w={150} mx="md">
+          <Badge
+            color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
+            variant="filled"
+            fullWidth
+          >
+            {entry.content === clipboardContent
+              ? "Copied"
+              : badgeDateFormatter(new Date(entry.createdAt))}
+          </Badge>
+        </Box>
+
         <Text
           fz="xs"
           color="gray.8"
