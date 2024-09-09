@@ -20,6 +20,12 @@ dependencies:
   "@plasmohq/storage":
     specifier: ^1.12.0
     version: 1.12.0(react@18.2.0)
+  "@tabler/icons-react":
+    specifier: ^3.14.0
+    version: 3.14.0(react@18.2.0)
+  date-fns:
+    specifier: 3.1.0
+    version: 3.1.0
   plasmo:
     specifier: 0.89.1
     version: 0.89.1(react-dom@18.2.0)(react@18.2.0)
@@ -29,6 +35,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  short-time-ago:
+    specifier: ^2.0.0
+    version: 2.0.0
   zod:
     specifier: ^3.23.8
     version: 3.23.8
@@ -3702,6 +3711,25 @@ packages:
       defer-to-connect: 2.0.1
     dev: false
 
+  /@tabler/icons-react@3.14.0(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-3XdbuyhBNq8aZW0qagR9YL8diACZYSAtaw6VuwcO2l6HzVFPN6N5TDex9WTz/3lf+uktAvOv1kNuuFBjSjN9yw==,
+      }
+    peerDependencies:
+      react: ">= 16"
+    dependencies:
+      "@tabler/icons": 3.14.0
+      react: 18.2.0
+    dev: false
+
+  /@tabler/icons@3.14.0:
+    resolution:
+      {
+        integrity: sha512-OakKjK1kuDWKoNwdnHHVMt11kTZAC10iZpN/8o/CSYdeBH7S3v5n8IyqAYynFxLI8yBGTyBvljtvWdmWh57zSg==,
+      }
+    dev: false
+
   /@trysound/sax@0.2.0:
     resolution:
       {
@@ -4704,6 +4732,13 @@ packages:
       {
         integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==,
       }
+
+  /date-fns@3.1.0:
+    resolution:
+      {
+        integrity: sha512-ZO7yefXV/wCWzd3I9haCHmfzlfA3i1a2HHO7ZXjtJrRjXt8FULKJ2Vl8wji3XYF4dQ0ZJ/tokXDZeYlFvgms9Q==,
+      }
+    dev: false
 
   /debug@4.3.7:
     resolution:
@@ -7625,6 +7660,14 @@ packages:
         integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==,
       }
     engines: { node: ">=8" }
+    dev: false
+
+  /short-time-ago@2.0.0:
+    resolution:
+      {
+        integrity: sha512-klqvTBTPpU2xI/+qeTl3zMX6EVfcF7ddTfoaOg+aOpJY4IOhwwgxTQ2eu3sLDrSAQL0PwjFAoWqJUDUcJSEXXA==,
+      }
+    engines: { node: ">=10" }
     dev: false
 
   /signal-exit@3.0.7:

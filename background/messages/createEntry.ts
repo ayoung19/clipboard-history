@@ -1,5 +1,6 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging";
 
+import { setClipboardContent } from "~storage/clipboardContent";
 import { createEntry } from "~utils/storage";
 
 export interface CreateEntryRequestBody {
@@ -8,10 +9,8 @@ export interface CreateEntryRequestBody {
 
 const handler: PlasmoMessaging.MessageHandler<CreateEntryRequestBody> = async (req, res) => {
   if (req.body) {
-    await createEntry(req.body.content);
+    await Promise.all([setClipboardContent(req.body.content), createEntry(req.body.content)]);
   }
-
-  res.send({});
 };
 
 export default handler;
