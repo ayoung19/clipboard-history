@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - uses: pnpm/action-setup@v3
+
       - name: Update package.json version
         run: |
           ./scripts/version-check.sh
