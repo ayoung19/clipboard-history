@@ -28,7 +28,7 @@ jobs:
         run: |
           pnpm install
           pnpm build
-          zip -r ./build/chrome-mv3-prod.zip ./build/chrome-mv3-prod
+          (cd build && zip-r chrome-mv3-prod.zip chrome-mv3-prod)
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
