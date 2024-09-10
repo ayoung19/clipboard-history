@@ -1,7 +1,7 @@
 {
   "name": "clipboard-history",
   "displayName": "Clipboard History",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "The most secure way to effortlessly access, track, and manage your clipboard history.",
   "author": "Andy Young <andyluyoung@gmail.com>",
   "scripts": {
