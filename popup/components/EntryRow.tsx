@@ -1,6 +1,5 @@
-import { ActionIcon, Badge, Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
 
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";

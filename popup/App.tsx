@@ -1,5 +1,5 @@
-import { Box, Divider, Group, SegmentedControl, Switch, TextInput } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Box, Divider, Group, SegmentedControl, Switch, Text, TextInput } from "@mantine/core";
+import { IconClipboardList, IconLock, IconSearch, IconStar } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { max } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -77,9 +77,26 @@ export const App = () => {
           value={tab}
           onChange={setTab}
           size="xs"
+          color={tab === "all" ? "indigo.4" : "yellow.5"}
           data={[
-            { label: "All", value: "all" },
-            { label: "Favorites", value: "favorites" },
+            {
+              label: (
+                <Group align="center" spacing={4} noWrap>
+                  <IconClipboardList size="1rem" />
+                  <Text>All</Text>
+                </Group>
+              ),
+              value: "all",
+            },
+            {
+              label: (
+                <Group align="center" spacing={4} noWrap>
+                  <IconStar size="1rem" />
+                  <Text>Favorites</Text>
+                </Group>
+              ),
+              value: "favorites",
+            },
           ]}
         />
       </Group>
