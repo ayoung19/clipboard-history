@@ -1,12 +1,15 @@
 # Clipboard History
+
 The first open source clipboard manager Chrome extension. Get all of the productivity benefits of a clipboard history with none of the security risks.
 
 Clipboard History offers a simple, efficient, and secure way to manage your clipboard. When the clipboard monitor is enabled, everything you copy to your clipboard will be backed up and saved locally for easy access later. Never worry about losing important content in your clipboard again!
 
 ## Security & Privacy
+
 Unrestricted access to your clipboard can raise serious privacy concerns. In an effort to be the most trustworthy clipboard history manager, Clipboard History is fully open-source. You can download or review the source code here: https://github.com/ayoung19/clipboard-history
 
 ## Attributions
+
 Clipboard icons created by Freepik - Flaticon: https://www.flaticon.com/free-icons/clipboard
 
 # Contributing
