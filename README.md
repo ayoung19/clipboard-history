@@ -8,10 +8,6 @@ Clipboard History offers a simple, efficient, and secure way to manage your clip
 
 Unrestricted access to your clipboard can raise serious privacy concerns. In an effort to be the most trustworthy clipboard history manager, Clipboard History is fully open-source. You can download or review the source code here: https://github.com/ayoung19/clipboard-history
 
-## Attributions
-
-Clipboard icons created by Freepik - Flaticon: https://www.flaticon.com/free-icons/clipboard
-
 # Contributing
 
 This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
