@@ -1,7 +1,8 @@
-import { Box, Divider, Group, SegmentedControl, Switch, Text, TextInput } from "@mantine/core";
-import { IconClipboardList, IconLock, IconSearch, IconStar } from "@tabler/icons-react";
+import { Box, Divider, Group, Switch, TextInput } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { max } from "date-fns";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 
 import { getClipboardContent, watchClipboardContent } from "~storage/clipboardContent";
@@ -10,22 +11,30 @@ import {
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
-import type { Entry } from "~types/entry";
+import { Page } from "~types/page";
 import { getEntries, watchEntries } from "~utils/storage";
 
 import { EntryList } from "./components/EntryList";
+import { SmartSegmentedControl } from "./components/SmartSegmentedControl";
+import {
+  clipboardContentAtom,
+  entriesAtom,
+  lockedReversedEntriesAtom,
+  pageAtom,
+  reversedEntriesAtom,
+  searchAtom,
+  unlockedReversedEntriesAtom,
+} from "./state/atoms";
 
 export const App = () => {
   const [now] = useState(new Date());
 
-  const [tab, setTab] = useState("all");
+  const page = useAtomValue(pageAtom);
+  const [search, setSearch] = useAtom(searchAtom);
 
-  const [search, setSearch] = useState("");
-
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const reversedEntries = useMemo(() => entries.toReversed(), [entries]);
-
-  const [clipboardContent, setClipboardContent] = useState<string>();
+  const reversedEntries = useAtomValue(reversedEntriesAtom);
+  const unlockedReversedEntries = useAtomValue(unlockedReversedEntriesAtom);
+  const lockedReversedEntries = useAtomValue(lockedReversedEntriesAtom);
 
   const [favoriteEntryIds, setFavoriteEntryIds] = useState<string[]>([]);
   const favoriteEntryIdsSet = useMemo(() => new Set(favoriteEntryIds), [favoriteEntryIds]);
@@ -39,6 +48,9 @@ export const App = () => {
     mutationFn: toggleClipboardMonitorIsEnabled,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
   });
+
+  const setEntries = useSetAtom(entriesAtom);
+  const setClipboardContent = useSetAtom(clipboardContentAtom);
 
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
@@ -73,50 +85,21 @@ export const App = () => {
             onChange={(e) => setSearch(e.currentTarget.value)}
           />
         </Group>
-        <SegmentedControl
-          value={tab}
-          onChange={setTab}
-          size="xs"
-          color={tab === "all" ? "indigo.4" : "yellow.5"}
-          data={[
-            {
-              label: (
-                <Group align="center" spacing={4} noWrap>
-                  <IconClipboardList size="1rem" />
-                  <Text>All</Text>
-                </Group>
-              ),
-              value: "all",
-            },
-            {
-              label: (
-                <Group align="center" spacing={4} noWrap>
-                  <IconStar size="1rem" />
-                  <Text>Favorites</Text>
-                </Group>
-              ),
-              value: "favorites",
-            },
-          ]}
-        />
+        <SmartSegmentedControl />
       </Group>
       <Divider color="gray.2" />
       <EntryList
         now={max([new Date(reversedEntries[0]?.createdAt || 0), now])}
-        entries={(tab === "all"
-          ? reversedEntries
-          : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
+        entries={(page === Page.All
+          ? unlockedReversedEntries
+          : page === Page.Favorites
+            ? unlockedReversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
+            : lockedReversedEntries
         ).filter(
           (entry) =>
             search.length === 0 || entry.content.toLowerCase().includes(search.toLowerCase()),
         )}
-        clipboardContent={clipboardContent}
         favoriteEntryIdsSet={favoriteEntryIdsSet}
-        onEntryClick={async (entry) => {
-          await navigator.clipboard.writeText(entry.content);
-
-          setClipboardContent(entry.content);
-        }}
       />
     </Box>
   );

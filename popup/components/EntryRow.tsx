@@ -1,30 +1,35 @@
 import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { useAtom, useAtomValue } from "jotai";
 
+import { clipboardContentAtom, keyAtom } from "~popup/state/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
+import { decryptEntry } from "~utils/crypto";
 import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
 
+import { LockEntriesActionIcon } from "./LockEntriesActionIcon";
+import { UnlockEntriesActionIcon } from "./UnlockEntriesActionIcon";
+
 interface Props {
   now: Date;
   entry: Entry;
-  clipboardContent?: string;
   selectedEntryIds: Set<string>;
   favoriteEntryIdsSet: Set<string>;
-  onEntryClick: (entry: Entry) => void;
 }
 
-export const EntryRow = ({
-  now,
-  entry,
-  clipboardContent,
-  selectedEntryIds,
-  favoriteEntryIdsSet,
-  onEntryClick,
-}: Props) => {
+export const EntryRow = ({ now, entry, selectedEntryIds, favoriteEntryIdsSet }: Props) => {
+  const key = useAtomValue(keyAtom);
+
+  const [clipboardContent, setClipboardContent] = useAtom(clipboardContentAtom);
+
   const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
+
+  const normalizedEntryContent = (
+    entry.cryptoInfo === undefined || key === undefined ? entry : decryptEntry(key, entry)
+  ).content;
 
   return (
     <Stack
@@ -39,7 +44,11 @@ export const EntryRow = ({
             : theme.colors.gray[0],
         },
       })}
-      onClick={() => onEntryClick(entry)}
+      onClick={async () => {
+        await navigator.clipboard.writeText(normalizedEntryContent);
+
+        setClipboardContent(normalizedEntryContent);
+      }}
     >
       <Group align="center" spacing="md" noWrap px="md" py={4}>
         <Checkbox
@@ -62,12 +71,12 @@ export const EntryRow = ({
           onClick={(e) => e.stopPropagation()}
         />
         <Badge
-          color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
+          color={normalizedEntryContent === clipboardContent ? "indigo.4" : "gray.5"}
           variant="filled"
           w={100}
           sx={{ flexShrink: 0 }}
         >
-          {entry.content === clipboardContent
+          {normalizedEntryContent === clipboardContent
             ? "Copied"
             : badgeDateFormatter(now, new Date(entry.createdAt))}
         </Badge>
@@ -82,7 +91,7 @@ export const EntryRow = ({
             userSelect: "none",
           }}
         >
-          {entry.content}
+          {normalizedEntryContent}
         </Text>
         <Group align="center" spacing={0} noWrap>
           <ActionIcon
@@ -103,6 +112,11 @@ export const EntryRow = ({
           >
             {isFavoriteEntry ? <IconStarFilled size="1rem" /> : <IconStar size="1rem" />}
           </ActionIcon>
+          {entry.cryptoInfo === undefined ? (
+            <LockEntriesActionIcon entryIds={[entry.id]} />
+          ) : (
+            <UnlockEntriesActionIcon entryIds={[entry.id]} />
+          )}
           <ActionIcon
             sx={(theme) => commonActionIconSx({ theme, disabled: isFavoriteEntry })}
             onClick={(e) => {
