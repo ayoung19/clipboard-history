@@ -1,31 +1,30 @@
 import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconStar, IconTrash } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { useEffect, useMemo } from "react";
 import { FixedSizeList } from "react-window";
 
+import { pageAtom } from "~popup/state/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
+import { Page } from "~types/page";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";
+import { LockEntriesActionIcon } from "./LockEntriesActionIcon";
+import { UnlockEntriesActionIcon } from "./UnlockEntriesActionIcon";
 
 interface Props {
   now: Date;
   entries: Entry[];
-  clipboardContent?: string;
   favoriteEntryIdsSet: Set<string>;
-  onEntryClick: (entry: Entry) => void;
 }
 
-export const EntryList = ({
-  now,
-  entries,
-  clipboardContent,
-  favoriteEntryIdsSet,
-  onEntryClick,
-}: Props) => {
+export const EntryList = ({ now, entries, favoriteEntryIdsSet }: Props) => {
+  const page = useAtomValue(pageAtom);
+
   const selectedEntryIds = useSet<string>();
   const entryIdsStringified = useMemo(() => JSON.stringify(entries.map(({ id }) => id)), [entries]);
 
@@ -69,6 +68,17 @@ export const EntryList = ({
             >
               <IconStar size="1rem" />
             </ActionIcon>
+            {page === Page.Locked ? (
+              <UnlockEntriesActionIcon
+                entryIds={Array.from(selectedEntryIds)}
+                disabled={selectedEntryIds.size === 0}
+              />
+            ) : (
+              <LockEntriesActionIcon
+                entryIds={Array.from(selectedEntryIds)}
+                disabled={selectedEntryIds.size === 0}
+              />
+            )}
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
               onClick={async () => {
@@ -96,10 +106,8 @@ export const EntryList = ({
             <EntryRow
               now={now}
               entry={entries[index]!}
-              clipboardContent={clipboardContent}
               selectedEntryIds={selectedEntryIds}
               favoriteEntryIdsSet={favoriteEntryIdsSet}
-              onEntryClick={onEntryClick}
             />
           </Box>
         )}

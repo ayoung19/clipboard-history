@@ -5,6 +5,8 @@ import { Storage } from "@plasmohq/storage";
 
 import { Entry } from "~types/entry";
 
+import { decryptEntry, encryptEntry } from "./crypto";
+
 const storage = new Storage({
   area: "local",
 });
@@ -71,4 +73,16 @@ export const deleteEntries = async (entryIds: string[]) => {
     setEntries(entries.filter(({ id }) => !s.has(id))),
     storage.removeMany(entryIds.map((entryId) => storage.getNamespacedKey(entryId))),
   ]);
+};
+
+export const unlockEntries = async (entryIds: string[], key: string) => {
+  const s = new Set(entryIds);
+  const entries = await getEntries();
+  await setEntries(entries.map((entry) => (s.has(entry.id) ? decryptEntry(key, entry) : entry)));
+};
+
+export const lockEntries = async (entryIds: string[], key: string) => {
+  const s = new Set(entryIds);
+  const entries = await getEntries();
+  await setEntries(entries.map((entry) => (s.has(entry.id) ? encryptEntry(key, entry) : entry)));
 };
