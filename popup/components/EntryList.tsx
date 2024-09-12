@@ -71,20 +71,18 @@ export const EntryList = ({
             </ActionIcon>
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
-              onClick={async () => {
-                await deleteEntries(
+              onClick={() =>
+                deleteEntries(
                   Array.from(selectedEntryIds).filter(
                     (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
                   ),
-                );
-
-                selectedEntryIds.clear();
-              }}
+                )
+              }
             >
               <IconTrash size="1rem" />
             </ActionIcon>
           </Group>
-          <Text fz="xs" color="gray.8">
+          <Text fz="xs" color="gray.9">
             {selectedEntryIds.size} of {entries.length} selected
           </Text>
         </Group>

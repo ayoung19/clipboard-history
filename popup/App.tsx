@@ -1,17 +1,21 @@
 import { Box, Divider, Group, SegmentedControl, Switch, Text, TextInput } from "@mantine/core";
-import { IconClipboardList, IconLock, IconSearch, IconStar } from "@tabler/icons-react";
+import { IconClipboardList, IconSearch, IconStar } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { max } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 
-import { getClipboardContent, watchClipboardContent } from "~storage/clipboardContent";
+import {
+  getClipboardContent,
+  setClipboardContent as setClipboardContentStorage,
+  watchClipboardContent,
+} from "~storage/clipboardContent";
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
-import { createEntry, getEntries, watchEntries } from "~utils/storage";
+import { getEntries, watchEntries } from "~utils/storage";
 
 import { EntryList } from "./components/EntryList";
 
@@ -113,11 +117,9 @@ export const App = () => {
         clipboardContent={clipboardContent}
         favoriteEntryIdsSet={favoriteEntryIdsSet}
         onEntryClick={async (entry) => {
-          await navigator.clipboard.writeText(entry.content);
+          await setClipboardContentStorage(entry.content);
 
-          if (entry.content !== clipboardContent) {
-            await Promise.all([setClipboardContent(entry.content), createEntry(entry.content)]);
-          }
+          navigator.clipboard.writeText(entry.content);
         }}
       />
     </Box>

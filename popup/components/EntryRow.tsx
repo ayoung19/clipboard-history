@@ -73,7 +73,7 @@ export const EntryRow = ({
         </Badge>
         <Text
           fz="xs"
-          color="gray.8"
+          color="gray.9"
           sx={{
             width: "100%",
             whiteSpace: "nowrap",
