@@ -11,7 +11,7 @@ import {
 } from "~storage/clipboardMonitorIsEnabled";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
-import { getEntries, watchEntries } from "~utils/storage";
+import { createEntry, getEntries, watchEntries } from "~utils/storage";
 
 import { EntryList } from "./components/EntryList";
 
@@ -115,7 +115,9 @@ export const App = () => {
         onEntryClick={async (entry) => {
           await navigator.clipboard.writeText(entry.content);
 
-          setClipboardContent(entry.content);
+          if (entry.content !== clipboardContent) {
+            await Promise.all([setClipboardContent(entry.content), createEntry(entry.content)]);
+          }
         }}
       />
     </Box>
