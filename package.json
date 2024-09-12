@@ -19,6 +19,7 @@
     "@tabler/icons-react": "^3.14.0",
     "@tanstack/react-query": "^5.55.4",
     "date-fns": "3.1.0",
+    "jotai": "^2.9.3",
     "plasmo": "0.89.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
