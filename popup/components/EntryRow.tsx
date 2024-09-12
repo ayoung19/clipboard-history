@@ -1,6 +1,19 @@
-import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
-import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import {
+  ActionIcon,
+  Badge,
+  Checkbox,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Tooltip,
+  useMantineTheme,
+} from "@mantine/core";
+import { useClipboard, useHover } from "@mantine/hooks";
+import { IconCheck, IconCopy, IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { useAtom } from "jotai";
 
+import { clipboardContentAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
@@ -10,38 +23,41 @@ import { commonActionIconSx } from "~utils/sx";
 interface Props {
   now: Date;
   entry: Entry;
-  clipboardContent?: string;
   selectedEntryIds: Set<string>;
   favoriteEntryIdsSet: Set<string>;
-  onEntryClick: (entry: Entry) => void;
 }
 
-export const EntryRow = ({
-  now,
-  entry,
-  clipboardContent,
-  selectedEntryIds,
-  favoriteEntryIdsSet,
-  onEntryClick,
-}: Props) => {
+export const EntryRow = ({ now, entry, selectedEntryIds, favoriteEntryIdsSet }: Props) => {
+  const { copied, copy } = useClipboard({ timeout: 500 });
+
+  const [clipboardContent, setClipboardContent] = useAtom(clipboardContentAtom);
+
   const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
 
   return (
     <Stack
-      key={entry.id}
       spacing={0}
       sx={(theme) => ({
         backgroundColor: selectedEntryIds.has(entry.id) ? theme.colors.indigo[0] : undefined,
         cursor: "pointer",
+        ".visible-on-row-hover": {
+          visibility: "hidden",
+        },
         ":hover": {
           backgroundColor: selectedEntryIds.has(entry.id)
             ? theme.colors.indigo[0]
             : theme.colors.gray[0],
+          ".visible-on-row-hover": {
+            visibility: "visible",
+          },
         },
       })}
-      onClick={() => onEntryClick(entry)}
+      onClick={() => {
+        copy(entry.content);
+        setClipboardContent(entry.content);
+      }}
     >
-      <Group align="center" spacing="md" noWrap px="md" py={4}>
+      <Group align="center" spacing={0} noWrap px="md" py={4}>
         <Checkbox
           size="xs"
           color="indigo.3"
@@ -61,15 +77,8 @@ export const EntryRow = ({
           }
           onClick={(e) => e.stopPropagation()}
         />
-        <Badge
-          color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
-          variant="filled"
-          w={100}
-          sx={{ flexShrink: 0 }}
-        >
-          {entry.content === clipboardContent
-            ? "Copied"
-            : badgeDateFormatter(now, new Date(entry.createdAt))}
+        <Badge color={"gray.5"} variant="filled" w={100} sx={{ flexShrink: 0 }} size="md" mx="md">
+          {badgeDateFormatter(now, new Date(entry.createdAt))}
         </Badge>
         <Text
           fz="xs"
@@ -85,6 +94,21 @@ export const EntryRow = ({
           {entry.content}
         </Text>
         <Group align="center" spacing={0} noWrap>
+          <ActionIcon
+            sx={(theme) => ({
+              color: copied ? theme.colors.green[4] : theme.colors.gray[5],
+              ":hover": {
+                color: copied ? theme.colors.green[4] : theme.colors.gray[5],
+                backgroundColor: "inherit",
+              },
+              ":active": {
+                transform: "none",
+              },
+            })}
+            className="visible-on-row-hover"
+          >
+            {copied ? <IconCheck size="1rem" /> : <IconCopy size="1rem" />}
+          </ActionIcon>
           <ActionIcon
             sx={(theme) => ({
               color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[5],
