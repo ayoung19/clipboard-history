@@ -39,7 +39,7 @@ export const createEntry = async (content: string) => {
     ...entries.filter(({ id }) => id !== entryId),
     {
       id: entryId,
-      createdAt: new Date().getTime(),
+      createdAt: Date.now(),
       content,
     },
   ]);
