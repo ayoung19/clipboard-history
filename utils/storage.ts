@@ -6,13 +6,16 @@ import { Entry } from "~types/entry";
 
 import { setActionBadgeText } from "./actionBadge";
 
+// Do not change this without a migration.
+const ENTRIES_STORAGE_KEY = "entryIdSetentries";
+
 const storage = new Storage({
   area: "local",
 });
 
 export const watchEntries = (cb: (entries: Entry[]) => void) => {
   return storage.watch({
-    entries: (c) => {
+    [ENTRIES_STORAGE_KEY]: (c) => {
       if (c.newValue === undefined) {
         cb([]);
       } else {
@@ -23,7 +26,7 @@ export const watchEntries = (cb: (entries: Entry[]) => void) => {
 };
 
 export const getEntries = async () => {
-  const entries = await storage.get<Entry[]>("entryIdSetentries");
+  const entries = await storage.get<Entry[]>(ENTRIES_STORAGE_KEY);
   if (entries === undefined) {
     return [];
   }
@@ -32,7 +35,10 @@ export const getEntries = async () => {
 };
 
 export const setEntries = async (entries: Entry[]) => {
-  await Promise.all([storage.set("entryIdSetentries", entries), setActionBadgeText(entries.length)]);
+  await Promise.all([
+    storage.set(ENTRIES_STORAGE_KEY, entries),
+    setActionBadgeText(entries.length),
+  ]);
 };
 
 export const createEntry = async (content: string) => {
