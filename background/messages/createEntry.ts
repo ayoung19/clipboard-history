@@ -1,11 +1,12 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging";
 
-import { setClipboardContent } from "~storage/clipboardContent";
 import { getClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
+import { getClipboardSnapshot, updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { createEntry } from "~utils/storage";
 
 export interface CreateEntryRequestBody {
   content: string;
+  timestamp: number;
 }
 
 export interface CreateEntryResponseBody {}
@@ -15,7 +16,16 @@ const handler: PlasmoMessaging.MessageHandler<
   CreateEntryResponseBody
 > = async (req, res) => {
   if (req.body && (await getClipboardMonitorIsEnabled())) {
-    await Promise.all([setClipboardContent(req.body.content), createEntry(req.body.content)]);
+    const clipboardSnapshot = await getClipboardSnapshot();
+
+    if (clipboardSnapshot === undefined || req.body.timestamp > clipboardSnapshot.updatedAt) {
+      if (req.body.content !== clipboardSnapshot?.content) {
+        await Promise.all([
+          updateClipboardSnapshot(req.body.content),
+          createEntry(req.body.content),
+        ]);
+      }
+    }
   }
 
   res.send({});

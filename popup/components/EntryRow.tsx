@@ -41,7 +41,7 @@ export const EntryRow = ({
       })}
       onClick={() => onEntryClick(entry)}
     >
-      <Group align="center" spacing="md" noWrap px="md" py={4}>
+      <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
           color="indigo.3"
@@ -62,10 +62,11 @@ export const EntryRow = ({
           onClick={(e) => e.stopPropagation()}
         />
         <Badge
-          color={entry.content === clipboardContent ? "indigo.4" : "gray.5"}
+          color={entry.content === clipboardContent ? "indigo.3" : "gray.5"}
           variant="filled"
           w={100}
           sx={{ flexShrink: 0 }}
+          size="sm"
         >
           {entry.content === clipboardContent
             ? "Copied"
@@ -117,7 +118,7 @@ export const EntryRow = ({
           </ActionIcon>
         </Group>
       </Group>
-      <Divider color="gray.2" />
+      <Divider color="gray.3" />
     </Stack>
   );
 };

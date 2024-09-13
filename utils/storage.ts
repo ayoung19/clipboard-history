@@ -1,5 +1,4 @@
 import { createHash } from "crypto";
-import { z } from "zod";
 
 import { Storage } from "@plasmohq/storage";
 
@@ -8,37 +7,26 @@ import { Entry } from "~types/entry";
 const storage = new Storage({
   area: "local",
 });
-storage.setNamespace("entryIdSet");
 
 export const watchEntries = (cb: (entries: Entry[]) => void) => {
   return storage.watch({
     entries: (c) => {
-      const parsed = z.array(Entry).safeParse(c.newValue);
-
-      if (parsed.success) {
-        cb(parsed.data);
-        return;
+      if (c.newValue === undefined) {
+        cb([]);
+      } else {
+        cb(c.newValue as Entry[]);
       }
-
-      storage.removeAll();
-      setEntries([]);
-
-      cb([]);
     },
   });
 };
 
 export const getEntries = async () => {
-  const entries = await storage.get("entries");
-  const parsed = z.array(Entry).safeParse(entries);
-
-  if (parsed.success) {
-    return parsed.data;
+  const entries = await storage.get<Entry[]>("entries");
+  if (entries === undefined) {
+    return [];
   }
 
-  await Promise.all([storage.removeAll(), setEntries([])]);
-
-  return [];
+  return entries;
 };
 
 export const setEntries = async (entries: Entry[]) => storage.set("entries", entries);
@@ -46,29 +34,19 @@ export const setEntries = async (entries: Entry[]) => storage.set("entries", ent
 export const createEntry = async (content: string) => {
   const entryId = createHash("sha256").update(content).digest("hex");
 
-  if (!!(await storage.get(storage.getNamespacedKey(entryId)))) {
-    return;
-  }
-
   const entries = await getEntries();
-  await Promise.all([
-    setEntries([
-      ...entries,
-      {
-        id: entryId,
-        createdAt: new Date().getTime(),
-        content,
-      },
-    ]),
-    storage.set(storage.getNamespacedKey(entryId), "1"),
+  await setEntries([
+    ...entries.filter(({ id }) => id !== entryId),
+    {
+      id: entryId,
+      createdAt: Date.now(),
+      content,
+    },
   ]);
 };
 
 export const deleteEntries = async (entryIds: string[]) => {
-  const s = new Set(entryIds);
+  const entryIdSet = new Set(entryIds);
   const entries = await getEntries();
-  await Promise.all([
-    setEntries(entries.filter(({ id }) => !s.has(id))),
-    storage.removeMany(entryIds.map((entryId) => storage.getNamespacedKey(entryId))),
-  ]);
+  await setEntries(entries.filter(({ id }) => !entryIdSet.has(id)));
 };
