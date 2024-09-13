@@ -2,50 +2,34 @@ import { Box, Group, Image, SegmentedControl, Switch, Text, TextInput, Title } f
 import { IconClipboardList, IconSearch, IconStar } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import iconSrc from "data-base64:~assets/icon.png";
-import { max } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
 
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
-import {
-  getClipboardSnapshot,
-  updateClipboardSnapshot,
-  watchClipboardSnapshot,
-} from "~storage/clipboardSnapshot";
+import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
-import type { ClipboardSnapshot } from "~types/clipboardSnapshot";
-import type { Entry } from "~types/entry";
 import { getEntries, watchEntries } from "~utils/storage";
 
-import { EntryList } from "./components/EntryList";
+import { AllPage } from "./pages/AllPage";
+import { FavoritesPage } from "./pages/FavoritesPage";
+import {
+  clipboardSnapshotAtom,
+  entriesAtom,
+  favoriteEntryIdsAtom,
+  searchAtom,
+} from "./states/atoms";
 
 export const App = () => {
-  const [now] = useState(new Date());
-
   const [tab, setTab] = useState("all");
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useAtom(searchAtom);
 
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const reversedEntries = useMemo(() => entries.toReversed(), [entries]);
-
-  const [clipboardSnapshot, setClipboardSnapshot] = useState<ClipboardSnapshot>();
-
-  const [favoriteEntryIds, setFavoriteEntryIds] = useState<string[]>([]);
-  const favoriteEntryIdsSet = useMemo(() => new Set(favoriteEntryIds), [favoriteEntryIds]);
-
-  const queryClient = useQueryClient();
-  const clipboardMonitorIsEnabledQuery = useQuery({
-    queryKey: ["clipboardMonitorIsEnabled"],
-    queryFn: getClipboardMonitorIsEnabled,
-  });
-  const toggleClipboardMonitorIsEnabledMutation = useMutation({
-    mutationFn: toggleClipboardMonitorIsEnabled,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
-  });
-
+  const setEntries = useSetAtom(entriesAtom);
+  const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
+  const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
     watchEntries(setEntries);
@@ -56,6 +40,16 @@ export const App = () => {
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds(setFavoriteEntryIds);
   }, []);
+
+  const queryClient = useQueryClient();
+  const clipboardMonitorIsEnabledQuery = useQuery({
+    queryKey: ["clipboardMonitorIsEnabled"],
+    queryFn: getClipboardMonitorIsEnabled,
+  });
+  const toggleClipboardMonitorIsEnabledMutation = useMutation({
+    mutationFn: toggleClipboardMonitorIsEnabled,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
+  });
 
   if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
     return null;
@@ -124,25 +118,7 @@ export const App = () => {
           ]}
         />
       </Group>
-      <EntryList
-        now={max([new Date(reversedEntries[0]?.createdAt || 0), now])}
-        entries={(tab === "all"
-          ? reversedEntries
-          : reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id))
-        ).filter(
-          (entry) =>
-            search.length === 0 || entry.content.toLowerCase().includes(search.toLowerCase()),
-        )}
-        clipboardContent={clipboardSnapshot?.content}
-        favoriteEntryIdsSet={favoriteEntryIdsSet}
-        onEntryClick={async (entry) => {
-          // Optimistically update local state with arbitrary updatedAt.
-          setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
-
-          await updateClipboardSnapshot(entry.content);
-          navigator.clipboard.writeText(entry.content);
-        }}
-      />
+      {tab === "all" ? <AllPage /> : <FavoritesPage />}
     </Box>
   );
 };

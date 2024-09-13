@@ -4,7 +4,7 @@ import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
-import { setActionIconAndBadgeBackgroundColor, setActionBadgeText } from "~utils/actionBadge";
+import { setActionBadgeText, setActionIconAndBadgeBackgroundColor } from "~utils/actionBadge";
 import { getEntries } from "~utils/storage";
 
 const setupOffscreenDocument = async () => {
@@ -36,9 +36,5 @@ chrome.tabs.onActivated.addListener(async () => {
 });
 
 chrome.runtime.onInstalled.addListener(async () => {
-  await Promise.all([
-    setClipboardMonitorIsEnabled(true),
-    setupOffscreenDocument(),
-    setupAction(),
-  ]);
+  await Promise.all([setClipboardMonitorIsEnabled(true), setupOffscreenDocument(), setupAction()]);
 });

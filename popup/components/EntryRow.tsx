@@ -1,6 +1,9 @@
 import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { useAtom, useAtomValue } from "jotai";
 
+import { clipboardSnapshotAtom, favoriteEntryIdsSetAtom, nowAtom } from "~popup/states/atoms";
+import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
@@ -8,22 +11,15 @@ import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
 
 interface Props {
-  now: Date;
   entry: Entry;
-  clipboardContent?: string;
   selectedEntryIds: Set<string>;
-  favoriteEntryIdsSet: Set<string>;
-  onEntryClick: (entry: Entry) => void;
 }
 
-export const EntryRow = ({
-  now,
-  entry,
-  clipboardContent,
-  selectedEntryIds,
-  favoriteEntryIdsSet,
-  onEntryClick,
-}: Props) => {
+export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
+  const now = useAtomValue(nowAtom);
+  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
+
   const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
 
   return (
@@ -39,7 +35,13 @@ export const EntryRow = ({
             : theme.colors.gray[0],
         },
       })}
-      onClick={() => onEntryClick(entry)}
+      onClick={async () => {
+        // Optimistically update local state with arbitrary updatedAt.
+        setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
+
+        await updateClipboardSnapshot(entry.content);
+        navigator.clipboard.writeText(entry.content);
+      }}
     >
       <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
@@ -62,13 +64,13 @@ export const EntryRow = ({
           onClick={(e) => e.stopPropagation()}
         />
         <Badge
-          color={entry.content === clipboardContent ? "indigo.3" : "gray.5"}
+          color={entry.content === clipboardSnapshot?.content ? "indigo.3" : "gray.5"}
           variant="filled"
           w={100}
           sx={{ flexShrink: 0 }}
           size="sm"
         >
-          {entry.content === clipboardContent
+          {entry.content === clipboardSnapshot?.content
             ? "Copied"
             : badgeDateFormatter(now, new Date(entry.createdAt))}
         </Badge>
