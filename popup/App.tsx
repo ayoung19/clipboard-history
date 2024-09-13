@@ -5,15 +5,16 @@ import { max } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  getClipboardContent,
-  setClipboardContent as setClipboardContentStorage,
-  watchClipboardContent,
-} from "~storage/clipboardContent";
-import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
+import {
+  getClipboardSnapshot,
+  updateClipboardSnapshot,
+  watchClipboardSnapshot,
+} from "~storage/clipboardSnapshot";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import type { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { getEntries, watchEntries } from "~utils/storage";
 
@@ -29,7 +30,7 @@ export const App = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const reversedEntries = useMemo(() => entries.toReversed(), [entries]);
 
-  const [clipboardContent, setClipboardContent] = useState<string>();
+  const [clipboardSnapshot, setClipboardSnapshot] = useState<ClipboardSnapshot>();
 
   const [favoriteEntryIds, setFavoriteEntryIds] = useState<string[]>([]);
   const favoriteEntryIdsSet = useMemo(() => new Set(favoriteEntryIds), [favoriteEntryIds]);
@@ -48,8 +49,8 @@ export const App = () => {
     (async () => setEntries(await getEntries()))();
     watchEntries(setEntries);
 
-    (async () => setClipboardContent(await getClipboardContent()))();
-    watchClipboardContent(setClipboardContent);
+    (async () => setClipboardSnapshot(await getClipboardSnapshot()))();
+    watchClipboardSnapshot(setClipboardSnapshot);
 
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds(setFavoriteEntryIds);
@@ -114,10 +115,10 @@ export const App = () => {
           (entry) =>
             search.length === 0 || entry.content.toLowerCase().includes(search.toLowerCase()),
         )}
-        clipboardContent={clipboardContent}
+        clipboardContent={clipboardSnapshot?.content}
         favoriteEntryIdsSet={favoriteEntryIdsSet}
         onEntryClick={async (entry) => {
-          await setClipboardContentStorage(entry.content);
+          await updateClipboardSnapshot(entry.content);
 
           navigator.clipboard.writeText(entry.content);
         }}

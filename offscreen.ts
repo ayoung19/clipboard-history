@@ -20,6 +20,7 @@ setInterval(() => {
     name: "createEntry",
     body: {
       content: read(),
+      timestamp: Date.now(),
     },
   });
 }, 1000);
