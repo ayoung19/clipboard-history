@@ -21,7 +21,7 @@ export const watchEntries = (cb: (entries: Entry[]) => void) => {
 };
 
 export const getEntries = async () => {
-  const entries = await storage.get<Entry[]>("entries");
+  const entries = await storage.get<Entry[]>("entryIdSetentries");
   if (entries === undefined) {
     return [];
   }
@@ -29,7 +29,7 @@ export const getEntries = async () => {
   return entries;
 };
 
-export const setEntries = async (entries: Entry[]) => storage.set("entries", entries);
+export const setEntries = async (entries: Entry[]) => storage.set("entryIdSetentries", entries);
 
 export const createEntry = async (content: string) => {
   const entryId = createHash("sha256").update(content).digest("hex");
