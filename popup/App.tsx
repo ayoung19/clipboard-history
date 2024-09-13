@@ -1,6 +1,7 @@
-import { Box, Divider, Group, SegmentedControl, Switch, Text, TextInput } from "@mantine/core";
+import { Box, Group, Image, SegmentedControl, Switch, Text, TextInput, Title } from "@mantine/core";
 import { IconClipboardList, IconSearch, IconStar } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import iconSrc from "data-base64:~assets/icon.png";
 import { max } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 
@@ -61,28 +62,46 @@ export const App = () => {
   }
 
   return (
-    <Box>
-      <Group align="center" position="apart" px="md" py="xs">
+    <Box p="sm">
+      <Group align="center" position="apart" mb="sm">
+        <Group align="center" spacing="xs">
+          <Image src={iconSrc} maw={28} />
+          <Title order={6} color="gray.8">
+            Clipboard History Pro
+          </Title>
+        </Group>
+        <Switch
+          size="md"
+          color="indigo.5"
+          checked={clipboardMonitorIsEnabledQuery.data}
+          onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+        />
+      </Group>
+      <Group align="center" position="apart" mb="sm">
         <Group align="center">
-          <Switch
-            size="md"
-            color="indigo.4"
-            checked={clipboardMonitorIsEnabledQuery.data}
-            onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
-          />
           <TextInput
             placeholder="Search"
             icon={<IconSearch size="1rem" />}
             size="xs"
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
+            w={240}
+            sx={(theme) => ({
+              ".mantine-Input-input": {
+                color: theme.colors.gray[8],
+                borderColor: theme.colors.gray[3],
+                "&:focus, &:focus-within": {
+                  borderColor: theme.colors.indigo[3],
+                },
+              },
+            })}
           />
         </Group>
         <SegmentedControl
           value={tab}
           onChange={setTab}
           size="xs"
-          color={tab === "all" ? "indigo.4" : "yellow.5"}
+          color={tab === "all" ? "indigo.5" : "yellow.5"}
           data={[
             {
               label: (
@@ -105,7 +124,6 @@ export const App = () => {
           ]}
         />
       </Group>
-      <Divider color="gray.2" />
       <EntryList
         now={max([new Date(reversedEntries[0]?.createdAt || 0), now])}
         entries={(tab === "all"

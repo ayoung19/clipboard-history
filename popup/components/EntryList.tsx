@@ -34,8 +34,15 @@ export const EntryList = ({
   }, [entryIdsStringified]);
 
   return (
-    <>
-      <Group align="center" spacing="md" noWrap px="md" py={4}>
+    <Box
+      sx={(theme) => ({
+        borderStyle: "solid",
+        borderWidth: "1px",
+        borderColor: theme.colors.gray[3],
+        borderRadius: theme.radius.sm,
+      })}
+    >
+      <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
           color="indigo.3"
@@ -82,13 +89,13 @@ export const EntryList = ({
               <IconTrash size="1rem" />
             </ActionIcon>
           </Group>
-          <Text fz="xs" color="gray.9">
+          <Text fz="xs" color="gray.8">
             {selectedEntryIds.size} of {entries.length} selected
           </Text>
         </Group>
       </Group>
-      <Divider color="gray.2" />
-      <FixedSizeList height={500} itemCount={entries.length} itemSize={37} width={700}>
+      <Divider color="gray.3" />
+      <FixedSizeList height={450} itemCount={entries.length} itemSize={33} width={700}>
         {({ index, style }) => (
           <Box style={style}>
             <EntryRow
@@ -102,6 +109,6 @@ export const EntryList = ({
           </Box>
         )}
       </FixedSizeList>
-    </>
+    </Box>
   );
 };
