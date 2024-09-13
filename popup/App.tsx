@@ -136,8 +136,10 @@ export const App = () => {
         clipboardContent={clipboardSnapshot?.content}
         favoriteEntryIdsSet={favoriteEntryIdsSet}
         onEntryClick={async (entry) => {
-          await updateClipboardSnapshot(entry.content);
+          // Optimistically update local state with arbitrary updatedAt.
+          setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
 
+          await updateClipboardSnapshot(entry.content);
           navigator.clipboard.writeText(entry.content);
         }}
       />
