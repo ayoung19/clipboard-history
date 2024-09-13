@@ -4,7 +4,7 @@ import { Storage } from "@plasmohq/storage";
 
 import { Entry } from "~types/entry";
 
-import { setActionBadge } from "./actionBadge";
+import { setActionBadgeText } from "./actionBadge";
 
 const storage = new Storage({
   area: "local",
@@ -31,29 +31,29 @@ export const getEntries = async () => {
   return entries;
 };
 
-export const setEntries = async (entries: Entry[]) => storage.set("entryIdSetentries", entries);
+export const setEntries = async (entries: Entry[]) => {
+  await Promise.all([storage.set("entryIdSetentries", entries), setActionBadgeText(entries.length)]);
+};
 
 export const createEntry = async (content: string) => {
   const entryId = createHash("sha256").update(content).digest("hex");
 
   const entries = await getEntries();
-  const newEntries = [
+
+  await setEntries([
     ...entries.filter(({ id }) => id !== entryId),
     {
       id: entryId,
       createdAt: Date.now(),
       content,
     },
-  ];
-
-  await Promise.all([setEntries(newEntries), setActionBadge(newEntries.length)]);
+  ]);
 };
 
 export const deleteEntries = async (entryIds: string[]) => {
   const entryIdSet = new Set(entryIds);
 
   const entries = await getEntries();
-  const newEntries = entries.filter(({ id }) => !entryIdSet.has(id));
 
-  await Promise.all([setEntries(newEntries), setActionBadge(newEntries.length)]);
+  await setEntries(entries.filter(({ id }) => !entryIdSet.has(id)));
 };
