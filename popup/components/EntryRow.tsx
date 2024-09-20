@@ -8,7 +8,7 @@ import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEn
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
+import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 interface Props {
   entry: Entry;
@@ -46,10 +46,9 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
       <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
-          color="indigo.3"
           sx={(theme) => ({
             ".mantine-Checkbox-input:hover": {
-              borderColor: theme.colors.indigo[3],
+              borderColor: theme.fn.primaryColor(),
             },
           })}
           checked={selectedEntryIds.has(entry.id)}
@@ -61,7 +60,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           onClick={(e) => e.stopPropagation()}
         />
         <Badge
-          color={entry.content === clipboardSnapshot?.content ? "indigo.3" : "gray.5"}
+          color={entry.content === clipboardSnapshot?.content ? undefined : "gray.5"}
           variant="filled"
           w={100}
           sx={{ flexShrink: 0 }}
@@ -73,7 +72,6 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         </Badge>
         <Text
           fz="xs"
-          color="gray.8"
           sx={{
             width: "100%",
             whiteSpace: "nowrap",
@@ -117,7 +115,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           </ActionIcon>
         </Group>
       </Group>
-      <Divider color="gray.3" />
+      <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
     </Stack>
   );
 };

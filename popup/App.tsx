@@ -1,9 +1,9 @@
 import {
   ActionIcon,
-  Box,
   Divider,
   Group,
   Image,
+  Card,
   SegmentedControl,
   Switch,
   Text,
@@ -37,6 +37,7 @@ import {
   searchAtom,
   settingsAtom,
 } from "./states/atoms";
+import { defaultBorderColor } from "~utils/sx";
 
 export const App = () => {
   const theme = useMantineTheme();
@@ -77,13 +78,11 @@ export const App = () => {
   }
 
   return (
-    <Box p="sm">
+    <Card p="sm">
       <Group align="center" position="apart" mb="sm">
         <Group align="center" spacing="xs">
           <Image src={iconSrc} maw={28} />
-          <Title order={6} color="gray.8">
-            Clipboard History Pro
-          </Title>
+          <Title order={6}>Clipboard History Pro</Title>
         </Group>
         <Group align="center" spacing="xs" grow={false}>
           <ActionIcon
@@ -123,10 +122,9 @@ export const App = () => {
           w={240}
           sx={(theme) => ({
             ".mantine-Input-input": {
-              color: theme.colors.gray[8],
-              borderColor: theme.colors.gray[3],
+              borderColor: defaultBorderColor(theme),
               "&:focus, &:focus-within": {
-                borderColor: theme.colors.indigo[3],
+                borderColor: theme.fn.primaryColor(),
               },
             },
           })}
@@ -159,6 +157,6 @@ export const App = () => {
         />
       </Group>
       {tab === "all" ? <AllPage /> : <FavoritesPage />}
-    </Box>
+    </Card>
   );
 };
