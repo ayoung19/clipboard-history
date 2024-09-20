@@ -1,3 +1,5 @@
+<a href="https://www.producthunt.com/posts/clipboard-history-3?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-clipboard&#0045;history&#0045;3" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=490162&theme=light" alt="Clipboard&#0032;History - Securely&#0032;access&#0044;&#0032;track&#0044;&#0032;and&#0032;manage&#0032;your&#0032;clipboard&#0032;history | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 # Clipboard History
 
 The first open source clipboard manager Chrome extension. Get all of the productivity benefits of a clipboard history with none of the security risks.
