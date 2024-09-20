@@ -2,9 +2,10 @@ import { createHash } from "crypto";
 
 import { Storage } from "@plasmohq/storage";
 
+import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 
-import { setActionBadgeText } from "./actionBadge";
+import { removeActionBadgeText, setActionBadgeText } from "./actionBadge";
 
 // Do not change this without a migration.
 const ENTRIES_STORAGE_KEY = "entryIdSetentries";
@@ -35,9 +36,11 @@ export const getEntries = async () => {
 };
 
 export const setEntries = async (entries: Entry[]) => {
+  const settings = await getSettings();
+
   await Promise.all([
     storage.set(ENTRIES_STORAGE_KEY, entries),
-    setActionBadgeText(entries.length),
+    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
   ]);
 };
 
