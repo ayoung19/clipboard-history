@@ -1,7 +1,7 @@
 {
   "name": "clipboard-history",
   "displayName": "Clipboard History Pro: Secure, fast, and elegant clipboard manager",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "The most secure way to effortlessly access, track, and manage your clipboard history.",
   "author": "Andy Young <andyluyoung@gmail.com>",
   "scripts": {
