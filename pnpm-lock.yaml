@@ -14,6 +14,9 @@ dependencies:
   "@mantine/hooks":
     specifier: ^7.12.2
     version: 7.12.2(react@18.2.0)
+  "@mantine/modals":
+    specifier: 6.0.21
+    version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0)
   "@plasmohq/messaging":
     specifier: ^0.6.2
     version: 0.6.2(react@18.2.0)
@@ -1039,6 +1042,24 @@ packages:
       react: ^18.2.0
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@mantine/modals@6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-Gx2D/ZHMUuYF197JKMWey4K9FeGP9rxYp4lmAEXUrjXiST2fEhLZOdiD75KuOHXd1/sYAU9NcNRo9wXrlF/gUA==,
+      }
+    peerDependencies:
+      "@mantine/core": 6.0.21
+      "@mantine/hooks": 6.0.21
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+    dependencies:
+      "@mantine/core": 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      "@mantine/hooks": 7.12.2(react@18.2.0)
+      "@mantine/utils": 6.0.21(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@mantine/styles@6.0.21(@emotion/react@11.13.3)(react-dom@18.2.0)(react@18.2.0):
