@@ -16,7 +16,7 @@ export const SettingsModalContent = () => {
       </Tabs.List>
 
       <Tabs.Panel value="general">
-        <Card h={300}>
+        <Card>
           <Stack spacing="xs">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
@@ -39,7 +39,7 @@ export const SettingsModalContent = () => {
                 }}
               />
             </Group>
-            <Group align="flex-start" spacing="md" position="apart" noWrap>
+            {/* <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Title order={6}>Theme</Title>
                 <Text fz="xs">Select the extension's color scheme.</Text>
@@ -53,7 +53,7 @@ export const SettingsModalContent = () => {
                 ]}
                 size="xs"
               />
-            </Group>
+            </Group> */}
           </Stack>
         </Card>
       </Tabs.Panel>

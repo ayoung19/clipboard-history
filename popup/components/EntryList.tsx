@@ -41,11 +41,8 @@ export const EntryList = ({ entries }: Props) => {
           size="xs"
           color="indigo.3"
           sx={(theme) => ({
-            ".mantine-Checkbox-input": {
-              cursor: "pointer",
-              "&:hover": {
-                borderColor: theme.colors.indigo[3],
-              },
+            ".mantine-Checkbox-input:hover": {
+              borderColor: theme.colors.indigo[3],
             },
           })}
           checked={selectedEntryIds.size > 0 && selectedEntryIds.size === entries.length}

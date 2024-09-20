@@ -16,7 +16,7 @@ export const clipboardSnapshotAtom = atom<ClipboardSnapshot>();
 export const favoriteEntryIdsAtom = atom<string[]>([]);
 export const favoriteEntryIdsSetAtom = atom((get) => new Set(get(favoriteEntryIdsAtom)));
 
-export const settingsAtom = atom<Settings>(defaultSettings);
+export const settingsAtom = atom(defaultSettings);
 
 const staticNowAtom = atom(() => new Date());
 export const nowAtom = atom((get) =>
