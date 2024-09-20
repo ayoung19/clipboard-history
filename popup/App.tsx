@@ -1,5 +1,18 @@
-import { Box, Group, Image, SegmentedControl, Switch, Text, TextInput, Title } from "@mantine/core";
-import { IconClipboardList, IconSearch, IconStar } from "@tabler/icons-react";
+import {
+  ActionIcon,
+  Box,
+  Divider,
+  Group,
+  Image,
+  SegmentedControl,
+  Switch,
+  Text,
+  TextInput,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { IconClipboardList, IconSearch, IconSettings, IconStar } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useSetAtom } from "jotai";
@@ -11,8 +24,10 @@ import {
 } from "~storage/clipboardMonitorIsEnabled";
 import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import { getSettings, watchSettings } from "~storage/settings";
 import { getEntries, watchEntries } from "~utils/storage";
 
+import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import {
@@ -20,9 +35,11 @@ import {
   entriesAtom,
   favoriteEntryIdsAtom,
   searchAtom,
+  settingsAtom,
 } from "./states/atoms";
 
 export const App = () => {
+  const theme = useMantineTheme();
   const [tab, setTab] = useState("all");
 
   const [search, setSearch] = useAtom(searchAtom);
@@ -30,6 +47,7 @@ export const App = () => {
   const setEntries = useSetAtom(entriesAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
+  const setSettings = useSetAtom(settingsAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
     watchEntries(setEntries);
@@ -39,6 +57,9 @@ export const App = () => {
 
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds(setFavoriteEntryIds);
+
+    (async () => setSettings(await getSettings()))();
+    watchSettings(setSettings);
   }, []);
 
   const queryClient = useQueryClient();
@@ -64,33 +85,52 @@ export const App = () => {
             Clipboard History Pro
           </Title>
         </Group>
-        <Switch
-          size="md"
-          color="indigo.5"
-          checked={clipboardMonitorIsEnabledQuery.data}
-          onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
-        />
-      </Group>
-      <Group align="center" position="apart" mb="sm">
-        <Group align="center">
-          <TextInput
-            placeholder="Search"
-            icon={<IconSearch size="1rem" />}
-            size="xs"
-            value={search}
-            onChange={(e) => setSearch(e.currentTarget.value)}
-            w={240}
-            sx={(theme) => ({
-              ".mantine-Input-input": {
-                color: theme.colors.gray[8],
-                borderColor: theme.colors.gray[3],
-                "&:focus, &:focus-within": {
-                  borderColor: theme.colors.indigo[3],
+        <Group align="center" spacing="xs" grow={false}>
+          <ActionIcon
+            variant="light"
+            color="indigo"
+            onClick={() =>
+              modals.open({
+                title: "Settings",
+                size: "xl",
+                overlayProps: {
+                  color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
+                  opacity: 0.55,
+                  blur: 3,
                 },
-              },
-            })}
+                children: <SettingsModalContent />,
+              })
+            }
+          >
+            <IconSettings size="1.125rem" />
+          </ActionIcon>
+          <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
+          <Switch
+            size="md"
+            color="indigo.5"
+            checked={clipboardMonitorIsEnabledQuery.data}
+            onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
           />
         </Group>
+      </Group>
+      <Group align="center" position="apart" mb="sm">
+        <TextInput
+          placeholder="Search"
+          icon={<IconSearch size="1rem" />}
+          size="xs"
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
+          w={240}
+          sx={(theme) => ({
+            ".mantine-Input-input": {
+              color: theme.colors.gray[8],
+              borderColor: theme.colors.gray[3],
+              "&:focus, &:focus-within": {
+                borderColor: theme.colors.indigo[3],
+              },
+            },
+          })}
+        />
         <SegmentedControl
           value={tab}
           onChange={setTab}

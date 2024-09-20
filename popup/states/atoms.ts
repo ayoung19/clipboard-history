@@ -3,6 +3,7 @@ import { atom } from "jotai";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
+import { defaultSettings, Settings } from "~types/settings";
 
 export const tabAtom = atom<string>("all");
 export const searchAtom = atom<string>("");
@@ -14,6 +15,8 @@ export const clipboardSnapshotAtom = atom<ClipboardSnapshot>();
 
 export const favoriteEntryIdsAtom = atom<string[]>([]);
 export const favoriteEntryIdsSetAtom = atom((get) => new Set(get(favoriteEntryIdsAtom)));
+
+export const settingsAtom = atom<Settings>(defaultSettings);
 
 const staticNowAtom = atom(() => new Date());
 export const nowAtom = atom((get) =>

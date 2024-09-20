@@ -4,7 +4,12 @@ import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
-import { setActionBadgeText, setActionIconAndBadgeBackgroundColor } from "~utils/actionBadge";
+import { getSettings } from "~storage/settings";
+import {
+  removeActionBadgeText,
+  setActionBadgeText,
+  setActionIconAndBadgeBackgroundColor,
+} from "~utils/actionBadge";
 import { getEntries } from "~utils/storage";
 
 // A global promise to avoid concurrency issues.
@@ -28,13 +33,14 @@ const setupOffscreenDocument = async () => {
 };
 
 const setupAction = async () => {
-  const [entries, clipboardMonitorIsEnabled] = await Promise.all([
+  const [entries, clipboardMonitorIsEnabled, settings] = await Promise.all([
     getEntries(),
     getClipboardMonitorIsEnabled(),
+    getSettings(),
   ]);
 
   await Promise.all([
-    setActionBadgeText(entries.length),
+    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
     setActionIconAndBadgeBackgroundColor(clipboardMonitorIsEnabled),
   ]);
 };

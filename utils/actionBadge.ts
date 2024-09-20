@@ -10,6 +10,8 @@ export const setActionBadgeText = (totalEntries: number) =>
     }).format(totalEntries),
   });
 
+export const removeActionBadgeText = () => chrome.action.setBadgeText({ text: "" });
+
 export const setActionIconAndBadgeBackgroundColor = (on: boolean) =>
   Promise.all([
     chrome.action.setIcon({ path: { "32": on ? iconOn128Src : iconOff128Src } }),
