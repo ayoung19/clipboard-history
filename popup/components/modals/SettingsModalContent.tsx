@@ -56,8 +56,8 @@ export const SettingsModalContent = () => {
                 <Text fz="xs">Select the extension's color scheme.</Text>
               </Stack>
               <Select
-                value={settings.theme}
-                onChange={(theme) => theme && setSettings({ ...settings, theme })}
+                value={settings.themeV2}
+                onChange={(theme) => theme && setSettings({ ...settings, themeV2: theme })}
                 data={[
                   { value: "system", label: `System (${capitalize(systemColorScheme)})` },
                   { value: "light", label: "Light" },

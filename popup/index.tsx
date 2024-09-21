@@ -25,7 +25,7 @@ export default function IndexPopup() {
     <MantineProvider
       theme={{
         cursorType: "pointer",
-        colorScheme: themeToColorScheme(settings.theme) || systemColorScheme,
+        colorScheme: themeToColorScheme(settings.themeV2) || systemColorScheme,
         black: "#343a40", // gray.8
         primaryColor: "indigo",
         primaryShade: { light: 3, dark: 7 },
