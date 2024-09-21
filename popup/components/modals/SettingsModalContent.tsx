@@ -1,4 +1,6 @@
-import { Card, Group, Select, Stack, Switch, Tabs, Text, Title } from "@mantine/core";
+import { ActionIcon, Card, Group, Select, Stack, Switch, Tabs, Text, Title } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { IconX } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { settingsAtom } from "~popup/states/atoms";
@@ -10,14 +12,20 @@ export const SettingsModalContent = () => {
   const settings = useAtomValue(settingsAtom);
 
   return (
-    <Tabs defaultValue="general">
-      <Tabs.List>
-        <Tabs.Tab value="general">General</Tabs.Tab>
-      </Tabs.List>
+    <Card>
+      <Group align="center" position="apart" mb="xs">
+        <Title order={4}>Settings</Title>
+        <ActionIcon onClick={() => modals.closeAll()}>
+          <IconX size="1rem" />
+        </ActionIcon>
+      </Group>
+      <Tabs defaultValue="general">
+        <Tabs.List>
+          <Tabs.Tab value="general">General</Tabs.Tab>
+        </Tabs.List>
 
-      <Tabs.Panel value="general">
-        <Card>
-          <Stack spacing="xs">
+        <Tabs.Panel value="general">
+          <Stack spacing="xs" p="md">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Title order={6}>Total Items Badge</Title>
@@ -56,8 +64,8 @@ export const SettingsModalContent = () => {
               />
             </Group>
           </Stack>
-        </Card>
-      </Tabs.Panel>
-    </Tabs>
+        </Tabs.Panel>
+      </Tabs>
+    </Card>
   );
 };

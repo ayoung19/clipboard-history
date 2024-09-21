@@ -1,9 +1,9 @@
 import {
   ActionIcon,
+  Card,
   Divider,
   Group,
   Image,
-  Card,
   SegmentedControl,
   Switch,
   Text,
@@ -26,6 +26,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
 import { getEntries, watchEntries } from "~utils/storage";
+import { defaultBorderColor } from "~utils/sx";
 
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
@@ -37,10 +38,8 @@ import {
   searchAtom,
   settingsAtom,
 } from "./states/atoms";
-import { defaultBorderColor } from "~utils/sx";
 
 export const App = () => {
-  const theme = useMantineTheme();
   const [tab, setTab] = useState("all");
 
   const [search, setSearch] = useAtom(searchAtom);
@@ -90,13 +89,9 @@ export const App = () => {
             color="indigo"
             onClick={() =>
               modals.open({
-                title: "Settings",
+                padding: 0,
                 size: "xl",
-                overlayProps: {
-                  color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
-                  opacity: 0.55,
-                  blur: 3,
-                },
+                withCloseButton: false,
                 children: <SettingsModalContent />,
               })
             }
