@@ -8,12 +8,12 @@ import { useThemeColorScheme } from "./hooks/useThemeColorScheme";
 const queryClient = new QueryClient();
 
 export default function IndexPopup() {
-  const colorScheme = useThemeColorScheme();
+  const themeColorScheme = useThemeColorScheme();
 
   return (
     <MantineProvider
       theme={{
-        colorScheme,
+        colorScheme: themeColorScheme,
         cursorType: "pointer",
         black: "#343a40", // gray.8
         primaryColor: "indigo",
