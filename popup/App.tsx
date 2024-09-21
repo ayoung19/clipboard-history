@@ -1,6 +1,6 @@
 import {
   ActionIcon,
-  Box,
+  Card,
   Divider,
   Group,
   Image,
@@ -26,6 +26,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
 import { getEntries, watchEntries } from "~utils/storage";
+import { defaultBorderColor } from "~utils/sx";
 
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
@@ -39,7 +40,6 @@ import {
 } from "./states/atoms";
 
 export const App = () => {
-  const theme = useMantineTheme();
   const [tab, setTab] = useState("all");
 
   const [search, setSearch] = useAtom(searchAtom);
@@ -77,13 +77,11 @@ export const App = () => {
   }
 
   return (
-    <Box p="sm">
+    <Card p="sm">
       <Group align="center" position="apart" mb="sm">
         <Group align="center" spacing="xs">
           <Image src={iconSrc} maw={28} />
-          <Title order={6} color="gray.8">
-            Clipboard History Pro
-          </Title>
+          <Title order={6}>Clipboard History Pro</Title>
         </Group>
         <Group align="center" spacing="xs" grow={false}>
           <ActionIcon
@@ -91,13 +89,9 @@ export const App = () => {
             color="indigo"
             onClick={() =>
               modals.open({
-                title: "Settings",
+                padding: 0,
                 size: "xl",
-                overlayProps: {
-                  color: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[2],
-                  opacity: 0.55,
-                  blur: 3,
-                },
+                withCloseButton: false,
                 children: <SettingsModalContent />,
               })
             }
@@ -123,10 +117,9 @@ export const App = () => {
           w={240}
           sx={(theme) => ({
             ".mantine-Input-input": {
-              color: theme.colors.gray[8],
-              borderColor: theme.colors.gray[3],
+              borderColor: defaultBorderColor(theme),
               "&:focus, &:focus-within": {
-                borderColor: theme.colors.indigo[3],
+                borderColor: theme.fn.primaryColor(),
               },
             },
           })}
@@ -159,6 +152,6 @@ export const App = () => {
         />
       </Group>
       {tab === "all" ? <AllPage /> : <FavoritesPage />}
-    </Box>
+    </Card>
   );
 };

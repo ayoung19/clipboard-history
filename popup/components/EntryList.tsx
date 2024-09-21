@@ -9,7 +9,7 @@ import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
+import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";
 
@@ -32,17 +32,16 @@ export const EntryList = ({ entries }: Props) => {
       sx={(theme) => ({
         borderStyle: "solid",
         borderWidth: "1px",
-        borderColor: theme.colors.gray[3],
+        borderColor: defaultBorderColor(theme),
         borderRadius: theme.radius.sm,
       })}
     >
       <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
-          color="indigo.3"
           sx={(theme) => ({
             ".mantine-Checkbox-input:hover": {
-              borderColor: theme.colors.indigo[3],
+              borderColor: theme.fn.primaryColor(),
             },
           })}
           checked={selectedEntryIds.size > 0 && selectedEntryIds.size === entries.length}
@@ -80,12 +79,12 @@ export const EntryList = ({ entries }: Props) => {
               <IconTrash size="1rem" />
             </ActionIcon>
           </Group>
-          <Text fz="xs" color="gray.8">
+          <Text fz="xs">
             {selectedEntryIds.size} of {entries.length} selected
           </Text>
         </Group>
       </Group>
-      <Divider color="gray.3" />
+      <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
       <FixedSizeList height={450} itemCount={entries.length} itemSize={33} width={700}>
         {({ index, style }) => (
           <Box style={style}>

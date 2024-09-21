@@ -1,4 +1,13 @@
-import { ActionIcon, Badge, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Badge,
+  Checkbox,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
@@ -8,7 +17,7 @@ import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEn
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
+import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
 interface Props {
   entry: Entry;
@@ -16,6 +25,7 @@ interface Props {
 }
 
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
+  const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
@@ -27,12 +37,18 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
       key={entry.id}
       spacing={0}
       sx={(theme) => ({
-        backgroundColor: selectedEntryIds.has(entry.id) ? theme.colors.indigo[0] : undefined,
+        backgroundColor: selectedEntryIds.has(entry.id)
+          ? lightOrDark(theme, theme.colors.indigo[0], theme.fn.darken(theme.colors.indigo[9], 0.5))
+          : undefined,
         cursor: "pointer",
         ":hover": {
           backgroundColor: selectedEntryIds.has(entry.id)
-            ? theme.colors.indigo[0]
-            : theme.colors.gray[0],
+            ? lightOrDark(
+                theme,
+                theme.colors.indigo[0],
+                theme.fn.darken(theme.colors.indigo[9], 0.5),
+              )
+            : lightOrDark(theme, theme.colors.gray[0], theme.colors.dark[5]),
         },
       })}
       onClick={async () => {
@@ -46,10 +62,9 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
       <Group align="center" spacing="sm" noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
-          color="indigo.3"
           sx={(theme) => ({
             ".mantine-Checkbox-input:hover": {
-              borderColor: theme.colors.indigo[3],
+              borderColor: theme.fn.primaryColor(),
             },
           })}
           checked={selectedEntryIds.has(entry.id)}
@@ -61,7 +76,11 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           onClick={(e) => e.stopPropagation()}
         />
         <Badge
-          color={entry.content === clipboardSnapshot?.content ? "indigo.3" : "gray.5"}
+          color={
+            entry.content === clipboardSnapshot?.content
+              ? undefined
+              : lightOrDark(theme, "gray.5", "dark.4")
+          }
           variant="filled"
           w={100}
           sx={{ flexShrink: 0 }}
@@ -73,7 +92,6 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         </Badge>
         <Text
           fz="xs"
-          color="gray.8"
           sx={{
             width: "100%",
             whiteSpace: "nowrap",
@@ -89,8 +107,14 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
             sx={(theme) => ({
               color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[5],
               ":hover": {
-                color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[7],
-                backgroundColor: theme.colors.indigo[1],
+                color: isFavoriteEntry
+                  ? theme.colors.yellow[5]
+                  : lightOrDark(theme, theme.colors.gray[7], theme.colors.gray[3]),
+                backgroundColor: lightOrDark(
+                  theme,
+                  theme.colors.indigo[1],
+                  theme.fn.darken(theme.colors.indigo[9], 0.3),
+                ),
               },
             })}
             onClick={(e) => {
@@ -117,7 +141,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           </ActionIcon>
         </Group>
       </Group>
-      <Divider color="gray.3" />
+      <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
     </Stack>
   );
 };
