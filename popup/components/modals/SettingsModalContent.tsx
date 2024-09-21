@@ -1,4 +1,5 @@
 import { ActionIcon, Card, Group, Select, Stack, Switch, Tabs, Text, Title } from "@mantine/core";
+import { useColorScheme } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconX } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
@@ -7,9 +8,11 @@ import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getEntries } from "~utils/storage";
+import { capitalize } from "~utils/string";
 
 export const SettingsModalContent = () => {
   const settings = useAtomValue(settingsAtom);
+  const systemColorScheme = useColorScheme();
 
   return (
     <Card>
@@ -56,6 +59,7 @@ export const SettingsModalContent = () => {
                 value={settings.theme}
                 onChange={(theme) => theme && setSettings({ ...settings, theme })}
                 data={[
+                  { value: "system", label: `System (${capitalize(systemColorScheme)})` },
                   { value: "light", label: "Light" },
                   { value: "dark", label: "Dark" },
                 ]}

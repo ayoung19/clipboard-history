@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const defaultSettings = {
   totalItemsBadge: true,
-  theme: "light",
+  theme: "system",
 };
 
 export const Settings = z
