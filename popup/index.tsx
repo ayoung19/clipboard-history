@@ -1,31 +1,20 @@
 import { MantineProvider } from "@mantine/core";
-import { useColorScheme } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 
 import { App } from "./App";
-import { settingsAtom } from "./states/atoms";
+import { useThemeColorScheme } from "./hooks/useThemeColorScheme";
 
 const queryClient = new QueryClient();
 
-const themeToColorScheme = (s: string) => {
-  switch (s) {
-    case "light":
-    case "dark":
-      return s;
-  }
-};
-
 export default function IndexPopup() {
-  const settings = useAtomValue(settingsAtom);
-  const systemColorScheme = useColorScheme();
+  const colorScheme = useThemeColorScheme();
 
   return (
     <MantineProvider
       theme={{
+        colorScheme,
         cursorType: "pointer",
-        colorScheme: themeToColorScheme(settings.themeV2) || systemColorScheme,
         black: "#343a40", // gray.8
         primaryColor: "indigo",
         primaryShade: { light: 3, dark: 7 },
