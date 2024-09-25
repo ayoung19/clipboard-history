@@ -8,6 +8,9 @@ dependencies:
   "@emotion/react":
     specifier: ^11.13.3
     version: 11.13.3(@types/react@18.2.48)(react@18.2.0)
+  "@hookform/resolvers":
+    specifier: ^3.9.0
+    version: 3.9.0(react-hook-form@7.53.0)
   "@mantine/core":
     specifier: 6.0.21
     version: 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -44,6 +47,9 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  react-hook-form:
+    specifier: ^7.53.0
+    version: 7.53.0(react@18.2.0)
   react-window:
     specifier: ^1.8.10
     version: 1.8.10(react-dom@18.2.0)(react@18.2.0)
@@ -755,6 +761,17 @@ packages:
       {
         integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==,
       }
+    dev: false
+
+  /@hookform/resolvers@3.9.0(react-hook-form@7.53.0):
+    resolution:
+      {
+        integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==,
+      }
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.53.0(react@18.2.0)
     dev: false
 
   /@ianvs/prettier-plugin-sort-imports@4.1.1(prettier@3.2.4):
@@ -7348,6 +7365,18 @@ packages:
       {
         integrity: sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==,
       }
+    dev: false
+
+  /react-hook-form@7.53.0(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-M1n3HhqCww6S2hxLxciEXy2oISPnAzxY7gvwVPrtlczTM/1dDadXgUxDpHMrMTblDOcm/AXtXxHwZ3jpg1mqKQ==,
+      }
+    engines: { node: ">=18.0.0" }
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

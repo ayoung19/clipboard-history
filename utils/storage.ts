@@ -2,10 +2,12 @@ import { createHash } from "crypto";
 
 import { Storage } from "@plasmohq/storage";
 
+import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 
 import { removeActionBadgeText, setActionBadgeText } from "./actionBadge";
+import { applyLocalItemLimit } from "./entries";
 
 // Do not change this without a migration.
 const ENTRIES_STORAGE_KEY = "entryIdSetentries";
@@ -36,11 +38,15 @@ export const getEntries = async () => {
 };
 
 export const setEntries = async (entries: Entry[]) => {
-  const settings = await getSettings();
+  const [settings, favoriteEntryIds] = await Promise.all([getSettings(), getFavoriteEntryIds()]);
+  const newEntries =
+    settings.localItemLimit === null
+      ? entries
+      : applyLocalItemLimit(entries, new Set(favoriteEntryIds), settings.localItemLimit);
 
   await Promise.all([
-    storage.set(ENTRIES_STORAGE_KEY, entries),
-    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
+    storage.set(ENTRIES_STORAGE_KEY, newEntries),
+    settings.totalItemsBadge ? setActionBadgeText(newEntries.length) : removeActionBadgeText(),
   ]);
 };
 
