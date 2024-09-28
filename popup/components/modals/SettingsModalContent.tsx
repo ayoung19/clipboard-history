@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ActionIcon,
   Button,
+  CloseButton,
   Divider,
   Group,
   Indicator,
@@ -63,9 +63,7 @@ export const SettingsModalContent = () => {
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
         <Title order={5}>Settings</Title>
-        <ActionIcon onClick={() => modals.closeAll()}>
-          <IconX size="1rem" />
-        </ActionIcon>
+        <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Tabs defaultValue="general">
         <Tabs.List>

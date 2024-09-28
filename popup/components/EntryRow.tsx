@@ -59,7 +59,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         navigator.clipboard.writeText(entry.content);
       }}
     >
-      <Group align="center" spacing="sm" noWrap px="sm" h={32}>
+      <Group align="center" spacing={0} noWrap px="sm" h={32}>
         <Checkbox
           size="xs"
           sx={(theme) => ({
@@ -85,6 +85,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           w={100}
           sx={{ flexShrink: 0 }}
           size="sm"
+          mx="sm"
         >
           {entry.content === clipboardSnapshot?.content
             ? "Copied"
@@ -102,6 +103,9 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         >
           {/* Don't fully render large content. */}
           {entry.content.slice(0, 1000)}
+        </Text>
+        <Text size="xs" color="dimmed" mx="xs" sx={{ userSelect: "none" }}>
+          {entry.content.length}
         </Text>
         <Group align="center" spacing={0} noWrap>
           <ActionIcon
