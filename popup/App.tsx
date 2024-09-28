@@ -9,7 +9,6 @@ import {
   Text,
   TextInput,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconClipboardList, IconSearch, IconSettings, IconStar } from "@tabler/icons-react";
@@ -86,7 +85,7 @@ export const App = () => {
         <Group align="center" spacing="xs" grow={false}>
           <ActionIcon
             variant="light"
-            color="indigo"
+            color="indigo.5"
             onClick={() =>
               modals.open({
                 padding: 0,
