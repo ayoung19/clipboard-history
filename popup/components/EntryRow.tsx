@@ -100,7 +100,8 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
             userSelect: "none",
           }}
         >
-          {entry.content}
+          {/* Don't fully render large content. */}
+          {entry.content.slice(0, 1000)}
         </Text>
         <Group align="center" spacing={0} noWrap>
           <ActionIcon
