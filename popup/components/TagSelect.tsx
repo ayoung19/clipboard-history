@@ -28,7 +28,7 @@ export const TagSelect = ({ entryId }: Props) => {
   const [tagSearch, setTagSearch] = useState("");
   const tagSearchLowercase = useMemo(() => tagSearch.toLowerCase(), [tagSearch]);
   const matchedTags = allTags.toSorted().filter((tag) => tag.includes(tagSearchLowercase));
-  const showCreateTagOption = tagSearch !== "" && !matchedTags.includes(tagSearch.toLowerCase());
+  const showCreateTagOption = tagSearch !== "" && !matchedTags.includes(tagSearchLowercase);
 
   const [focusedTagIndex, setFocusedTagIndex] = useState(0);
 
