@@ -15,7 +15,8 @@ export const TagBadge = ({ tag }: Props) => {
         "::before": { content: "none" },
       }}
       maw={146}
-      // Workaround so that dot doesn't get messed up when max width is used.
+      // Workaround because the default dot gets messed up when max width is
+      // hit.
       leftSection={
         <Box
           sx={{
