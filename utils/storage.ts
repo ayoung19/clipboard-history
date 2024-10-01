@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 
 import { Storage } from "@plasmohq/storage";
 
+import { getEntryIdToTags, setEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
@@ -38,37 +39,52 @@ export const getEntries = async () => {
 };
 
 export const setEntries = async (entries: Entry[]) => {
-  const [settings, favoriteEntryIds] = await Promise.all([getSettings(), getFavoriteEntryIds()]);
-  const newEntries =
-    settings.localItemLimit === null
-      ? entries
-      : applyLocalItemLimit(entries, new Set(favoriteEntryIds), settings.localItemLimit);
+  const settings = await getSettings();
 
   await Promise.all([
-    storage.set(ENTRIES_STORAGE_KEY, newEntries),
-    settings.totalItemsBadge ? setActionBadgeText(newEntries.length) : removeActionBadgeText(),
+    storage.set(ENTRIES_STORAGE_KEY, entries),
+    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
   ]);
 };
 
 export const createEntry = async (content: string) => {
+  const [entries, settings, favoriteEntryIds, entryIdToTags] = await Promise.all([
+    getEntries(),
+    getSettings(),
+    getFavoriteEntryIds(),
+    getEntryIdToTags(),
+  ]);
+
   const entryId = createHash("sha256").update(content).digest("hex");
 
-  const entries = await getEntries();
+  const [newEntries, skippedEntryIds] = applyLocalItemLimit(
+    [
+      ...entries.filter(({ id }) => id !== entryId),
+      {
+        id: entryId,
+        createdAt: Date.now(),
+        content,
+      },
+    ],
+    settings,
+    favoriteEntryIds,
+  );
+  skippedEntryIds.forEach((entryId) => delete entryIdToTags[entryId]);
 
-  await setEntries([
-    ...entries.filter(({ id }) => id !== entryId),
-    {
-      id: entryId,
-      createdAt: Date.now(),
-      content,
-    },
+  await Promise.all([
+    setEntries(newEntries),
+    ...(skippedEntryIds.length > 0 ? [setEntryIdToTags(entryIdToTags)] : []),
   ]);
 };
 
 export const deleteEntries = async (entryIds: string[]) => {
   const entryIdSet = new Set(entryIds);
 
-  const entries = await getEntries();
+  const [entries, entryIdToTags] = await Promise.all([getEntries(), getEntryIdToTags()]);
+  entryIds.forEach((entryId) => delete entryIdToTags[entryId]);
 
-  await setEntries(entries.filter(({ id }) => !entryIdSet.has(id)));
+  await Promise.all([
+    setEntries(entries.filter(({ id }) => !entryIdSet.has(id))),
+    setEntryIdToTags(entryIdToTags),
+  ]);
 };
