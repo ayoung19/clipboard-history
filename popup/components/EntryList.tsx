@@ -29,13 +29,11 @@ const EntryRowRenderer = ({
   index: number;
   style: CSSProperties;
 }) => {
+  const entry = data.entries[index]!;
+
   return (
     <Box style={style}>
-      <EntryRow
-        key={data.entries[index]!.id}
-        entry={data.entries[index]!}
-        selectedEntryIds={data.selectedEntryIds}
-      />
+      <EntryRow key={entry.id} entry={entry} selectedEntryIds={data.selectedEntryIds} />
     </Box>
   );
 };
