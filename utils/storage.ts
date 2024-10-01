@@ -51,18 +51,20 @@ export const setEntries = async (entries: Entry[]) => {
 };
 
 export const createEntry = async (content: string) => {
-  const entryId = createHash("sha256").update(content).digest("hex");
+  if (content) {
+    const entryId = createHash("sha256").update(content).digest("hex");
 
-  const entries = await getEntries();
+    const entries = await getEntries();
 
-  await setEntries([
-    ...entries.filter(({ id }) => id !== entryId),
-    {
-      id: entryId,
-      createdAt: Date.now(),
-      content,
-    },
-  ]);
+    await setEntries([
+      ...entries.filter(({ id }) => id !== entryId),
+      {
+        id: entryId,
+        createdAt: Date.now(),
+        content,
+      },
+    ]);
+  }
 };
 
 export const deleteEntries = async (entryIds: string[]) => {
