@@ -3,6 +3,7 @@ import { atom } from "jotai";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
+import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
 
 export const tabAtom = atom<string>("all");
@@ -21,4 +22,15 @@ export const settingsAtom = atom<Settings>(defaultSettings);
 const staticNowAtom = atom(() => new Date());
 export const nowAtom = atom((get) =>
   max([new Date(get(reversedEntriesAtom)[0]?.createdAt || 0), get(staticNowAtom)]),
+);
+
+export const entryIdToTagsAtom = atom<EntryIdToTags>({});
+export const allTagsAtom = atom((get) =>
+  Array.from(
+    Object.values(get(entryIdToTagsAtom)).reduce((acc, curr) => {
+      curr.forEach((tag) => acc.add(tag));
+
+      return acc;
+    }, new Set<string>()),
+  ),
 );

@@ -22,6 +22,7 @@ import {
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
+import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
 import { getEntries, watchEntries } from "~utils/storage";
@@ -33,6 +34,7 @@ import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   clipboardSnapshotAtom,
   entriesAtom,
+  entryIdToTagsAtom,
   favoriteEntryIdsAtom,
   searchAtom,
   settingsAtom,
@@ -47,6 +49,7 @@ export const App = () => {
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
   const setSettings = useSetAtom(settingsAtom);
+  const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
     watchEntries(setEntries);
@@ -59,6 +62,9 @@ export const App = () => {
 
     (async () => setSettings(await getSettings()))();
     watchSettings(setSettings);
+
+    (async () => setEntryIdToTags(await getEntryIdToTags()))();
+    watchEntryIdToTags(setEntryIdToTags);
   }, []);
 
   const queryClient = useQueryClient();

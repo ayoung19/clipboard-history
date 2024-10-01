@@ -4,6 +4,7 @@ import {
   Checkbox,
   Divider,
   Group,
+  rem,
   Stack,
   Text,
   useMantineTheme,
@@ -11,13 +12,21 @@ import {
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { clipboardSnapshotAtom, favoriteEntryIdsSetAtom, nowAtom } from "~popup/states/atoms";
+import {
+  clipboardSnapshotAtom,
+  entryIdToTagsAtom,
+  favoriteEntryIdsSetAtom,
+  nowAtom,
+} from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
+
+import { TagBadge } from "./TagBadge";
+import { TagSelect } from "./TagSelect";
 
 interface Props {
   entry: Entry;
@@ -28,6 +37,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
 
   const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
@@ -104,10 +114,11 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           {/* Don't fully render large content. */}
           {entry.content.slice(0, 1000)}
         </Text>
-        <Text size="xs" color="dimmed" mx="xs" sx={{ userSelect: "none" }}>
-          {entry.content.length}
-        </Text>
-        <Group align="center" spacing={0} noWrap>
+        <Group align="center" spacing={rem(4)} noWrap>
+          {entryIdToTags[entry.id]?.toSorted().map((tag) => <TagBadge tag={tag} />)}
+        </Group>
+        <Group align="center" spacing={0} noWrap ml={rem(4)}>
+          <TagSelect entryId={entry.id} />
           <ActionIcon
             sx={(theme) => ({
               color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[5],
