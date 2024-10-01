@@ -78,10 +78,6 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
       })}
       noWrap
       onClick={() => {
-        if (tag === "") {
-          return;
-        }
-
         toggleTag();
         onClose();
       }}
@@ -91,10 +87,6 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
         checked={checked}
         size="xs"
         onChange={() => {
-          if (tag === "") {
-            return;
-          }
-
           toggleTag();
         }}
         onClick={(e) => {

@@ -1,11 +1,20 @@
-import { ActionIcon, Divider, Popover, rem, Stack, Text, TextInput } from "@mantine/core";
+import {
+  ActionIcon,
+  Divider,
+  Popover,
+  rem,
+  ScrollArea,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
-import { IconFolderPlus } from "@tabler/icons-react";
+import { IconTags } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 
 import { allTagsAtom } from "~popup/states/atoms";
-import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
+import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { TagOption } from "./TagOption";
 
@@ -19,6 +28,7 @@ export const TagSelect = ({ entryId }: Props) => {
   const [tagSearch, setTagSearch] = useState("");
   const tagSearchLowercase = useMemo(() => tagSearch.toLowerCase(), [tagSearch]);
   const matchedTags = allTags.toSorted().filter((tag) => tag.includes(tagSearchLowercase));
+  const showCreateTagOption = tagSearch !== "" && !matchedTags.includes(tagSearch.toLowerCase());
 
   const [focusedTagIndex, setFocusedTagIndex] = useState(0);
 
@@ -39,14 +49,18 @@ export const TagSelect = ({ entryId }: Props) => {
         "ArrowUp",
         () =>
           setFocusedTagIndex(
-            (prevState) => Math.abs(matchedTags.length + prevState - 1) % matchedTags.length,
+            (prevState) =>
+              Math.abs(matchedTags.length + +showCreateTagOption + prevState - 1) %
+              (matchedTags.length + +showCreateTagOption),
           ),
       ],
       [
         "ArrowDown",
         () =>
           setFocusedTagIndex(
-            (prevState) => Math.abs(matchedTags.length + prevState + 1) % matchedTags.length,
+            (prevState) =>
+              Math.abs(matchedTags.length + +showCreateTagOption + prevState + 1) %
+              (matchedTags.length + +showCreateTagOption),
           ),
       ],
     ],
@@ -63,14 +77,23 @@ export const TagSelect = ({ entryId }: Props) => {
     >
       <Popover.Target>
         <ActionIcon
-          sx={(theme) => commonActionIconSx({ theme })}
+          sx={(theme) => ({
+            ...commonActionIconSx({ theme }),
+            backgroundColor: opened
+              ? lightOrDark(
+                  theme,
+                  theme.colors.indigo[1],
+                  theme.fn.darken(theme.colors.indigo[9], 0.3),
+                )
+              : undefined,
+          })}
           onClick={(e) => {
             e.stopPropagation();
 
             handlers.toggle();
           }}
         >
-          <IconFolderPlus size="1rem" />
+          <IconTags size="1rem" />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown p={0} onClick={(e) => e.stopPropagation()} sx={{ cursor: "default" }}>
@@ -84,33 +107,50 @@ export const TagSelect = ({ entryId }: Props) => {
           px="xs"
         />
         <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-        <Stack spacing={0} p={rem(4)}>
-          {matchedTags.length === 0 ? (
-            <>
-              <Text fz="xs" color="dimmed">
-                Create new tag:
-              </Text>
-              <TagOption
-                entryId={entryId}
-                tag={tagSearchLowercase}
-                focused={true}
-                onHover={() => setFocusedTagIndex(0)}
-                onClose={() => handlers.close()}
-              />
-            </>
-          ) : (
-            matchedTags.map((tag, i) => (
+        {/* https://github.com/creativetimofficial/material-tailwind/issues/528 */}
+        <ScrollArea.Autosize placeholder={undefined} mah={200} p={rem(4)}>
+          <Stack spacing={0}>
+            {matchedTags.map((tag, i) => (
               <TagOption
                 key={tag}
                 entryId={entryId}
                 tag={tag}
-                focused={focusedTagIndex === i}
+                focused={i === focusedTagIndex}
                 onHover={() => setFocusedTagIndex(i)}
                 onClose={() => handlers.close()}
               />
-            ))
-          )}
-        </Stack>
+            ))}
+            {showCreateTagOption && (
+              <>
+                <Divider
+                  sx={(theme) => ({
+                    borderColor: defaultBorderColor(theme),
+                    ".mantine-Divider-label": {
+                      marginTop: 0,
+                    },
+                  })}
+                  label={
+                    <Text fz="xs" color="dimmed">
+                      Create new tag:
+                    </Text>
+                  }
+                />
+                <TagOption
+                  entryId={entryId}
+                  tag={tagSearchLowercase}
+                  focused={focusedTagIndex === matchedTags.length}
+                  onHover={() => setFocusedTagIndex(matchedTags.length)}
+                  onClose={() => handlers.close()}
+                />
+              </>
+            )}
+            {matchedTags.length + +showCreateTagOption === 0 && (
+              <Text fz="xs" color="dimmed" align="center">
+                Start typing to create a new tag
+              </Text>
+            )}
+          </Stack>
+        </ScrollArea.Autosize>
       </Popover.Dropdown>
     </Popover>
   );

@@ -114,7 +114,7 @@ export const App = () => {
       </Group>
       <Group align="center" position="apart" mb="sm">
         <TextInput
-          placeholder="Search"
+          placeholder="Search items or tags"
           icon={<IconSearch size="1rem" />}
           size="xs"
           value={search}

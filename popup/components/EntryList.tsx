@@ -2,7 +2,7 @@ import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type CSSProperties } from "react";
 import { FixedSizeList } from "react-window";
 
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
@@ -16,6 +16,29 @@ import { EntryRow } from "./EntryRow";
 interface Props {
   entries: Entry[];
 }
+
+const EntryRowRenderer = ({
+  data,
+  index,
+  style,
+}: {
+  data: {
+    entries: Entry[];
+    selectedEntryIds: Set<string>;
+  };
+  index: number;
+  style: CSSProperties;
+}) => {
+  return (
+    <Box style={style}>
+      <EntryRow
+        key={data.entries[index]!.id}
+        entry={data.entries[index]!}
+        selectedEntryIds={data.selectedEntryIds}
+      />
+    </Box>
+  );
+};
 
 export const EntryList = ({ entries }: Props) => {
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
@@ -85,12 +108,14 @@ export const EntryList = ({ entries }: Props) => {
         </Group>
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-      <FixedSizeList height={450} itemCount={entries.length} itemSize={33} width={700}>
-        {({ index, style }) => (
-          <Box style={style}>
-            <EntryRow entry={entries[index]!} selectedEntryIds={selectedEntryIds} />
-          </Box>
-        )}
+      <FixedSizeList
+        height={450}
+        width={700}
+        itemData={{ entries, selectedEntryIds }}
+        itemCount={entries.length}
+        itemSize={33}
+      >
+        {EntryRowRenderer}
       </FixedSizeList>
     </Box>
   );
