@@ -15,14 +15,14 @@ const handler: PlasmoMessaging.MessageHandler<
   CreateEntryRequestBody,
   CreateEntryResponseBody
 > = async (req, res) => {
-  if (req.body && req.body.content && (await getClipboardMonitorIsEnabled())) {
+  if (req.body && (await getClipboardMonitorIsEnabled())) {
     const clipboardSnapshot = await getClipboardSnapshot();
 
     if (clipboardSnapshot === undefined || req.body.timestamp > clipboardSnapshot.updatedAt) {
       if (req.body.content !== clipboardSnapshot?.content) {
         await Promise.all([
           updateClipboardSnapshot(req.body.content),
-          createEntry(req.body.content),
+          req.body.content && createEntry(req.body.content),
         ]);
       }
     }
