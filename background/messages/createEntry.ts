@@ -15,7 +15,7 @@ const handler: PlasmoMessaging.MessageHandler<
   CreateEntryRequestBody,
   CreateEntryResponseBody
 > = async (req, res) => {
-  if (req.body && (await getClipboardMonitorIsEnabled())) {
+  if (req.body && req.body.content && (await getClipboardMonitorIsEnabled())) {
     const clipboardSnapshot = await getClipboardSnapshot();
 
     if (clipboardSnapshot === undefined || req.body.timestamp > clipboardSnapshot.updatedAt) {
