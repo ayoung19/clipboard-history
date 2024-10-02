@@ -22,7 +22,7 @@ const handler: PlasmoMessaging.MessageHandler<
       if (req.body.content !== clipboardSnapshot?.content) {
         await Promise.all([
           updateClipboardSnapshot(req.body.content),
-          createEntry(req.body.content),
+          req.body.content && createEntry(req.body.content),
         ]);
       }
     }
