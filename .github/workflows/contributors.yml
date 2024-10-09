@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: akhilmhdh/contributors-readme-action@v2.3.10
         with:
+          pr_title_on_protected: "docs: update contributors"
           commit_message: "docs: update contributors"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
