@@ -49,4 +49,31 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
 # Contributors
 
 <!-- readme: contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/ayoung19">
+                    <img src="https://avatars.githubusercontent.com/u/18640252?v=4" width="100;" alt="ayoung19"/>
+                    <br />
+                    <sub><b>Andy Young</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/morph1nX">
+                    <img src="https://avatars.githubusercontent.com/u/48093060?v=4" width="100;" alt="morph1nX"/>
+                    <br />
+                    <sub><b>Rhythm Aich</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/uussaammaahh">
+                    <img src="https://avatars.githubusercontent.com/u/10544770?v=4" width="100;" alt="uussaammaahh"/>
+                    <br />
+                    <sub><b>Usamah Ulde</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: contributors -end -->
