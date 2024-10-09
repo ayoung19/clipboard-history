@@ -8,9 +8,6 @@ on:
 jobs:
   update-contributors:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - uses: akhilmhdh/contributors-readme-action@v2.3.10
         with:
