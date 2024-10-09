@@ -16,6 +16,7 @@ export const FavoritesPage = () => {
 
   return (
     <EntryList
+      consumer={"favs"}
       entries={reversedEntries.filter(
         (entry) =>
           favoriteEntryIdsSet.has(entry.id) &&

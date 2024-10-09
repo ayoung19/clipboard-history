@@ -10,6 +10,7 @@ export const AllPage = () => {
 
   return (
     <EntryList
+      consumer={"all"}
       entries={reversedEntries.filter(
         (entry) =>
           search.length === 0 ||

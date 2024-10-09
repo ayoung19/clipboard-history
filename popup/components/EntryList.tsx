@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties } from "react";
 import { FixedSizeList } from "react-window";
 
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { favoriteEntryIdsSetAtom, searchAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
@@ -15,6 +15,7 @@ import { EntryRow } from "./EntryRow";
 
 interface Props {
   entries: Entry[];
+  consumer: string;
 }
 
 const EntryRowRenderer = ({
@@ -38,7 +39,8 @@ const EntryRowRenderer = ({
   );
 };
 
-export const EntryList = ({ entries }: Props) => {
+export const EntryList = ({ entries, consumer }: Props) => {
+  const search = useAtomValue(searchAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
 
   const selectedEntryIds = useSet<string>();
@@ -106,15 +108,55 @@ export const EntryList = ({ entries }: Props) => {
         </Group>
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-      <FixedSizeList
-        height={450}
-        width={700}
-        itemData={{ entries, selectedEntryIds }}
-        itemCount={entries.length}
-        itemSize={33}
-      >
-        {EntryRowRenderer}
-      </FixedSizeList>
+      {entries.length === 0 ? (
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: 450,
+            width: 700,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {search.length !== 0 ? (
+            <>
+              <Text size="xl" style={{ color: "#a1a1a1" }}>
+                No matches found for "{search}"
+              </Text>
+            </>
+          ) : consumer === "favs" ? (
+            <>
+              <Text size="xl" style={{ color: "#a1a1a1" }}>
+                Your favourites are empty
+              </Text>
+              <Text size="sm" c="gray">
+                Mark an entry as favourite by clicking on the{" "}
+                {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text size="xl" style={{ color: "#a1a1a1" }}>
+                Your clipboard history is empty
+              </Text>
+              <Text size="sm" c="gray">
+                Copy any text to see it here
+              </Text>
+            </>
+          )}
+        </Box>
+      ) : (
+        <FixedSizeList
+          height={450}
+          width={700}
+          itemData={{ entries, selectedEntryIds }}
+          itemCount={entries.length}
+          itemSize={33}
+        >
+          {EntryRowRenderer}
+        </FixedSizeList>
+      )}
     </Box>
   );
 };
