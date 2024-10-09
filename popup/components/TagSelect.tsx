@@ -70,11 +70,9 @@ export const TagSelect = ({ entryId }: Props) => {
   );
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      const tagElements = scrollAreaRef.current.querySelectorAll(".tag-option");
-      const focusedTagElement = tagElements[focusedTagIndex];
-      focusedTagElement?.scrollIntoView({ block: "nearest" });
-    }
+    scrollAreaRef.current
+      ?.querySelectorAll(".tag-option")
+      ?.[focusedTagIndex]?.scrollIntoView({ block: "nearest" });
   }, [focusedTagIndex]);
 
   return (
