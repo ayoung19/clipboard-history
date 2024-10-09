@@ -66,6 +66,7 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
     <Group
       ref={groupRef}
       align="center"
+      className="tag-option"
       spacing="xs"
       px={rem(4)}
       py={rem(8)}
