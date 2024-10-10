@@ -2,7 +2,7 @@ import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, type CSSProperties } from "react";
+import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import { FixedSizeList } from "react-window";
 
 import { favoriteEntryIdsSetAtom, searchAtom } from "~popup/states/atoms";
@@ -15,7 +15,7 @@ import { EntryRow } from "./EntryRow";
 
 interface Props {
   entries: Entry[];
-  consumer: string;
+  noEntriesOverlay: ReactNode;
 }
 
 const EntryRowRenderer = ({
@@ -39,7 +39,7 @@ const EntryRowRenderer = ({
   );
 };
 
-export const EntryList = ({ entries, consumer }: Props) => {
+export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
   const search = useAtomValue(searchAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
 
@@ -109,43 +109,7 @@ export const EntryList = ({ entries, consumer }: Props) => {
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
       {entries.length === 0 ? (
-        <Box
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: 450,
-            width: 700,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {search.length !== 0 ? (
-            <>
-              <Text size="xl" style={{ color: "#a1a1a1" }}>
-                No matches found for "{search}"
-              </Text>
-            </>
-          ) : consumer === "favs" ? (
-            <>
-              <Text size="xl" style={{ color: "#a1a1a1" }}>
-                Your favourites are empty
-              </Text>
-              <Text size="sm" c="gray">
-                Mark an entry as favourite by clicking on the{" "}
-                {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text size="xl" style={{ color: "#a1a1a1" }}>
-                Your clipboard history is empty
-              </Text>
-              <Text size="sm" c="gray">
-                Copy any text to see it here
-              </Text>
-            </>
-          )}
-        </Box>
+        noEntriesOverlay
       ) : (
         <FixedSizeList
           height={450}
