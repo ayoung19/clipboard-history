@@ -40,7 +40,6 @@ const EntryRowRenderer = ({
 };
 
 export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
-  const search = useAtomValue(searchAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
 
   const selectedEntryIds = useSet<string>();

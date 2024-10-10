@@ -18,28 +18,19 @@ export const FavoritesPage = () => {
 
   const renderNoEntriesOverlay = () => {
     return (
-      <Stack
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: 450,
-          width: 700,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Stack h={450} w={700} justify="center" align="center">
         {search.length !== 0 ? (
           <>
-            <Text size="xl" style={{ color: "#a1a1a1" }}>
+            <Text size="xl" color="dimmed">
               No matches found for "{search}"
             </Text>
           </>
         ) : (
           <>
-            <Text size="xl" style={{ color: "#a1a1a1" }}>
+            <Text size="xl" color="dimmed">
               Your favourites are empty
             </Text>
-            <Text size="sm" c="gray">
+            <Text size="sm" color="dimmed">
               Mark an entry as favourite by clicking on the{" "}
               {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
             </Text>
