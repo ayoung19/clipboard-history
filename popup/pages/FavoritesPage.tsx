@@ -1,8 +1,9 @@
-import { Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { EntryList } from "~popup/components/EntryList";
+import NoEntriesOverlay from "~popup/components/NoEntriesOverlay";
 import {
   entryIdToTagsAtom,
   favoriteEntryIdsSetAtom,
@@ -16,33 +17,15 @@ export const FavoritesPage = () => {
   const search = useAtomValue(searchAtom);
   const entryIdToTags = useAtomValue(entryIdToTagsAtom);
 
-  const renderNoEntriesOverlay = () => {
-    return (
-      <Stack h={450} w={700} justify="center" align="center">
-        {search.length !== 0 ? (
-          <>
-            <Text size="xl" color="dimmed">
-              No matches found for "{search}"
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text size="xl" color="dimmed">
-              Your favourites are empty
-            </Text>
-            <Text size="sm" color="dimmed">
-              Mark an entry as favourite by clicking on the{" "}
-              {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
-            </Text>
-          </>
-        )}
-      </Stack>
-    );
-  };
-
   return (
     <EntryList
-      noEntriesOverlay={renderNoEntriesOverlay()}
+      noEntriesOverlay={NoEntriesOverlay(
+        "Your favourites are empty",
+        <Text size="sm" color="dimmed">
+          Mark an entry as favourite by clicking on the{" "}
+          {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
+        </Text>,
+      )}
       entries={reversedEntries.filter(
         (entry) =>
           favoriteEntryIdsSet.has(entry.id) &&

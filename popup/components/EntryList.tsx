@@ -108,7 +108,17 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
       {entries.length === 0 ? (
-        noEntriesOverlay
+        <Box
+          sx={() => ({
+            display: "flex",
+            flexDirection: "column",
+            height: 450,
+            width: 700,
+            justifyContent: "center",
+          })}
+        >
+          {noEntriesOverlay}
+        </Box>
       ) : (
         <FixedSizeList
           height={450}
