@@ -2,6 +2,7 @@ import type { PlasmoMessaging } from "@plasmohq/messaging";
 
 import { getClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
 import { getClipboardSnapshot, updateClipboardSnapshot } from "~storage/clipboardSnapshot";
+import { getSettings } from "~storage/settings";
 import { createEntry } from "~utils/storage";
 
 export interface CreateEntryRequestBody {
@@ -16,13 +17,20 @@ const handler: PlasmoMessaging.MessageHandler<
   CreateEntryResponseBody
 > = async (req, res) => {
   if (req.body && (await getClipboardMonitorIsEnabled())) {
-    const clipboardSnapshot = await getClipboardSnapshot();
+    const [clipboardSnapshot, settings] = await Promise.all([
+      getClipboardSnapshot(),
+      getSettings(),
+    ]);
 
     if (clipboardSnapshot === undefined || req.body.timestamp > clipboardSnapshot.updatedAt) {
       if (req.body.content !== clipboardSnapshot?.content) {
         await Promise.all([
           updateClipboardSnapshot(req.body.content),
-          req.body.content && createEntry(req.body.content),
+          // If we allow blank items then an entry is always created regardless
+          // of what the content is. If we don't, then only create an entry if the
+          // content isn't blank.
+          (settings.allowBlankItems || req.body.content.length > 0) &&
+            createEntry(req.body.content),
         ]);
       }
     }
