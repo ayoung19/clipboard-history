@@ -11,7 +11,7 @@ import {
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { IconTags } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { allTagsAtom } from "~popup/states/atoms";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -31,6 +31,8 @@ export const TagSelect = ({ entryId }: Props) => {
   const showCreateTagOption = tagSearch !== "" && !matchedTags.includes(tagSearchLowercase);
 
   const [focusedTagIndex, setFocusedTagIndex] = useState(0);
+
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (opened) {
@@ -66,6 +68,12 @@ export const TagSelect = ({ entryId }: Props) => {
     ],
     [],
   );
+
+  useEffect(() => {
+    scrollAreaRef.current
+      ?.querySelectorAll(".tag-option")
+      ?.[focusedTagIndex]?.scrollIntoView({ block: "nearest" });
+  }, [focusedTagIndex]);
 
   return (
     <Popover
@@ -108,7 +116,7 @@ export const TagSelect = ({ entryId }: Props) => {
         />
         <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
         {/* https://github.com/creativetimofficial/material-tailwind/issues/528 */}
-        <ScrollArea.Autosize placeholder={undefined} mah={200} p={rem(4)}>
+        <ScrollArea.Autosize placeholder={undefined} mah={200} p={rem(4)} ref={scrollAreaRef}>
           <Stack spacing={0}>
             {matchedTags.map((tag, i) => (
               <TagOption

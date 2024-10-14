@@ -45,3 +45,35 @@ This should create a production bundle for your extension, ready to be zipped an
 ## Submit to the webstores
 
 The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+
+# Contributors
+
+<!-- readme: contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/ayoung19">
+                    <img src="https://avatars.githubusercontent.com/u/18640252?v=4" width="100;" alt="ayoung19"/>
+                    <br />
+                    <sub><b>Andy Young</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/morph1nX">
+                    <img src="https://avatars.githubusercontent.com/u/48093060?v=4" width="100;" alt="morph1nX"/>
+                    <br />
+                    <sub><b>Rhythm Aich</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/uussaammaahh">
+                    <img src="https://avatars.githubusercontent.com/u/10544770?v=4" width="100;" alt="uussaammaahh"/>
+                    <br />
+                    <sub><b>Usamah Ulde</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
+<!-- readme: contributors -end -->
