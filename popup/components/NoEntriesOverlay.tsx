@@ -1,32 +1,26 @@
 import { Stack, Text } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import type { ReactElement } from "react";
+import type { ReactNode } from "react";
 
-import { searchAtom } from "~popup/states/atoms";
+interface Props {
+  title: ReactNode;
+  subtitle?: ReactNode;
+  description?: ReactNode;
+}
 
-const NoEntriesOverlay = (title: string, subtitle: ReactElement | string) => {
-  const search = useAtomValue(searchAtom);
-
+export const NoEntriesOverlay = ({ title, subtitle, description }: Props) => {
   return (
-    <Stack align="center">
-      {search.length !== 0 ? (
-        <>
-          <Text size="xl" color="dimmed">
-            No matches found for "{search}"
-          </Text>
-        </>
-      ) : (
-        <>
-          <Text size="xl" color="dimmed">
-            {title}
-          </Text>
-          <Text size="sm" color="dimmed">
-            {subtitle}
-          </Text>
-        </>
+    <Stack align="center" spacing={0} p="xl">
+      <Text size="md">{title}</Text>
+      {subtitle && (
+        <Text size="sm" color="dimmed">
+          {subtitle}
+        </Text>
+      )}
+      {description && (
+        <Text size="xs" color="dimmed">
+          {description}
+        </Text>
       )}
     </Stack>
   );
 };
-
-export default NoEntriesOverlay;

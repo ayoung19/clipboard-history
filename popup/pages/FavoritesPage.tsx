@@ -1,15 +1,16 @@
-import { Text } from "@mantine/core";
+import { ActionIcon, Group, Text } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { EntryList } from "~popup/components/EntryList";
-import NoEntriesOverlay from "~popup/components/NoEntriesOverlay";
+import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
 import {
   entryIdToTagsAtom,
   favoriteEntryIdsSetAtom,
   reversedEntriesAtom,
   searchAtom,
 } from "~popup/states/atoms";
+import { commonActionIconSx } from "~utils/sx";
 
 export const FavoritesPage = () => {
   const reversedEntries = useAtomValue(reversedEntriesAtom);
@@ -19,13 +20,24 @@ export const FavoritesPage = () => {
 
   return (
     <EntryList
-      noEntriesOverlay={NoEntriesOverlay(
-        "Your favourites are empty",
-        <Text size="sm" color="dimmed">
-          Mark an entry as favourite by clicking on the{" "}
-          {<IconStar style={{ verticalAlign: "middle" }} size="1rem" />} icon
-        </Text>,
-      )}
+      noEntriesOverlay={
+        search.length === 0 ? (
+          <NoEntriesOverlay
+            title="You have no favorite items"
+            subtitle={
+              <Group align="center" spacing={0}>
+                Mark an item as favorite by clicking on
+                <ActionIcon sx={(theme) => commonActionIconSx({ theme })}>
+                  <IconStar size="1rem" />
+                </ActionIcon>
+              </Group>
+            }
+            description="Favorite items are protected from deletion"
+          />
+        ) : (
+          <NoEntriesOverlay title={`No items found for "${search}"`} />
+        )
+      }
       entries={reversedEntries.filter(
         (entry) =>
           favoriteEntryIdsSet.has(entry.id) &&

@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import { FixedSizeList } from "react-window";
 
-import { favoriteEntryIdsSetAtom, searchAtom } from "~popup/states/atoms";
+import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
@@ -108,15 +108,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
       {entries.length === 0 ? (
-        <Box
-          sx={() => ({
-            display: "flex",
-            flexDirection: "column",
-            height: 450,
-            width: 700,
-            justifyContent: "center",
-          })}
-        >
+        <Box h={450} w={700}>
           {noEntriesOverlay}
         </Box>
       ) : (
