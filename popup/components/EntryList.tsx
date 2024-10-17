@@ -2,7 +2,7 @@ import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, type CSSProperties } from "react";
+import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import { FixedSizeList } from "react-window";
 
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
@@ -15,6 +15,7 @@ import { EntryRow } from "./EntryRow";
 
 interface Props {
   entries: Entry[];
+  noEntriesOverlay: ReactNode;
 }
 
 const EntryRowRenderer = ({
@@ -38,7 +39,7 @@ const EntryRowRenderer = ({
   );
 };
 
-export const EntryList = ({ entries }: Props) => {
+export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
 
   const selectedEntryIds = useSet<string>();
@@ -106,15 +107,21 @@ export const EntryList = ({ entries }: Props) => {
         </Group>
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-      <FixedSizeList
-        height={450}
-        width={700}
-        itemData={{ entries, selectedEntryIds }}
-        itemCount={entries.length}
-        itemSize={33}
-      >
-        {EntryRowRenderer}
-      </FixedSizeList>
+      {entries.length === 0 ? (
+        <Box h={450} w={700}>
+          {noEntriesOverlay}
+        </Box>
+      ) : (
+        <FixedSizeList
+          height={450}
+          width={700}
+          itemData={{ entries, selectedEntryIds }}
+          itemCount={entries.length}
+          itemSize={33}
+        >
+          {EntryRowRenderer}
+        </FixedSizeList>
+      )}
     </Box>
   );
 };
