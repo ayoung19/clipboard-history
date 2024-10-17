@@ -26,7 +26,7 @@ export const FavoritesPage = () => {
             title="You have no favorite items"
             subtitle={
               <Group align="center" spacing={0}>
-                Mark an item as favorite by clicking on
+                <Text>Mark an item as favorite by clicking on</Text>
                 <ActionIcon sx={(theme) => commonActionIconSx({ theme })}>
                   <IconStar size="1rem" />
                 </ActionIcon>
