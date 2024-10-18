@@ -128,6 +128,7 @@ export const App = () => {
               },
             },
           })}
+          autoFocus
         />
         <SegmentedControl
           value={tab}
