@@ -27,6 +27,7 @@ export const getEntryIdToTags = async () => {
   return parsed.success ? parsed.data : {};
 };
 
+// Make sure tags are always unique and lowercase.
 export const setEntryIdToTags = async (entryIdToTags: EntryIdToTags) => {
   await storage.set(ENTRY_ID_TO_TAGS_STORAGE_KEY, entryIdToTags);
 };

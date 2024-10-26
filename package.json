@@ -16,6 +16,7 @@
     "@mantine/core": "6.0.21",
     "@mantine/hooks": "^7.12.2",
     "@mantine/modals": "6.0.21",
+    "@mantine/notifications": "6.0.21",
     "@marko19907/string-to-color": "^1.0.0",
     "@plasmohq/messaging": "^0.6.2",
     "@plasmohq/storage": "^1.12.0",

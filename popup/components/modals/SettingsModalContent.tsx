@@ -1,12 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Anchor,
+  Box,
   Button,
   CloseButton,
   Divider,
+  FileInput,
   Group,
   Indicator,
   NumberInput,
   Paper,
+  rem,
   Select,
   Stack,
   Switch,
@@ -17,19 +21,25 @@ import {
 } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import {
   IconAdjustmentsHorizontal,
   IconAlertTriangle,
   IconDatabase,
-  IconX,
+  IconDeviceFloppy,
+  IconFileExport,
+  IconFileImport,
+  IconUpload,
 } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
+import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
 import { getEntries } from "~utils/storage";
 import { capitalize } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -43,6 +53,8 @@ export const SettingsModalContent = () => {
   const theme = useMantineTheme();
   const settings = useAtomValue(settingsAtom);
   const systemColorScheme = useColorScheme();
+
+  const [file, setFile] = useState<File | null>(null);
 
   const {
     control,
@@ -78,11 +90,16 @@ export const SettingsModalContent = () => {
                 size={8}
                 disabled={!isDirty}
               >
-                <IconDatabase size="0.8rem" />
+                <Box mt={rem(1)}>
+                  <IconDatabase size="0.8rem" />
+                </Box>
               </Indicator>
             }
           >
             Storage
+          </Tabs.Tab>
+          <Tabs.Tab value="import-export" icon={<IconDeviceFloppy size="0.8rem" />}>
+            Import / Export
           </Tabs.Tab>
         </Tabs.List>
 
@@ -215,6 +232,98 @@ export const SettingsModalContent = () => {
               </Group>
             </Stack>
           </form>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="import-export">
+          <Stack p="md">
+            <Stack spacing="xs">
+              <Stack spacing={0}>
+                <Title order={6}>Import</Title>
+                <Text fz="xs">
+                  Select a file to import items from. Only files exported from this extension and
+                  the
+                  <> </>
+                  <Anchor
+                    href="https://chromewebstore.google.com/detail/clipboard-history-pro-bes/ajiejmhbejpdgkkigpddefnjmgcbkenk"
+                    target="_blank"
+                  >
+                    old Clipboard History Pro
+                  </Anchor>
+                  <> </>
+                  are supported.
+                </Text>
+              </Stack>
+              <Group align="center" spacing="xs" noWrap>
+                <FileInput
+                  value={file}
+                  onChange={setFile}
+                  icon={<IconUpload size="0.8rem" />}
+                  size="xs"
+                  w="100%"
+                  // https://github.com/mantinedev/mantine/issues/5401#issuecomment-1858711964
+                  {...{ placeholder: "Select a file" }}
+                />
+                <Button
+                  leftIcon={<IconFileImport size="1rem" />}
+                  size="xs"
+                  disabled={file === null}
+                  onClick={async () => {
+                    if (file !== null) {
+                      try {
+                        await importFile(file);
+
+                        notifications.show({
+                          color: "green",
+                          title: "Success",
+                          message: "Items were successfully imported from the selected file.",
+                        });
+
+                        setFile(null);
+                      } catch (e) {
+                        console.log(e);
+
+                        notifications.show({
+                          color: "red",
+                          title: "Error",
+                          message:
+                            "The selected file could not be processed. Please try again with another file.",
+                        });
+                      }
+                    }
+                  }}
+                >
+                  Import
+                </Button>
+              </Group>
+            </Stack>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Export</Title>
+                <Text fz="xs">
+                  Back up or transfer your clipboard history by exporting it to a file.
+                </Text>
+              </Stack>
+              <Button
+                leftIcon={<IconFileExport size="1rem" />}
+                size="xs"
+                onClick={async () => {
+                  const a = document.createElement("a");
+                  a.href = window.URL.createObjectURL(
+                    new Blob([JSON.stringify(await getClipboardHistoryIOExport())], {
+                      type: "text/plain",
+                    }),
+                  );
+                  a.download = `clipboard-history-pro-export-${new Date().toISOString()}.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }}
+              >
+                Export
+              </Button>
+            </Group>
+          </Stack>
         </Tabs.Panel>
       </Tabs>
     </Paper>
