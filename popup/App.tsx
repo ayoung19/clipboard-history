@@ -4,14 +4,23 @@ import {
   Divider,
   Group,
   Image,
+  rem,
   SegmentedControl,
   Switch,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconClipboardList, IconSearch, IconSettings, IconStar } from "@tabler/icons-react";
+import {
+  IconClipboardList,
+  IconExternalLink,
+  IconNews,
+  IconSearch,
+  IconSettings,
+  IconStar,
+} from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useSetAtom } from "jotai";
@@ -89,20 +98,40 @@ export const App = () => {
           <Title order={6}>Clipboard History Pro</Title>
         </Group>
         <Group align="center" spacing="xs" grow={false}>
-          <ActionIcon
-            variant="light"
-            color="indigo.5"
-            onClick={() =>
-              modals.open({
-                padding: 0,
-                size: "xl",
-                withCloseButton: false,
-                children: <SettingsModalContent />,
-              })
+          <Tooltip
+            label={
+              <Group align="center" spacing={rem(4)} noWrap>
+                <Text fz="xs">Changelog</Text>
+                <IconExternalLink size="0.8rem" />
+              </Group>
             }
           >
-            <IconSettings size="1.125rem" />
-          </ActionIcon>
+            <ActionIcon
+              variant="light"
+              color="indigo.5"
+              component="a"
+              href="https://github.com/ayoung19/clipboard-history/releases"
+              target="_blank"
+            >
+              <IconNews size="1.125rem" />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label={<Text fz="xs">Settings</Text>}>
+            <ActionIcon
+              variant="light"
+              color="indigo.5"
+              onClick={() =>
+                modals.open({
+                  padding: 0,
+                  size: "xl",
+                  withCloseButton: false,
+                  children: <SettingsModalContent />,
+                })
+              }
+            >
+              <IconSettings size="1.125rem" />
+            </ActionIcon>
+          </Tooltip>
           <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
           <Switch
             size="md"

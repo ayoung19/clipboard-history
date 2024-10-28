@@ -89,6 +89,7 @@ export const SettingsModalContent = () => {
                 color={lightOrDark(theme, "orange", "yellow")}
                 size={8}
                 disabled={!isDirty}
+                offset={1}
               >
                 <Box mt={rem(1)}>
                   <IconDatabase size="0.8rem" />
