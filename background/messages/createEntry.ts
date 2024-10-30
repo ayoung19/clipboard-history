@@ -12,28 +12,32 @@ export interface CreateEntryRequestBody {
 
 export interface CreateEntryResponseBody {}
 
-const handler: PlasmoMessaging.MessageHandler<
-  CreateEntryRequestBody,
-  CreateEntryResponseBody
-> = async (req, res) => {
-  if (req.body && (await getClipboardMonitorIsEnabled())) {
+export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => {
+  if (await getClipboardMonitorIsEnabled()) {
     const [clipboardSnapshot, settings] = await Promise.all([
       getClipboardSnapshot(),
       getSettings(),
     ]);
 
-    if (clipboardSnapshot === undefined || req.body.timestamp > clipboardSnapshot.updatedAt) {
-      if (req.body.content !== clipboardSnapshot?.content) {
+    if (clipboardSnapshot === undefined || body.timestamp > clipboardSnapshot.updatedAt) {
+      if (body.content !== clipboardSnapshot?.content) {
         await Promise.all([
-          updateClipboardSnapshot(req.body.content),
-          // If we allow blank items then an entry is always created regardless
-          // of what the content is. If we don't, then only create an entry if the
-          // content isn't blank.
-          (settings.allowBlankItems || req.body.content.length > 0) &&
-            createEntry(req.body.content),
+          updateClipboardSnapshot(body.content),
+          // If we allow blank items then an entry is always created regardless of what the content
+          // is. If we don't, then only create an entry if the content isn't blank.
+          (settings.allowBlankItems || body.content.length > 0) && createEntry(body.content),
         ]);
       }
     }
+  }
+};
+
+const handler: PlasmoMessaging.MessageHandler<
+  CreateEntryRequestBody,
+  CreateEntryResponseBody
+> = async (req, res) => {
+  if (req.body) {
+    await handleCreateEntryRequest(req.body);
   }
 
   res.send({});

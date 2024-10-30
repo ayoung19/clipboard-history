@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
+    "build:firefox": "./scripts/build-firefox.sh",
     "package": "plasmo package",
     "format": "npx prettier . --write"
   },

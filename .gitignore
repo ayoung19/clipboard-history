@@ -31,3 +31,6 @@ dist/
 
 # typescript
 .tsbuildinfo
+
+# temporary package.json
+.package.json

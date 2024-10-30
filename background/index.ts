@@ -1,5 +1,6 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
+import { handleCreateEntryRequest } from "~background/messages/createEntry";
 import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
@@ -10,11 +11,30 @@ import {
   setActionBadgeText,
   setActionIconAndBadgeBackgroundColor,
 } from "~utils/actionBadge";
+import { watchClipboard } from "~utils/background";
 import { getEntries } from "~utils/storage";
+
+// Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
+if (process.env.PLASMO_TARGET === "firefox-mv2") {
+  watchClipboard(window, document, (content) =>
+    handleCreateEntryRequest({
+      content,
+      // Race condition with popup. Adding this delay in the recorded timestamp allows the
+      // clipboard monitor to fail to create an entry when racing with the popup. It will succeed
+      // on the next interval as long as the popup doesn't write to clipboardSnapshot again.
+      timestamp: Date.now() - 1000,
+    }),
+  );
+}
 
 // A global promise to avoid concurrency issues.
 let creating: Promise<void> | null = null;
 const setupOffscreenDocument = async () => {
+  // Firefox MV2 does not support chrome.offscreen.
+  if (process.env.PLASMO_TARGET === "firefox-mv2") {
+    return;
+  }
+
   if (await chrome.offscreen.hasDocument()) {
     return;
   }
@@ -50,6 +70,11 @@ chrome.tabs.onActivated.addListener(async () => {
 });
 
 chrome.runtime.onSuspend.addListener(async () => {
+  // Firefox MV2 does not support chrome.offscreen.
+  if (process.env.PLASMO_TARGET === "firefox-mv2") {
+    return;
+  }
+
   await chrome.offscreen.closeDocument();
 });
 
