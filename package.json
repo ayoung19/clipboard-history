@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "build:firefox": "./scripts/build-firefox.sh",
+    "build:firefox": "ts-node scripts/build-firefox-setup.ts && prettier package.json --write && plasmo build --target=firefox-mv2 && ts-node scripts/build-firefox-teardown.ts",
     "package": "plasmo package",
-    "format": "npx prettier . --write"
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -41,6 +41,7 @@
     "@types/react-dom": "18.2.18",
     "@types/react-window": "^1.8.8",
     "prettier": "3.2.4",
+    "ts-node": "^10.9.2",
     "typescript": "5.3.3"
   },
   "manifest": {
