@@ -34,7 +34,7 @@ export const getEntries = async () => {
   if (entries === undefined) {
     return [];
   }
-
+  chrome.runtime.sendMessage({ type: "updateEntries" });
   return entries;
 };
 
@@ -82,7 +82,7 @@ export const deleteEntries = async (entryIds: string[]) => {
 
   const [entries, entryIdToTags] = await Promise.all([getEntries(), getEntryIdToTags()]);
   entryIds.forEach((entryId) => delete entryIdToTags[entryId]);
-
+  chrome.runtime.sendMessage({ type: "updateEntries" });
   await Promise.all([
     setEntries(entries.filter(({ id }) => !entryIdSet.has(id))),
     setEntryIdToTags(entryIdToTags),

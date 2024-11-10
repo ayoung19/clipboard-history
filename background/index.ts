@@ -81,3 +81,70 @@ chrome.runtime.onSuspend.addListener(async () => {
 chrome.runtime.onInstalled.addListener(async () => {
   await Promise.all([setClipboardMonitorIsEnabled(true), setupOffscreenDocument(), setupAction()]);
 });
+
+let lastEntries: any = [];
+
+chrome.runtime.onInstalled.addListener(async () => {
+  chrome.contextMenus.create({
+    title: "Search: %s",
+    id: "parent",
+    contexts: ["page", "editable"],
+  });
+
+  const updateContextMenu = async () => {
+    const entries = await getEntries();
+
+    if (!arraysEqual(entries, lastEntries)) {
+      lastEntries = [...entries];
+
+      chrome.contextMenus.removeAll(() => {
+        chrome.contextMenus.create({
+          title: "Open clipboard history",
+          id: "parent",
+          contexts: ["page", "editable"],
+        });
+
+        for (let i = 0; i < entries.length; i++) {
+          chrome.contextMenus.create({
+            id: `${i}`,
+            title: `"${entries[i]?.content ?? "No Content"}"`,
+            parentId: "parent",
+            contexts: ["page", "editable"],
+          });
+        }
+      });
+    }
+  };
+
+  // Utility function to compare two arrays
+  function arraysEqual(a: any, b: any) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].content !== b[i].content) return false;
+    }
+    return true;
+  }
+
+  await updateContextMenu();
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === "updateEntries") {
+      console.log("goe message");
+      updateContextMenu();
+    }
+  });
+
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    console.log(info.menuItemId);
+
+    const index = typeof info.menuItemId == "string" ? parseInt(info.menuItemId) : 0;
+
+    //need to get the clicked element
+
+    //change its value from here
+
+    // console.log(window.getSelection());
+
+    console.log(lastEntries[index].content);
+  });
+});
