@@ -1,8 +1,7 @@
 import iconOff128Src from "data-base64:~assets/iconOff128.png";
 import iconOn128Src from "data-base64:~assets/iconOn128.png";
 
-export const action =
-  process.env.PLASMO_TARGET === "firefox-mv2" ? chrome.browserAction : chrome.action;
+const action = process.env.PLASMO_TARGET === "firefox-mv2" ? chrome.browserAction : chrome.action;
 
 export const setActionBadgeText = async (totalEntries: number) => {
   await action.setBadgeText({
