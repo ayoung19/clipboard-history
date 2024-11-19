@@ -1,13 +1,10 @@
 import iconOff128Src from "data-base64:~assets/iconOff128.png";
 import iconOn128Src from "data-base64:~assets/iconOn128.png";
 
-export const setActionBadgeText = async (totalEntries: number) => {
-  // Firefox MV2 does not support chrome.action.
-  if (process.env.PLASMO_TARGET === "firefox-mv2") {
-    return;
-  }
+const action = process.env.PLASMO_TARGET === "firefox-mv2" ? chrome.browserAction : chrome.action;
 
-  await chrome.action.setBadgeText({
+export const setActionBadgeText = async (totalEntries: number) => {
+  await action.setBadgeText({
     text: Intl.NumberFormat("en-US", {
       notation: "compact",
       maximumFractionDigits: 0,
@@ -17,22 +14,12 @@ export const setActionBadgeText = async (totalEntries: number) => {
 };
 
 export const removeActionBadgeText = async () => {
-  // Firefox MV2 does not support chrome.action.
-  if (process.env.PLASMO_TARGET === "firefox-mv2") {
-    return;
-  }
-
-  await chrome.action.setBadgeText({ text: "" });
+  await action.setBadgeText({ text: "" });
 };
 
 export const setActionIconAndBadgeBackgroundColor = async (on: boolean) => {
-  // Firefox MV2 does not support chrome.action.
-  if (process.env.PLASMO_TARGET === "firefox-mv2") {
-    return;
-  }
-
   await Promise.all([
-    chrome.action.setIcon({ path: { "32": on ? iconOn128Src : iconOff128Src } }),
-    chrome.action.setBadgeBackgroundColor({ color: on ? "#4263eb" : "#495057" }),
+    action.setIcon({ path: { "32": on ? iconOn128Src : iconOff128Src } }),
+    action.setBadgeBackgroundColor({ color: on ? "#4263eb" : "#495057" }),
   ]);
 };

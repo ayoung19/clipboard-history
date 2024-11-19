@@ -106,33 +106,28 @@ export const SettingsModalContent = () => {
 
         <Tabs.Panel value="general">
           <Stack p="md">
-            {/* Firefox MV2 does not support chrome.action. */}
-            {process.env.PLASMO_TARGET !== "firefox-mv2" && (
-              <>
-                <Group align="flex-start" spacing="md" position="apart" noWrap>
-                  <Stack spacing={0}>
-                    <Title order={6}>Total Items Badge</Title>
-                    <Text fz="xs">
-                      Show number of items in the clipboard history on the extension icon.
-                    </Text>
-                  </Stack>
-                  <Switch
-                    checked={settings.totalItemsBadge}
-                    onChange={async (e) => {
-                      const checked = e.target.checked;
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Total Items Badge</Title>
+                <Text fz="xs">
+                  Show number of items in the clipboard history on the extension icon.
+                </Text>
+              </Stack>
+              <Switch
+                checked={settings.totalItemsBadge}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
 
-                      await Promise.all([
-                        checked
-                          ? setActionBadgeText((await getEntries()).length)
-                          : removeActionBadgeText(),
-                        setSettings({ ...settings, totalItemsBadge: checked }),
-                      ]);
-                    }}
-                  />
-                </Group>
-                <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-              </>
-            )}
+                  await Promise.all([
+                    checked
+                      ? setActionBadgeText((await getEntries()).length)
+                      : removeActionBadgeText(),
+                    setSettings({ ...settings, totalItemsBadge: checked }),
+                  ]);
+                }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Title order={6}>Blank Items</Title>
