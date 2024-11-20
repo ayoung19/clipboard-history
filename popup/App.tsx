@@ -34,6 +34,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
+import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor } from "~utils/sx";
 
@@ -50,7 +51,7 @@ import {
 } from "./states/atoms";
 
 export const App = () => {
-  const [tab, setTab] = useState("all");
+  const [tab, setTab] = useState<Tab>(Tab.Enum.All);
 
   const [search, setSearch] = useAtom(searchAtom);
 
@@ -69,7 +70,12 @@ export const App = () => {
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds(setFavoriteEntryIds);
 
-    (async () => setSettings(await getSettings()))();
+    (async () => {
+      const settings = await getSettings();
+
+      setSettings(settings);
+      setTab(settings.defaultTab);
+    })();
     watchSettings(setSettings);
 
     (async () => setEntryIdToTags(await getEntryIdToTags()))();
@@ -161,9 +167,9 @@ export const App = () => {
         />
         <SegmentedControl
           value={tab}
-          onChange={setTab}
+          onChange={(newTab) => setTab(Tab.parse(newTab))}
           size="xs"
-          color={tab === "all" ? "indigo.5" : "yellow.5"}
+          color={tab === Tab.Enum.All ? "indigo.5" : "yellow.5"}
           data={[
             {
               label: (
@@ -172,7 +178,7 @@ export const App = () => {
                   <Text>All</Text>
                 </Group>
               ),
-              value: "all",
+              value: Tab.Enum.All,
             },
             {
               label: (
@@ -181,12 +187,12 @@ export const App = () => {
                   <Text>Favorites</Text>
                 </Group>
               ),
-              value: "favorites",
+              value: Tab.Enum.Favorites,
             },
           ]}
         />
       </Group>
-      {tab === "all" ? <AllPage /> : <FavoritesPage />}
+      {tab === Tab.Enum.All ? <AllPage /> : <FavoritesPage />}
     </Card>
   );
 };

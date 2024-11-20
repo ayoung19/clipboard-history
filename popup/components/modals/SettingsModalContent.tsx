@@ -38,6 +38,7 @@ import { z } from "zod";
 
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
 import { getEntries } from "~utils/storage";
@@ -140,6 +141,26 @@ export const SettingsModalContent = () => {
 
                   await setSettings({ ...settings, allowBlankItems: checked });
                 }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Default Tab</Title>
+                <Text fz="xs">Select the tab shown when the extension is opened.</Text>
+              </Stack>
+              <Select
+                value={settings.defaultTab}
+                onChange={(newDefaultTab) =>
+                  newDefaultTab &&
+                  setSettings({ ...settings, defaultTab: Tab.parse(newDefaultTab) })
+                }
+                data={[
+                  { value: Tab.Enum.All, label: Tab.Enum.All },
+                  { value: Tab.Enum.Favorites, label: Tab.Enum.Favorites },
+                ]}
+                size="xs"
+                withinPortal
               />
             </Group>
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />

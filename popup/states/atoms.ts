@@ -6,7 +6,6 @@ import { Entry } from "~types/entry";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
 
-export const tabAtom = atom<string>("all");
 export const searchAtom = atom<string>("");
 
 export const entriesAtom = atom<Entry[]>([]);
