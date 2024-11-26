@@ -98,12 +98,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
     resolver: zodResolver(schema),
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const [entries, setEntries] = useState(initialEntries);
   const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
