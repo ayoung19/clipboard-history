@@ -1,6 +1,7 @@
 import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
-import { IconStar, IconTrash } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import { FixedSizeList } from "react-window";
@@ -12,6 +13,7 @@ import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";
+import { MergeModalContent } from "./modals/MergeModalContent";
 
 interface Props {
   entries: Entry[];
@@ -34,7 +36,7 @@ const EntryRowRenderer = ({
 
   return (
     <Box style={style}>
-      <EntryRow key={entry.id} entry={entry} selectedEntryIds={data.selectedEntryIds} />
+      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} />
     </Box>
   );
 };
@@ -78,27 +80,55 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
           <Group align="center" spacing={0}>
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
-              onClick={() =>
-                Array.from(selectedEntryIds).every((selectedEntryId) =>
-                  favoriteEntryIdsSet.has(selectedEntryId),
-                )
-                  ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
-                  : addFavoriteEntryIds(Array.from(selectedEntryIds))
+              onClick={
+                selectedEntryIds.size === 0
+                  ? undefined
+                  : () =>
+                      Array.from(selectedEntryIds).every((selectedEntryId) =>
+                        favoriteEntryIdsSet.has(selectedEntryId),
+                      )
+                        ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
+                        : addFavoriteEntryIds(Array.from(selectedEntryIds))
               }
             >
               <IconStar size="1rem" />
             </ActionIcon>
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
-              onClick={() =>
-                deleteEntries(
-                  Array.from(selectedEntryIds).filter(
-                    (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
-                  ),
-                )
+              onClick={
+                selectedEntryIds.size === 0
+                  ? undefined
+                  : () =>
+                      deleteEntries(
+                        Array.from(selectedEntryIds).filter(
+                          (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
+                        ),
+                      )
               }
             >
               <IconTrash size="1rem" />
+            </ActionIcon>
+            <ActionIcon
+              sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
+              onClick={
+                selectedEntryIds.size < 2
+                  ? undefined
+                  : () =>
+                      modals.open({
+                        padding: 0,
+                        size: "xl",
+                        withCloseButton: false,
+                        children: (
+                          <MergeModalContent
+                            initialEntries={entries.filter((entry) =>
+                              selectedEntryIds.has(entry.id),
+                            )}
+                          />
+                        ),
+                      })
+              }
+            >
+              <IconFold size="1rem" />
             </ActionIcon>
           </Group>
           <Text fz="xs">
