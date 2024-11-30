@@ -31,12 +31,14 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconArrowsSort } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { Controller, useForm } from "react-hook-form";
 import { FixedSizeList } from "react-window";
 import { z } from "zod";
 
+import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { createEntry, deleteEntries } from "~utils/storage";
@@ -86,6 +88,8 @@ const DraggableMergeItemRenderer = ({
 };
 
 export const MergeModalContent = ({ initialEntries }: Props) => {
+  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+
   const {
     control,
     handleSubmit,
@@ -119,7 +123,10 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
 
           await createEntry(content);
           if (deleteSourceItems) {
-            await deleteEntries(entries.map(({ id }) => id));
+            await deleteEntries(
+              // Map entries to ids and filter out favorites.
+              entries.flatMap(({ id }) => (favoriteEntryIdsSet.has(id) ? [] : id)),
+            );
           }
 
           // Same action as clicking a row.
