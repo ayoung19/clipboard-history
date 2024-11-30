@@ -14,6 +14,41 @@ Unrestricted access to your clipboard can raise serious privacy concerns. In an 
 
 This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
 
+## Architecture Diagram
+
+Below is a rudimentary architecture diagram showing the general flow of clipboard data between the different components of the extension.
+
+![Untitled-2024-10-02-0046](https://github.com/user-attachments/assets/98cc2c69-245f-4225-a188-39175cc03502)
+
+## Project Structure
+
+```
+clipboard-history
+├── assets
+├── background
+│   ├── messages
+│   └── index.ts
+├── popup
+├── scripts
+├── storage
+├── types
+├── utils
+├── offscreen.html
+└── offscreen.ts
+```
+
+| Name                  | Description                                                                 |
+| --------------------- | --------------------------------------------------------------------------- |
+| `assets`              | https://docs.plasmo.com/framework/assets                                    |
+| `background/messages` | https://docs.plasmo.com/framework/messaging                                 |
+| `background/index.ts` | https://docs.plasmo.com/framework/background-service-worker                 |
+| `popup`               | https://docs.plasmo.com/framework/ext-pages#adding-a-popup-page             |
+| `scripts`             | Contains scripts used in the build system and CI/CD.                        |
+| `types`               | Contains definitions and schemas of common types used in application logic. |
+| `utils`               | Contains utility functions used in application logic.                       |
+| `offscreen.html`      | https://developer.chrome.com/docs/extensions/reference/api/offscreen        |
+| `offscreen.ts`        | https://developer.chrome.com/docs/extensions/reference/api/offscreen        |
+
 ## Getting Started
 
 First, run the development server:
