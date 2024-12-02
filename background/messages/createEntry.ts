@@ -10,7 +10,8 @@ export interface CreateEntryRequestBody {
   timestamp: number;
 }
 
-export interface CreateEntryResponseBody {}
+// https://www.totaltypescript.com/the-empty-object-type-in-typescript#representing-an-empty-object
+export type CreateEntryResponseBody = Record<PropertyKey, never>;
 
 export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => {
   if (await getClipboardMonitorIsEnabled()) {

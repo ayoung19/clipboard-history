@@ -136,9 +136,11 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
             onClick={(e) => {
               e.stopPropagation();
 
-              isFavoriteEntry
-                ? deleteFavoriteEntryIds([entry.id])
-                : addFavoriteEntryIds([entry.id]);
+              if (isFavoriteEntry) {
+                deleteFavoriteEntryIds([entry.id]);
+              } else {
+                addFavoriteEntryIds([entry.id]);
+              }
             }}
           >
             {isFavoriteEntry ? <IconStarFilled size="1rem" /> : <IconStar size="1rem" />}
