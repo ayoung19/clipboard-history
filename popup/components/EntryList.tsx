@@ -108,28 +108,31 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             >
               <IconTrash size="1rem" />
             </ActionIcon>
-            <ActionIcon
-              sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
-              onClick={
-                selectedEntryIds.size < 2
-                  ? undefined
-                  : () =>
-                      modals.open({
-                        padding: 0,
-                        size: "xl",
-                        withCloseButton: false,
-                        children: (
-                          <MergeModalContent
-                            initialEntries={entries.filter((entry) =>
-                              selectedEntryIds.has(entry.id),
-                            )}
-                          />
-                        ),
-                      })
-              }
-            >
-              <IconFold size="1rem" />
-            </ActionIcon>
+            {/* https://github.com/clauderic/dnd-kit/issues/1043 */}
+            {process.env.PLASMO_TARGET !== "firefox-mv2" && (
+              <ActionIcon
+                sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
+                onClick={
+                  selectedEntryIds.size < 2
+                    ? undefined
+                    : () =>
+                        modals.open({
+                          padding: 0,
+                          size: "xl",
+                          withCloseButton: false,
+                          children: (
+                            <MergeModalContent
+                              initialEntries={entries.filter((entry) =>
+                                selectedEntryIds.has(entry.id),
+                              )}
+                            />
+                          ),
+                        })
+                }
+              >
+                <IconFold size="1rem" />
+              </ActionIcon>
+            )}
           </Group>
           <Text fz="xs">
             {selectedEntryIds.size} of {entries.length} selected
