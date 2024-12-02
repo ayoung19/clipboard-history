@@ -39,9 +39,3 @@ jobs:
           files: |
             ./build/chrome-mv3-prod.zip
             ./build/firefox-mv2-prod.zip
-
-      # https://docs.plasmo.com/framework/workflows/submit
-      - uses: PlasmoHQ/bpp@v3
-        with:
-          keys: ${{ secrets.SUBMIT_KEYS }}
-          artifact: build/firefox-mv2-prod.zip
