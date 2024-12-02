@@ -29,6 +29,9 @@ dist/
 # plasmo
 .plasmo
 
+# bpp - http://bpp.browser.market/
+keys.json
+
 # typescript
 .tsbuildinfo
 

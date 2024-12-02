@@ -28,11 +28,9 @@ jobs:
         run: |
           pnpm install
           pnpm build
+          pnpm package
           pnpm build:firefox
-          cd build
-          zip -r chrome-mv3-prod.zip chrome-mv3-prod
-          cd firefox-mv2-prod
-          zip -r ../firefox-mv2-prod.zip .
+          pnpm package:firefox
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
@@ -41,3 +39,9 @@ jobs:
           files: |
             ./build/chrome-mv3-prod.zip
             ./build/firefox-mv2-prod.zip
+
+      # https://docs.plasmo.com/framework/workflows/submit
+      - uses: PlasmoHQ/bpp@v3
+        with:
+          keys: ${{ secrets.SUBMIT_KEYS }}
+          artifact: build/firefox-mv2-prod.zip
