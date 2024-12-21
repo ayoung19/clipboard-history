@@ -14,4 +14,14 @@ export default tseslint.config(
   includeIgnoreFile(gitignorePath),
   eslint.configs.recommended,
   tseslint.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/no-empty-object-type": [
+        "error",
+        {
+          allowInterfaces: "with-single-extends",
+        },
+      ],
+    },
+  },
 );
