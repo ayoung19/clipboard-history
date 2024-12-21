@@ -42,10 +42,16 @@ export const CloudPage = () => {
           {settings._email === null ? (
             <form
               onSubmit={handleSubmit(async ({ email }) => {
-                await Promise.all([
+                const results = await Promise.allSettled([
                   setSettings({ ...settings, _email: email }),
                   db.transact(db.tx.emails[id()]!.update({ value: email })),
                 ]);
+
+                for (const result of results) {
+                  if (result.status === "rejected") {
+                    console.log(result.reason);
+                  }
+                }
 
                 reset({ email });
               })}
