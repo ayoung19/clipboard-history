@@ -15,6 +15,7 @@ import {
 import { modals } from "@mantine/modals";
 import {
   IconClipboardList,
+  IconCloud,
   IconExternalLink,
   IconNews,
   IconSearch,
@@ -40,6 +41,7 @@ import { defaultBorderColor } from "~utils/sx";
 
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
+import { CloudPage } from "./pages/CloudPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   clipboardSnapshotAtom,
@@ -169,7 +171,9 @@ export const App = () => {
           value={tab}
           onChange={(newTab) => setTab(Tab.parse(newTab))}
           size="xs"
-          color={tab === Tab.Enum.All ? "indigo.5" : "yellow.5"}
+          color={
+            tab === Tab.Enum.All ? "indigo.5" : tab === Tab.Enum.Favorites ? "yellow.5" : "cyan.5"
+          }
           data={[
             {
               label: (
@@ -189,10 +193,25 @@ export const App = () => {
               ),
               value: Tab.Enum.Favorites,
             },
+            {
+              label: (
+                <Group align="center" spacing={4} noWrap>
+                  <IconCloud size="1rem" />
+                  <Text>Cloud</Text>
+                </Group>
+              ),
+              value: Tab.Enum.Cloud,
+            },
           ]}
         />
       </Group>
-      {tab === Tab.Enum.All ? <AllPage /> : <FavoritesPage />}
+      {tab === Tab.Enum.All ? (
+        <AllPage />
+      ) : tab === Tab.Enum.Favorites ? (
+        <FavoritesPage />
+      ) : (
+        <CloudPage />
+      )}
     </Card>
   );
 };
