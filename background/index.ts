@@ -16,7 +16,7 @@ import { getEntries } from "~utils/storage";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
-  watchClipboard(window, document, (content) =>
+  watchClipboard(window, document, getClipboardMonitorIsEnabled, (content) =>
     handleCreateEntryRequest({
       content,
       // Race condition with popup. Adding this delay in the recorded timestamp allows the
