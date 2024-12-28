@@ -1,9 +1,10 @@
-import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
@@ -52,7 +53,9 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
   }, [entryIdsStringified]);
 
   return (
-    <Box
+    <Stack
+      h="100%"
+      spacing={0}
       sx={(theme) => ({
         borderStyle: "solid",
         borderWidth: "1px",
@@ -140,21 +143,25 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
         </Group>
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-      {entries.length === 0 ? (
-        <Box h={450} w={700}>
-          {noEntriesOverlay}
-        </Box>
-      ) : (
-        <FixedSizeList
-          height={450}
-          width={700}
-          itemData={{ entries, selectedEntryIds }}
-          itemCount={entries.length}
-          itemSize={33}
-        >
-          {EntryRowRenderer}
-        </FixedSizeList>
-      )}
-    </Box>
+      <Box sx={{ flex: "auto" }}>
+        {entries.length === 0 ? (
+          noEntriesOverlay
+        ) : (
+          <AutoSizer>
+            {({ height, width }) => (
+              <FixedSizeList
+                height={height}
+                width={width}
+                itemData={{ entries, selectedEntryIds }}
+                itemCount={entries.length}
+                itemSize={33}
+              >
+                {EntryRowRenderer}
+              </FixedSizeList>
+            )}
+          </AutoSizer>
+        )}
+      </Box>
+    </Stack>
   );
 };

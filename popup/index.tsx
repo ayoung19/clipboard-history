@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { App } from "./App";
 import { useThemeColorScheme } from "./hooks/useThemeColorScheme";
 
+import "./index.css";
+
 const queryClient = new QueryClient();
 
 export default function IndexPopup() {

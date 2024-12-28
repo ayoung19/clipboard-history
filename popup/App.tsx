@@ -6,6 +6,7 @@ import {
   Image,
   rem,
   SegmentedControl,
+  Stack,
   Switch,
   Text,
   TextInput,
@@ -18,6 +19,7 @@ import {
   IconCloud,
   IconExternalLink,
   IconNews,
+  IconPictureInPicture,
   IconSearch,
   IconSettings,
   IconStar,
@@ -54,6 +56,7 @@ import {
 
 export const App = () => {
   const [tab, setTab] = useState<Tab>(Tab.Enum.All);
+  const [isFloatingPopup] = useState(window.location.pathname === "/tabs/floating-popup.html");
 
   const [search, setSearch] = useAtom(searchAtom);
 
@@ -99,119 +102,140 @@ export const App = () => {
   }
 
   return (
-    <Card p="sm">
-      <Group align="center" position="apart" mb="sm">
-        <Group align="center" spacing="xs">
-          <Image src={iconSrc} maw={28} />
-          <Title order={6}>Clipboard History IO</Title>
-        </Group>
-        <Group align="center" spacing="xs" grow={false}>
-          <Tooltip
-            label={
-              <Group align="center" spacing={rem(4)} noWrap>
-                <Text fz="xs">Changelog</Text>
-                <IconExternalLink size="0.8rem" />
-              </Group>
-            }
-          >
-            <ActionIcon
-              variant="light"
-              color="indigo.5"
-              component="a"
-              href="https://github.com/ayoung19/clipboard-history/releases"
-              target="_blank"
-            >
-              <IconNews size="1.125rem" />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label={<Text fz="xs">Settings</Text>}>
-            <ActionIcon
-              variant="light"
-              color="indigo.5"
-              onClick={() =>
-                modals.open({
-                  padding: 0,
-                  size: "xl",
-                  withCloseButton: false,
-                  children: <SettingsModalContent />,
-                })
+    <Card h={isFloatingPopup ? "100%" : 600} w={isFloatingPopup ? "100%" : 800} miw={500} p="sm">
+      <Stack h="100%" spacing="sm">
+        <Group align="center" position="apart">
+          <Group align="center" spacing="xs">
+            <Image src={iconSrc} maw={28} />
+            <Title order={6}>Clipboard History IO</Title>
+          </Group>
+          <Group align="center" spacing="xs" grow={false}>
+            <Tooltip
+              label={
+                <Group align="center" spacing={rem(4)} noWrap>
+                  <Text fz="xs">Changelog</Text>
+                  <IconExternalLink size="0.8rem" />
+                </Group>
               }
             >
-              <IconSettings size="1.125rem" />
-            </ActionIcon>
-          </Tooltip>
-          <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
-          <Switch
-            size="md"
-            color="indigo.5"
-            checked={clipboardMonitorIsEnabledQuery.data}
-            onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+              <ActionIcon
+                variant="light"
+                color="indigo.5"
+                component="a"
+                href="https://github.com/ayoung19/clipboard-history/releases"
+                target="_blank"
+              >
+                <IconNews size="1.125rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label={<Text fz="xs">Floating Mode</Text>} disabled={isFloatingPopup}>
+              <ActionIcon
+                variant="light"
+                color="indigo.5"
+                onClick={async () => {
+                  await chrome.windows.create({
+                    url: chrome.runtime.getURL("tabs/floating-popup.html"),
+                    type: "popup",
+                    height: 600,
+                    width: 800,
+                  });
+
+                  window.close();
+                }}
+                disabled={isFloatingPopup}
+              >
+                <IconPictureInPicture size="1.125rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label={<Text fz="xs">Settings</Text>}>
+              <ActionIcon
+                variant="light"
+                color="indigo.5"
+                onClick={() =>
+                  modals.open({
+                    padding: 0,
+                    size: "xl",
+                    withCloseButton: false,
+                    children: <SettingsModalContent />,
+                  })
+                }
+              >
+                <IconSettings size="1.125rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
+            <Switch
+              size="md"
+              color="indigo.5"
+              checked={clipboardMonitorIsEnabledQuery.data}
+              onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+            />
+          </Group>
+        </Group>
+        <Group align="center" position="apart">
+          <TextInput
+            placeholder="Search items or tags"
+            icon={<IconSearch size="1rem" />}
+            size="xs"
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+            w={240}
+            sx={(theme) => ({
+              ".mantine-Input-input": {
+                borderColor: defaultBorderColor(theme),
+                "&:focus, &:focus-within": {
+                  borderColor: theme.fn.primaryColor(),
+                },
+              },
+            })}
+            autoFocus
+          />
+          <SegmentedControl
+            value={tab}
+            onChange={(newTab) => setTab(Tab.parse(newTab))}
+            size="xs"
+            color={
+              tab === Tab.Enum.All ? "indigo.5" : tab === Tab.Enum.Favorites ? "yellow.5" : "cyan.5"
+            }
+            data={[
+              {
+                label: (
+                  <Group align="center" spacing={4} noWrap>
+                    <IconClipboardList size="1rem" />
+                    <Text>All</Text>
+                  </Group>
+                ),
+                value: Tab.Enum.All,
+              },
+              {
+                label: (
+                  <Group align="center" spacing={4} noWrap>
+                    <IconStar size="1rem" />
+                    <Text>Favorites</Text>
+                  </Group>
+                ),
+                value: Tab.Enum.Favorites,
+              },
+              {
+                label: (
+                  <Group align="center" spacing={4} noWrap>
+                    <IconCloud size="1rem" />
+                    <Text>Cloud</Text>
+                  </Group>
+                ),
+                value: Tab.Enum.Cloud,
+              },
+            ]}
           />
         </Group>
-      </Group>
-      <Group align="center" position="apart" mb="sm">
-        <TextInput
-          placeholder="Search items or tags"
-          icon={<IconSearch size="1rem" />}
-          size="xs"
-          value={search}
-          onChange={(e) => setSearch(e.currentTarget.value)}
-          w={240}
-          sx={(theme) => ({
-            ".mantine-Input-input": {
-              borderColor: defaultBorderColor(theme),
-              "&:focus, &:focus-within": {
-                borderColor: theme.fn.primaryColor(),
-              },
-            },
-          })}
-          autoFocus
-        />
-        <SegmentedControl
-          value={tab}
-          onChange={(newTab) => setTab(Tab.parse(newTab))}
-          size="xs"
-          color={
-            tab === Tab.Enum.All ? "indigo.5" : tab === Tab.Enum.Favorites ? "yellow.5" : "cyan.5"
-          }
-          data={[
-            {
-              label: (
-                <Group align="center" spacing={4} noWrap>
-                  <IconClipboardList size="1rem" />
-                  <Text>All</Text>
-                </Group>
-              ),
-              value: Tab.Enum.All,
-            },
-            {
-              label: (
-                <Group align="center" spacing={4} noWrap>
-                  <IconStar size="1rem" />
-                  <Text>Favorites</Text>
-                </Group>
-              ),
-              value: Tab.Enum.Favorites,
-            },
-            {
-              label: (
-                <Group align="center" spacing={4} noWrap>
-                  <IconCloud size="1rem" />
-                  <Text>Cloud</Text>
-                </Group>
-              ),
-              value: Tab.Enum.Cloud,
-            },
-          ]}
-        />
-      </Group>
-      {tab === Tab.Enum.All ? (
-        <AllPage />
-      ) : tab === Tab.Enum.Favorites ? (
-        <FavoritesPage />
-      ) : (
-        <CloudPage />
-      )}
+        {tab === Tab.Enum.All ? (
+          <AllPage />
+        ) : tab === Tab.Enum.Favorites ? (
+          <FavoritesPage />
+        ) : (
+          <CloudPage />
+        )}
+      </Stack>
     </Card>
   );
 };
