@@ -103,7 +103,7 @@ export const App = () => {
       <Group align="center" position="apart" mb="sm">
         <Group align="center" spacing="xs">
           <Image src={iconSrc} maw={28} />
-          <Title order={6}>Clipboard History Pro</Title>
+          <Title order={6}>Clipboard History IO</Title>
         </Group>
         <Group align="center" spacing="xs" grow={false}>
           <Tooltip
