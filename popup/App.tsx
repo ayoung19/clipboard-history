@@ -102,7 +102,7 @@ export const App = () => {
   }
 
   return (
-    <Card h={isFloatingPopup ? "100%" : 600} w={isFloatingPopup ? "100%" : 800} miw={500} p="sm">
+    <Card h={isFloatingPopup ? "100%" : 600} w={isFloatingPopup ? "100%" : 700} miw={500} p="sm">
       <Stack h="100%" spacing="sm">
         <Group align="center" position="apart">
           <Group align="center" spacing="xs">
@@ -137,7 +137,7 @@ export const App = () => {
                     url: chrome.runtime.getURL("tabs/floating-popup.html"),
                     type: "popup",
                     height: 600,
-                    width: 800,
+                    width: 700,
                   });
 
                   window.close();
