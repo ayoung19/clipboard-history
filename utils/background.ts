@@ -1,31 +1,12 @@
-export const watchClipboard = (
-  w: Window,
-  d: Document,
-  getClipboardMonitorIsEnabled: () => Promise<boolean>,
-  cb: (content: string) => Promise<void>,
-) => {
+export const watchClipboard = (w: Window, d: Document, cb: (content: string) => void) => {
   const textarea = d.createElement("textarea");
   d.body.appendChild(textarea);
 
-  const handle = async () => {
-    const a = Date.now();
+  w.setInterval(() => {
+    textarea.value = "";
+    textarea.focus();
+    d.execCommand("paste");
 
-    try {
-      const clipboardMonitorIsEnabled = await getClipboardMonitorIsEnabled();
-
-      if (clipboardMonitorIsEnabled) {
-        textarea.value = "";
-        textarea.focus();
-        d.execCommand("paste");
-
-        await cb(textarea.value);
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      w.setTimeout(handle, Math.max(1000, (Date.now() - a) * 6));
-    }
-  };
-
-  handle();
+    cb(textarea.value);
+  }, 1000);
 };
