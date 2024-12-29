@@ -4,6 +4,7 @@ import {
   Divider,
   Group,
   Image,
+  Indicator,
   rem,
   SegmentedControl,
   Stack,
@@ -12,6 +13,7 @@ import {
   TextInput,
   Title,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
@@ -36,6 +38,7 @@ import type {
   UpdateContextMenusRequestBody,
   UpdateContextMenusResponseBody,
 } from "~background/messages/updateContextMenus";
+import { getChangelogViewedAt, updateChangelogViewedAt } from "~storage/changelogViewedAt";
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
@@ -46,7 +49,8 @@ import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEnt
 import { getSettings, watchSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage";
-import { defaultBorderColor } from "~utils/sx";
+import { defaultBorderColor, lightOrDark } from "~utils/sx";
+import { VERSION } from "~utils/version";
 
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
@@ -62,6 +66,8 @@ import {
 } from "./states/atoms";
 
 export const App = () => {
+  const theme = useMantineTheme();
+
   const [tab, setTab] = useState<Tab>(Tab.Enum.All);
   const [isFloatingPopup] = useState(window.location.pathname === "/tabs/floating-popup.html");
 
@@ -84,7 +90,7 @@ export const App = () => {
   const setEntries = useSetAtom(entriesAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
-  const setSettings = useSetAtom(settingsAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
@@ -103,10 +109,10 @@ export const App = () => {
     });
 
     (async () => {
-      const settings = await getSettings();
+      const s = await getSettings();
 
-      setSettings(settings);
-      setTab(settings.defaultTab);
+      setSettings(s);
+      setTab(s.defaultTab);
     })();
     watchSettings(setSettings);
 
@@ -117,17 +123,27 @@ export const App = () => {
     });
   }, []);
 
-  const queryClient = useQueryClient();
   const clipboardMonitorIsEnabledQuery = useQuery({
     queryKey: ["clipboardMonitorIsEnabled"],
     queryFn: getClipboardMonitorIsEnabled,
   });
+  const changelogViewedAtQuery = useQuery({
+    queryKey: ["changelogViewedAt"],
+    queryFn: getChangelogViewedAt,
+  });
+
+  const queryClient = useQueryClient();
   const toggleClipboardMonitorIsEnabledMutation = useMutation({
     mutationFn: toggleClipboardMonitorIsEnabled,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
   });
 
-  if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
+  if (
+    clipboardMonitorIsEnabledQuery.isPending ||
+    clipboardMonitorIsEnabledQuery.isError ||
+    changelogViewedAtQuery.isPending ||
+    changelogViewedAtQuery.isError
+  ) {
     return null;
   }
 
@@ -148,15 +164,23 @@ export const App = () => {
                 </Group>
               }
             >
-              <ActionIcon
-                variant="light"
-                color="indigo.5"
-                component="a"
-                href="https://github.com/ayoung19/clipboard-history/releases"
-                target="_blank"
+              <Indicator
+                color={lightOrDark(theme, "red.5", "red.7")}
+                size={8}
+                disabled={!settings.changelogIndicator || changelogViewedAtQuery.data === VERSION}
               >
-                <IconNews size="1.125rem" />
-              </ActionIcon>
+                <ActionIcon
+                  variant="light"
+                  color="indigo.5"
+                  onClick={async () => {
+                    await updateChangelogViewedAt();
+
+                    window.open("https://github.com/ayoung19/clipboard-history/releases");
+                  }}
+                >
+                  <IconNews size="1.125rem" />
+                </ActionIcon>
+              </Indicator>
             </Tooltip>
             <Tooltip label={<Text fz="xs">Floating Mode</Text>} disabled={isFloatingPopup}>
               <ActionIcon
@@ -210,14 +234,14 @@ export const App = () => {
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
             w={240}
-            sx={(theme) => ({
+            sx={{
               ".mantine-Input-input": {
                 borderColor: defaultBorderColor(theme),
                 "&:focus, &:focus-within": {
                   borderColor: theme.fn.primaryColor(),
                 },
               },
-            })}
+            }}
             autoFocus
           />
           <SegmentedControl

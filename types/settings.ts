@@ -5,6 +5,7 @@ import { Tab } from "./tab";
 // DO NOT REUSE DEPRECATED FIELDS.
 export const defaultSettings = {
   totalItemsBadge: true,
+  changelogIndicator: true,
   allowBlankItems: true,
   defaultTab: Tab.Enum.All,
   // theme: "light",
@@ -15,6 +16,7 @@ export const defaultSettings = {
 export const Settings = z
   .object({
     totalItemsBadge: z.boolean().default(defaultSettings.totalItemsBadge),
+    changelogIndicator: z.boolean().default(defaultSettings.changelogIndicator),
     allowBlankItems: z.boolean().default(defaultSettings.allowBlankItems),
     defaultTab: Tab.default(defaultSettings.defaultTab),
     // theme: z.string().default(defaultSettings.theme),

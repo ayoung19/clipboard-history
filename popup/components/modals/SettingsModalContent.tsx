@@ -131,6 +131,24 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
+                <Title order={6}>Changelog Indicator</Title>
+                <Text fz="xs">
+                  Display an indicator on the changelog button if the extension was updated since
+                  the changelog was last viewed.
+                </Text>
+              </Stack>
+              <Switch
+                checked={settings.changelogIndicator}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
+
+                  await setSettings({ ...settings, changelogIndicator: checked });
+                }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
                 <Title order={6}>Blank Items</Title>
                 <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
               </Stack>
