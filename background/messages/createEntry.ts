@@ -5,6 +5,8 @@ import { getClipboardSnapshot, updateClipboardSnapshot } from "~storage/clipboar
 import { getSettings } from "~storage/settings";
 import { createEntry } from "~utils/storage";
 
+import { handleUpdateContextMenusRequest } from "./updateContextMenus";
+
 export interface CreateEntryRequestBody {
   content: string;
   timestamp: number;
@@ -28,6 +30,8 @@ export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => 
           // is. If we don't, then only create an entry if the content isn't blank.
           (settings.allowBlankItems || body.content.length > 0) && createEntry(body.content),
         ]);
+
+        await handleUpdateContextMenusRequest();
       }
     }
   }

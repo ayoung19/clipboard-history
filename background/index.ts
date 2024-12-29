@@ -12,7 +12,10 @@ import {
   setActionIconAndBadgeBackgroundColor,
 } from "~utils/actionBadge";
 import { watchClipboard } from "~utils/background";
+import { simplePathBasename } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
+
+import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
@@ -66,7 +69,7 @@ const setupAction = async () => {
 };
 
 chrome.tabs.onActivated.addListener(async () => {
-  await Promise.all([setupOffscreenDocument(), setupAction()]);
+  await Promise.all([setupOffscreenDocument(), setupAction(), handleUpdateContextMenusRequest()]);
 });
 
 chrome.runtime.onSuspend.addListener(async () => {
@@ -79,5 +82,33 @@ chrome.runtime.onSuspend.addListener(async () => {
 });
 
 chrome.runtime.onInstalled.addListener(async () => {
-  await Promise.all([setClipboardMonitorIsEnabled(true), setupOffscreenDocument(), setupAction()]);
+  await Promise.all([
+    setClipboardMonitorIsEnabled(true),
+    setupOffscreenDocument(),
+    setupAction(),
+    handleUpdateContextMenusRequest(),
+  ]);
+});
+
+function paste(content: string) {
+  document.execCommand("insertText", undefined, content);
+}
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (tab?.id) {
+    const entries = await getEntries();
+    const entry = entries.find(
+      (entry) => entry.id === simplePathBasename(info.menuItemId.toString()),
+    );
+
+    if (entry?.content) {
+      chrome.scripting.executeScript({
+        target: {
+          tabId: tab.id,
+        },
+        func: paste,
+        args: [entry.content],
+      });
+    }
+  }
 });

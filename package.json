@@ -61,7 +61,10 @@
       "offscreen",
       "clipboardRead",
       "clipboardWrite",
-      "unlimitedStorage"
+      "unlimitedStorage",
+      "contextMenus",
+      "scripting",
+      "activeTab"
     ]
   }
 }

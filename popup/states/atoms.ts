@@ -5,6 +5,7 @@ import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
+import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 
 export const searchAtom = atom<string>("");
 
@@ -24,12 +25,4 @@ export const nowAtom = atom((get) =>
 );
 
 export const entryIdToTagsAtom = atom<EntryIdToTags>({});
-export const allTagsAtom = atom((get) =>
-  Array.from(
-    Object.values(get(entryIdToTagsAtom)).reduce((acc, curr) => {
-      curr.forEach((tag) => acc.add(tag));
-
-      return acc;
-    }, new Set<string>()),
-  ),
-);
+export const allTagsAtom = atom((get) => entryIdToTagsToAllTags(get(entryIdToTagsAtom)));

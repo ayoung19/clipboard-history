@@ -13,6 +13,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
   IconClipboardList,
@@ -29,6 +30,12 @@ import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 
+import { sendToBackground } from "@plasmohq/messaging";
+
+import type {
+  UpdateContextMenusRequestBody,
+  UpdateContextMenusResponseBody,
+} from "~background/messages/updateContextMenus";
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
@@ -60,6 +67,20 @@ export const App = () => {
 
   const [search, setSearch] = useAtom(searchAtom);
 
+  // TODO: For actions that take a while to render (e.g. deleting an entry), the user could close
+  // the popup before the mutation is rendered causing the context menus to be stale until the user
+  // switches tabs. I decided on this approach as opposed to directly calling the sync function in
+  // the respective storage mutation functions because I like the idea of keeping context menu
+  // updates as separate from core extension logic. We can stick with this until it becomes a
+  // serious pain point for users.
+  const updateContextMenus = useDebouncedCallback(
+    () =>
+      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+        name: "updateContextMenus",
+      }),
+    100,
+  );
+
   const setEntries = useSetAtom(entriesAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
@@ -67,13 +88,19 @@ export const App = () => {
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
-    watchEntries(setEntries);
+    watchEntries((entries) => {
+      setEntries(entries);
+      updateContextMenus();
+    });
 
     (async () => setClipboardSnapshot(await getClipboardSnapshot()))();
     watchClipboardSnapshot(setClipboardSnapshot);
 
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
-    watchFavoriteEntryIds(setFavoriteEntryIds);
+    watchFavoriteEntryIds((favoriteEntryIds) => {
+      setFavoriteEntryIds(favoriteEntryIds);
+      updateContextMenus();
+    });
 
     (async () => {
       const settings = await getSettings();
@@ -84,7 +111,10 @@ export const App = () => {
     watchSettings(setSettings);
 
     (async () => setEntryIdToTags(await getEntryIdToTags()))();
-    watchEntryIdToTags(setEntryIdToTags);
+    watchEntryIdToTags((entryIdToTags) => {
+      setEntryIdToTags(entryIdToTags);
+      updateContextMenus();
+    });
   }, []);
 
   const queryClient = useQueryClient();
