@@ -175,7 +175,13 @@ export const App = () => {
                   onClick={async () => {
                     await updateChangelogViewedAt();
 
-                    window.open("https://github.com/ayoung19/clipboard-history/releases");
+                    await chrome.tabs.create({
+                      url: "https://github.com/ayoung19/clipboard-history/releases",
+                    });
+
+                    if (!isFloatingPopup) {
+                      window.close();
+                    }
                   }}
                 >
                   <IconNews size="1.125rem" />
