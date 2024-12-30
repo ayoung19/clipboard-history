@@ -81,9 +81,11 @@ chrome.runtime.onSuspend.addListener(async () => {
   await chrome.offscreen.closeDocument();
 });
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   await Promise.all([
-    setClipboardMonitorIsEnabled(true),
+    details.reason === chrome.runtime.OnInstalledReason.INSTALL &&
+      setClipboardMonitorIsEnabled(true),
+    chrome.runtime.setUninstallURL("https://www.clipboardhistory.io/uninstall"),
     setupOffscreenDocument(),
     setupAction(),
     handleUpdateContextMenusRequest(),
