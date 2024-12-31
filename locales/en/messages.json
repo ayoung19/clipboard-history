@@ -1,0 +1,26 @@
+{
+  "commonAll": {
+    "message": "All",
+    "description": "Title for button that shows all items."
+  },
+  "commonFavorites": {
+    "message": "Favorites",
+    "description": "Title for button that filters items that are favorited by the user."
+  },
+  "commonCloud": {
+    "message": "Cloud",
+    "description": "Title for button that filters items that are stored in the cloud."
+  },
+  "commonChangelog": {
+    "message": "Changelog",
+    "description": "Title for tooltip for button that redirects user to the Chrome extension's version history and changelog."
+  },
+  "commonFloatingMode": {
+    "message": "Floating Mode",
+    "description": "Title for tooltip for button that opens the Chrome extension in a separate window."
+  },
+  "commonSettings": {
+    "message": "Settings",
+    "description": "Title for tooltip for button that opens the Chrome extension's settings."
+  }
+}

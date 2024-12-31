@@ -262,7 +262,7 @@ export const App = () => {
                 label: (
                   <Group align="center" spacing={4} noWrap>
                     <IconClipboardList size="1rem" />
-                    <Text>All</Text>
+                    <Text>{chrome.i18n.getMessage("commonAll")}</Text>
                   </Group>
                 ),
                 value: Tab.Enum.All,
@@ -271,7 +271,7 @@ export const App = () => {
                 label: (
                   <Group align="center" spacing={4} noWrap>
                     <IconStar size="1rem" />
-                    <Text>Favorites</Text>
+                    <Text>{chrome.i18n.getMessage("commonFavorites")}</Text>
                   </Group>
                 ),
                 value: Tab.Enum.Favorites,
@@ -280,7 +280,7 @@ export const App = () => {
                 label: (
                   <Group align="center" spacing={4} noWrap>
                     <IconCloud size="1rem" />
-                    <Text>Cloud</Text>
+                    <Text>{chrome.i18n.getMessage("commonCloud")}</Text>
                   </Group>
                 ),
                 value: Tab.Enum.Cloud,
