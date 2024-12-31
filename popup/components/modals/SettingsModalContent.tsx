@@ -354,7 +354,7 @@ export const SettingsModalContent = () => {
                       type: "text/plain",
                     }),
                   );
-                  a.download = `clipboard-history-pro-export-${new Date().toISOString()}.json`;
+                  a.download = `clipboard-history-io-export-${new Date().toISOString()}.json`;
                   document.body.appendChild(a);
                   a.click();
                   document.body.removeChild(a);
