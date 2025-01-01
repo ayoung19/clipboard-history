@@ -21,6 +21,8 @@ import {
   IconClipboardList,
   IconCloud,
   IconExternalLink,
+  IconHeart,
+  IconHelp,
   IconNews,
   IconPictureInPicture,
   IconSearch,
@@ -188,6 +190,43 @@ export const App = () => {
                 </ActionIcon>
               </Indicator>
             </Tooltip>
+            <Tooltip
+              label={
+                <Group align="center" spacing={rem(4)} noWrap>
+                  <Text fz="xs">Support Development</Text>
+                  <IconExternalLink size="0.8rem" />
+                </Group>
+              }
+            >
+              <ActionIcon
+                variant="light"
+                color="indigo.5"
+                component="a"
+                href="https://www.clipboardhistory.io/support"
+                target="_blank"
+              >
+                <IconHeart size="1.125rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip
+              label={
+                <Group align="center" spacing={rem(4)} noWrap>
+                  <Text fz="xs">Help & Feedback</Text>
+                  <IconExternalLink size="0.8rem" />
+                </Group>
+              }
+            >
+              <ActionIcon
+                variant="light"
+                color="indigo.5"
+                component="a"
+                href="https://chromewebstore.google.com/detail/ombhfdknibjljckajldielimdjcomcek/support"
+                target="_blank"
+              >
+                <IconHelp size="1.125rem" />
+              </ActionIcon>
+            </Tooltip>
+            <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
             <Tooltip label={<Text fz="xs">Floating Mode</Text>} disabled={isFloatingPopup}>
               <ActionIcon
                 variant="light"
