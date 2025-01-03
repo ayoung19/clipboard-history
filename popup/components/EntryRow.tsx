@@ -117,6 +117,9 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         <Group align="center" spacing={rem(4)} noWrap>
           {entryIdToTags[entry.id]?.toSorted().map((tag) => <TagBadge key={tag} tag={tag} />)}
         </Group>
+        <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
+          {entry.content.length}
+        </Text>
         <Group align="center" spacing={0} noWrap ml={rem(4)}>
           <TagSelect entryId={entry.id} />
           <ActionIcon
