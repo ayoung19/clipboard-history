@@ -9,7 +9,8 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { IconEdit, IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
 import {
@@ -25,6 +26,7 @@ import { badgeDateFormatter } from "~utils/date";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
+import { EditEntryModalContent } from "./modals/EditEntryModalContent";
 import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";
 
@@ -122,6 +124,21 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         </Text>
         <Group align="center" spacing={0} noWrap ml={rem(4)}>
           <TagSelect entryId={entry.id} />
+          <ActionIcon
+            sx={(theme) => commonActionIconSx({ theme })}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              modals.open({
+                padding: 0,
+                size: "xl",
+                withCloseButton: false,
+                children: <EditEntryModalContent entry={entry} />,
+              });
+            }}
+          >
+            <IconEdit size="1rem" />
+          </ActionIcon>
           <ActionIcon
             sx={(theme) => ({
               color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[5],

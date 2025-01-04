@@ -77,6 +77,9 @@ dependencies:
   short-time-ago:
     specifier: ^2.0.0
     version: 2.0.0
+  ts-results:
+    specifier: ^3.3.0
+    version: 3.3.0
   zod:
     specifier: ^3.23.8
     version: 3.23.8
@@ -9241,6 +9244,13 @@ packages:
       typescript: 5.3.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+
+  /ts-results@3.3.0:
+    resolution:
+      {
+        integrity: sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==,
+      }
+    dev: false
 
   /tslib@2.7.0:
     resolution:
