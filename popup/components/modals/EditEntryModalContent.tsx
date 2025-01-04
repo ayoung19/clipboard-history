@@ -53,7 +53,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
         <Title order={5}>Edit Entry</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
-      <Grid gutter="xs">
+      <Grid gutter={0}>
         <Grid.Col span={6}>
           <Text size="xs" color="dimmed">
             Character Count
@@ -66,67 +66,69 @@ export const EditEntryModalContent = ({ entry }: Props) => {
           </Text>
           <Text size="xs">{format(entry.createdAt, "Pp")}</Text>
         </Grid.Col>
-      </Grid>
-      <form
-        onSubmit={handleSubmit(async ({ content }) => {
-          const { ok } = await updateEntryContent(entry.id, content);
+        <Grid.Col span={12}>
+          <form
+            onSubmit={handleSubmit(async ({ content }) => {
+              const { ok } = await updateEntryContent(entry.id, content);
 
-          if (ok) {
-            modals.closeAll();
-          } else {
-            setError("content", { type: "manual", message: "Content must be unique" });
-          }
-        })}
-      >
-        <Stack spacing="xs">
-          <Controller
-            name="content"
-            control={control}
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                label={
-                  <Text size="xs" color="dimmed" fw="normal">
-                    Content
-                  </Text>
-                }
-                autosize
-                maxRows={16}
-                size="xs"
-                error={errors.content?.message}
+              if (ok) {
+                modals.closeAll();
+              } else {
+                setError("content", { type: "manual", message: "Content must be unique" });
+              }
+            })}
+          >
+            <Stack spacing="xs">
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    {...field}
+                    label={
+                      <Text size="xs" color="dimmed" fw="normal">
+                        Content
+                      </Text>
+                    }
+                    autosize
+                    maxRows={16}
+                    size="xs"
+                    error={errors.content?.message}
+                  />
+                )}
               />
-            )}
-          />
-          <Group align="center" position="apart">
-            <Text
-              size="xs"
-              color={lightOrDark(theme, "orange", "yellow")}
-              display="flex"
-              align="center"
-            >
-              {isDirty && (
-                <>
-                  <IconAlertTriangle size="1.125rem" />
-                  <Text ml={4}>You have unsaved changes.</Text>
-                </>
-              )}
-            </Text>
-            <Group align="center" spacing="xs">
-              <Button size="xs" variant="subtle" disabled={!isDirty} onClick={() => reset()}>
-                Reset
-              </Button>
-              <Button
-                size="xs"
-                disabled={!isDirty || !isValid}
-                type="submit"
-                loading={isSubmitting}
-              >
-                Save
-              </Button>
-            </Group>
-          </Group>
-        </Stack>
-      </form>
+              <Group align="center" position="apart">
+                <Text
+                  size="xs"
+                  color={lightOrDark(theme, "orange", "yellow")}
+                  display="flex"
+                  align="center"
+                >
+                  {isDirty && (
+                    <>
+                      <IconAlertTriangle size="1.125rem" />
+                      <Text ml={4}>You have unsaved changes.</Text>
+                    </>
+                  )}
+                </Text>
+                <Group align="center" spacing="xs">
+                  <Button size="xs" variant="subtle" disabled={!isDirty} onClick={() => reset()}>
+                    Reset
+                  </Button>
+                  <Button
+                    size="xs"
+                    disabled={!isDirty || !isValid}
+                    type="submit"
+                    loading={isSubmitting}
+                  >
+                    Save
+                  </Button>
+                </Group>
+              </Group>
+            </Stack>
+          </form>
+        </Grid.Col>
+      </Grid>
     </Paper>
   );
 };
