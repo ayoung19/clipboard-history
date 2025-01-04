@@ -38,7 +38,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
     setError,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty, isValid, isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
       content: entry.content,
@@ -115,7 +115,12 @@ export const EditEntryModalContent = ({ entry }: Props) => {
               <Button size="xs" variant="subtle" disabled={!isDirty} onClick={() => reset()}>
                 Reset
               </Button>
-              <Button size="xs" disabled={!isDirty} type="submit" loading={isSubmitting}>
+              <Button
+                size="xs"
+                disabled={!isDirty || !isValid}
+                type="submit"
+                loading={isSubmitting}
+              >
                 Save
               </Button>
             </Group>
