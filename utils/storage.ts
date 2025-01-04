@@ -1,9 +1,10 @@
 import { createHash } from "crypto";
+import { Err, Ok, Result } from "ts-results";
 
 import { Storage } from "@plasmohq/storage";
 
 import { getEntryIdToTags, setEntryIdToTags } from "~storage/entryIdToTags";
-import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import { getFavoriteEntryIds, setFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 
@@ -87,4 +88,43 @@ export const deleteEntries = async (entryIds: string[]) => {
     setEntries(entries.filter(({ id }) => !entryIdSet.has(id))),
     setEntryIdToTags(entryIdToTags),
   ]);
+};
+
+export const updateEntryContent = async (
+  entryId: string,
+  content: string,
+): Promise<Result<undefined, "content must be unique">> => {
+  const [entries, favoriteEntryIds, entryIdToTags] = await Promise.all([
+    getEntries(),
+    getFavoriteEntryIds(),
+    getEntryIdToTags(),
+  ]);
+
+  const newEntryId = createHash("sha256").update(content).digest("hex");
+
+  if (entries.some((entry) => entry.id === newEntryId)) {
+    return Err("content must be unique");
+  }
+
+  const tags = entryIdToTags[entryId];
+  if (tags !== undefined) {
+    entryIdToTags[newEntryId] = [...tags];
+  }
+  delete entryIdToTags[entryId];
+
+  await Promise.all([
+    setEntries(
+      entries.map((entry) =>
+        entry.id === entryId ? { ...entry, id: newEntryId, content } : entry,
+      ),
+    ),
+    setFavoriteEntryIds(
+      favoriteEntryIds.map((favoriteEntryId) =>
+        favoriteEntryId === entryId ? newEntryId : favoriteEntryId,
+      ),
+    ),
+    setEntryIdToTags(entryIdToTags),
+  ]);
+
+  return Ok(undefined);
 };
