@@ -50,7 +50,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Edit Entry</Title>
+        <Title order={5}>Edit Item</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Grid gutter={0}>
