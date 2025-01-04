@@ -9,6 +9,7 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ActionIcon,
   Box,
   Button,
   Card,
@@ -20,11 +21,13 @@ import {
   Select,
   Stack,
   Text,
+  TextInput,
   Title,
+  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconArrowsSort } from "@tabler/icons-react";
+import { IconArrowsSort, IconPencilPlus } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
@@ -36,6 +39,7 @@ import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { createEntry, deleteEntries } from "~utils/storage";
+import { commonActionIconSx } from "~utils/sx";
 
 import { Draggable } from "../Draggable";
 import { MergeItem } from "../MergeItem";
@@ -100,6 +104,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
 
   const [entries, setEntries] = useState(initialEntries);
   const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
+  const [showCustomDelimiterField, setShowCustomDelimiterField] = useState(false);
   const activeEntry = useMemo(
     () => entries.find((entry) => entry.id === activeEntryId),
     [entries, activeEntryId],
@@ -240,25 +245,48 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               <Text size="xs" color="dimmed">
                 Delimiter
               </Text>
-              <Controller
-                control={control}
-                name="delimiter"
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    data={[
-                      { value: "\n", label: "Newline (\\n)" },
-                      { value: ",", label: "Comma (,)" },
-                      { value: ";", label: "Semicolon (;)" },
-                      { value: " ", label: "Space ( )" },
-                      { value: "\t", label: "Tab (\\t)" },
-                      { value: "", label: "None" },
-                    ]}
-                    size="xs"
-                    withinPortal
+              {showCustomDelimiterField ? (
+                <Controller
+                  control={control}
+                  name="delimiter"
+                  render={({ field }) => <TextInput {...field} placeholder="Type here" size="xs" />}
+                />
+              ) : (
+                <>
+                  <Controller
+                    control={control}
+                    name="delimiter"
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        defaultValue="\n"
+                        data={[
+                          { value: "\n", label: "Newline (\\n)" },
+                          { value: ",", label: "Comma (,)" },
+                          { value: ";", label: "Semicolon (;)" },
+                          { value: " ", label: "Space ( )" },
+                          { value: "\t", label: "Tab (\\t)" },
+                          { value: "", label: "None" },
+                        ]}
+                        size="xs"
+                        withinPortal
+                      />
+                    )}
                   />
-                )}
-              />
+                  <Text size="xs" color="dimmed">
+                    or
+                  </Text>
+                  <Tooltip label="Set custom delimiter">
+                    <ActionIcon
+                      size="sm"
+                      sx={(theme) => commonActionIconSx({ theme })}
+                      onClick={() => setShowCustomDelimiterField(true)}
+                    >
+                      <IconPencilPlus />
+                    </ActionIcon>
+                  </Tooltip>
+                </>
+              )}
             </Group>
           </Group>
           <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
