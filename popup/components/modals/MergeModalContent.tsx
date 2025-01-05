@@ -9,7 +9,6 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ActionIcon,
   Box,
   Button,
   Card,
@@ -21,13 +20,12 @@ import {
   Select,
   Stack,
   Text,
-  TextInput,
+  Textarea,
   Title,
-  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconArrowsSort, IconPencilPlus } from "@tabler/icons-react";
+import { IconArrowsSort } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
@@ -39,7 +37,6 @@ import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { createEntry, deleteEntries } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
 
 import { Draggable } from "../Draggable";
 import { MergeItem } from "../MergeItem";
@@ -50,6 +47,7 @@ const PADDING_SIZE = 4;
 const schema = z.object({
   deleteSourceItems: z.boolean(),
   delimiter: z.string(),
+  customDelimiter: z.string(),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -90,12 +88,14 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
       deleteSourceItems: false,
       delimiter: "\n",
+      customDelimiter: "",
     },
     resolver: zodResolver(schema),
   });
@@ -104,11 +104,12 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
 
   const [entries, setEntries] = useState(initialEntries);
   const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
-  const [showCustomDelimiterField, setShowCustomDelimiterField] = useState(false);
   const activeEntry = useMemo(
     () => entries.find((entry) => entry.id === activeEntryId),
     [entries, activeEntryId],
   );
+
+  const delimiterInputValue = watch("delimiter");
 
   return (
     <Paper p="md">
@@ -117,8 +118,9 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <form
-        onSubmit={handleSubmit(async ({ deleteSourceItems, delimiter }) => {
-          const content = entries.map(({ content }) => content).join(delimiter);
+        onSubmit={handleSubmit(async ({ deleteSourceItems, delimiter, customDelimiter }) => {
+          const selectedDelimiter = delimiter === "custom" ? customDelimiter : delimiter;
+          const content = entries.map(({ content }) => content).join(selectedDelimiter);
 
           await createEntry(content);
           if (deleteSourceItems) {
@@ -245,50 +247,38 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               <Text size="xs" color="dimmed">
                 Delimiter
               </Text>
-              {showCustomDelimiterField ? (
-                <Controller
-                  control={control}
-                  name="delimiter"
-                  render={({ field }) => <TextInput {...field} placeholder="Type here" size="xs" />}
-                />
-              ) : (
-                <>
-                  <Controller
-                    control={control}
-                    name="delimiter"
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        defaultValue="\n"
-                        data={[
-                          { value: "\n", label: "Newline (\\n)" },
-                          { value: ",", label: "Comma (,)" },
-                          { value: ";", label: "Semicolon (;)" },
-                          { value: " ", label: "Space ( )" },
-                          { value: "\t", label: "Tab (\\t)" },
-                          { value: "", label: "None" },
-                        ]}
-                        size="xs"
-                        withinPortal
-                      />
-                    )}
+              <Controller
+                control={control}
+                name="delimiter"
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    defaultValue="\n"
+                    data={[
+                      { value: "\n", label: "Newline (\\n)" },
+                      { value: ",", label: "Comma (,)" },
+                      { value: ";", label: "Semicolon (;)" },
+                      { value: " ", label: "Space ( )" },
+                      { value: "\t", label: "Tab (\\t)" },
+                      { value: "", label: "None" },
+                      { value: "custom", label: "Custom..." },
+                    ]}
+                    size="xs"
+                    withinPortal
                   />
-                  <Text size="xs" color="dimmed">
-                    or
-                  </Text>
-                  <Tooltip label="Set custom delimiter">
-                    <ActionIcon
-                      size="sm"
-                      sx={(theme) => commonActionIconSx({ theme })}
-                      onClick={() => setShowCustomDelimiterField(true)}
-                    >
-                      <IconPencilPlus />
-                    </ActionIcon>
-                  </Tooltip>
-                </>
-              )}
+                )}
+              />
             </Group>
           </Group>
+          {delimiterInputValue === "custom" && (
+            <Controller
+              control={control}
+              name="customDelimiter"
+              render={({ field }) => (
+                <Textarea {...field} placeholder="Type custom delimiter" size="xs" />
+              )}
+            />
+          )}
           <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
             Merge
           </Button>
