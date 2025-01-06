@@ -110,6 +110,13 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
                     <sub><b>Usamah Ulde</b></sub>
                 </a>
             </td>
+            <td align="center">
+                <a href="https://github.com/aanand3">
+                    <img src="https://avatars.githubusercontent.com/u/63207932?v=4" width="100;" alt="aanand3"/>
+                    <br />
+                    <sub><b>aanand3</b></sub>
+                </a>
+            </td>
 		</tr>
 	<tbody>
 </table>
