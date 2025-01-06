@@ -275,7 +275,16 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               control={control}
               name="customDelimiter"
               render={({ field }) => (
-                <Textarea {...field} placeholder="Type custom delimiter" size="xs" />
+                <Textarea
+                    {...field}
+                    label={
+                      <Text size="xs" color="dimmed" fw="normal">
+                        Custom Delimiter
+                      </Text>
+                    }
+                    autosize
+                    size="xs"
+                  />
               )}
             />
           )}
