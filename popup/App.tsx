@@ -76,7 +76,9 @@ export const App = () => {
   const theme = useMantineTheme();
 
   const [tab, setTab] = useState<Tab>(Tab.Enum.All);
-  const [isFloatingPopup] = useState(window.location.pathname === "/tabs/floating-popup.html");
+  const [isFloatingPopup] = useState(
+    new URLSearchParams(window.location.search).get("ref") === "popup",
+  );
 
   const [search, setSearch] = useAtom(searchAtom);
 
@@ -233,7 +235,7 @@ export const App = () => {
                 color="indigo.5"
                 onClick={async () => {
                   await chrome.windows.create({
-                    url: chrome.runtime.getURL("tabs/floating-popup.html"),
+                    url: chrome.runtime.getURL("popup.html?ref=popup"),
                     type: "popup",
                     height: 600,
                     width: 700,
