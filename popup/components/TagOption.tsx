@@ -1,7 +1,7 @@
 import { Checkbox, Group, rem } from "@mantine/core";
 import { useFocusWithin, useHotkeys, useMouse } from "@mantine/hooks";
 import { useAtomValue } from "jotai";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 
 import { entryIdToTagsAtom } from "~popup/states/atoms";
 import { setEntryIdToTags } from "~storage/entryIdToTags";
@@ -28,7 +28,6 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
     setEntryIdToTags({
       ...entryIdToTags,
       [entryId]: checked ? currentTags.filter((x) => x !== tag) : [...currentTags, tag],
-      
     });
   };
 
