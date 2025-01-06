@@ -1,29 +1,7 @@
-import {
-  closestCenter,
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { closestCenter, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  CloseButton,
-  Group,
-  Paper,
-  rem,
-  Select,
-  Stack,
-  Text,
-  Textarea,
-  Title,
-  UnstyledButton,
-} from "@mantine/core";
+import { Box, Button, Card, Checkbox, CloseButton, Group, Paper, rem, Select, Stack, Text, Textarea, Title, UnstyledButton } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconArrowsSort } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
@@ -33,13 +11,18 @@ import { Controller, useForm } from "react-hook-form";
 import { FixedSizeList } from "react-window";
 import { z } from "zod";
 
+
+
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { createEntry, deleteEntries } from "~utils/storage";
 
+
+
 import { Draggable } from "../Draggable";
 import { MergeItem } from "../MergeItem";
+
 
 // https://github.com/bvaughn/react-window?tab=readme-ov-file#can-i-add-padding-to-the-top-and-bottom-of-a-list
 const PADDING_SIZE = 4;
@@ -108,8 +91,6 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
     () => entries.find((entry) => entry.id === activeEntryId),
     [entries, activeEntryId],
   );
-
-  const delimiterInputValue = watch("delimiter");
 
   return (
     <Paper p="md">
@@ -253,7 +234,6 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    defaultValue="\n"
                     data={[
                       { value: "\n", label: "Newline (\\n)" },
                       { value: ",", label: "Comma (,)" },
@@ -270,7 +250,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               />
             </Group>
           </Group>
-          {delimiterInputValue === "custom" && (
+          {watch("delimiter") === "custom" && (
             <Controller
               control={control}
               name="customDelimiter"
