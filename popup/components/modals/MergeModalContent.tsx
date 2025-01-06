@@ -20,6 +20,7 @@ import {
   Select,
   Stack,
   Text,
+  Textarea,
   Title,
   UnstyledButton,
 } from "@mantine/core";
@@ -46,6 +47,7 @@ const PADDING_SIZE = 4;
 const schema = z.object({
   deleteSourceItems: z.boolean(),
   delimiter: z.string(),
+  customDelimiter: z.string(),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -86,12 +88,14 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<FormValues>({
     defaultValues: {
       deleteSourceItems: false,
       delimiter: "\n",
+      customDelimiter: "",
     },
     resolver: zodResolver(schema),
   });
@@ -112,8 +116,9 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <form
-        onSubmit={handleSubmit(async ({ deleteSourceItems, delimiter }) => {
-          const content = entries.map(({ content }) => content).join(delimiter);
+        onSubmit={handleSubmit(async ({ deleteSourceItems, delimiter, customDelimiter }) => {
+          const selectedDelimiter = delimiter === "custom" ? customDelimiter : delimiter;
+          const content = entries.map(({ content }) => content).join(selectedDelimiter);
 
           await createEntry(content);
           if (deleteSourceItems) {
@@ -253,6 +258,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
                       { value: " ", label: "Space ( )" },
                       { value: "\t", label: "Tab (\\t)" },
                       { value: "", label: "None" },
+                      { value: "custom", label: "Custom..." },
                     ]}
                     size="xs"
                     withinPortal
@@ -261,6 +267,24 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               />
             </Group>
           </Group>
+          {watch("delimiter") === "custom" && (
+            <Controller
+              control={control}
+              name="customDelimiter"
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  label={
+                    <Text size="xs" color="dimmed" fw="normal">
+                      Custom Delimiter
+                    </Text>
+                  }
+                  autosize
+                  size="xs"
+                />
+              )}
+            />
+          )}
           <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
             Merge
           </Button>

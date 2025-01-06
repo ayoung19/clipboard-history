@@ -37,3 +37,4 @@ keys.json
 
 # temporary package.json
 .package.json
+/.idea/
