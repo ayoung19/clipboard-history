@@ -26,3 +26,5 @@ export const nowAtom = atom((get) =>
 
 export const entryIdToTagsAtom = atom<EntryIdToTags>({});
 export const allTagsAtom = atom((get) => entryIdToTagsToAllTags(get(entryIdToTagsAtom)));
+
+export const changelogViewedAtAtom = atom<string>();

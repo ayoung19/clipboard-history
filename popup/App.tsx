@@ -40,7 +40,11 @@ import type {
   UpdateContextMenusRequestBody,
   UpdateContextMenusResponseBody,
 } from "~background/messages/updateContextMenus";
-import { getChangelogViewedAt, updateChangelogViewedAt } from "~storage/changelogViewedAt";
+import {
+  getChangelogViewedAt,
+  updateChangelogViewedAt,
+  watchChangelogViewedAt,
+} from "~storage/changelogViewedAt";
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
@@ -59,6 +63,7 @@ import { AllPage } from "./pages/AllPage";
 import { CloudPage } from "./pages/CloudPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import {
+  changelogViewedAtAtom,
   clipboardSnapshotAtom,
   entriesAtom,
   entryIdToTagsAtom,
@@ -94,6 +99,7 @@ export const App = () => {
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
+  const [changelogViewedAt, setChangelogViewedAt] = useAtom(changelogViewedAtAtom);
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
     watchEntries((entries) => {
@@ -123,15 +129,14 @@ export const App = () => {
       setEntryIdToTags(entryIdToTags);
       updateContextMenus();
     });
+
+    getChangelogViewedAt().then(setChangelogViewedAt);
+    watchChangelogViewedAt(setChangelogViewedAt);
   }, []);
 
   const clipboardMonitorIsEnabledQuery = useQuery({
     queryKey: ["clipboardMonitorIsEnabled"],
     queryFn: getClipboardMonitorIsEnabled,
-  });
-  const changelogViewedAtQuery = useQuery({
-    queryKey: ["changelogViewedAt"],
-    queryFn: getChangelogViewedAt,
   });
 
   const queryClient = useQueryClient();
@@ -140,12 +145,7 @@ export const App = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
   });
 
-  if (
-    clipboardMonitorIsEnabledQuery.isPending ||
-    clipboardMonitorIsEnabledQuery.isError ||
-    changelogViewedAtQuery.isPending ||
-    changelogViewedAtQuery.isError
-  ) {
+  if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
     return null;
   }
 
@@ -169,7 +169,7 @@ export const App = () => {
               <Indicator
                 color={lightOrDark(theme, "red.5", "red.7")}
                 size={8}
-                disabled={!settings.changelogIndicator || changelogViewedAtQuery.data === VERSION}
+                disabled={!settings.changelogIndicator || changelogViewedAt === VERSION}
               >
                 <ActionIcon
                   variant="light"
