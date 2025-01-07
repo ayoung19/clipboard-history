@@ -42,7 +42,7 @@ import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
 import { getEntries } from "~utils/storage";
-import {capitalize, formatBytes} from "~utils/string";
+import { capitalize, formatBytes } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 const schema = z.object({
@@ -57,8 +57,8 @@ export const SettingsModalContent = () => {
 
   const [file, setFile] = useState<File | null>(null);
 
-  const entries = useAtomValue(entriesAtom)
-  const entriesSizeInBytes = new Blob([JSON.stringify(entries)]).size - 2 // empty array is 2 bytes
+  const entries = useAtomValue(entriesAtom);
+  const entriesSizeInBytes = new Blob([JSON.stringify(entries)]).size - 2; // empty array is 2 bytes
 
   const {
     control,
