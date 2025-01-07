@@ -36,13 +36,13 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { settingsAtom } from "~popup/states/atoms";
+import { entriesAtom, settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
 import { getEntries } from "~utils/storage";
-import { capitalize } from "~utils/string";
+import {capitalize, formatBytes} from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 const schema = z.object({
@@ -56,6 +56,9 @@ export const SettingsModalContent = () => {
   const systemColorScheme = useColorScheme();
 
   const [file, setFile] = useState<File | null>(null);
+
+  const entries = useAtomValue(entriesAtom)
+  const entriesSizeInBytes = new Blob([JSON.stringify(entries)]).size - 2 // empty array is 2 bytes
 
   const {
     control,
@@ -211,6 +214,16 @@ export const SettingsModalContent = () => {
           >
             <Stack p="md">
               <Stack spacing="xs">
+                <Group align="flex-start" spacing="md" position="apart" noWrap>
+                  <Stack spacing={0}>
+                    <Title order={6}>Current Storage</Title>
+                    <Text fz="xs">
+                      Total size of all items currently stored in your clipboard history.
+                    </Text>
+                  </Stack>
+                  <Title order={6}>{formatBytes(entriesSizeInBytes)}</Title>
+                </Group>
+                <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
                 <Group align="flex-start" position="apart" noWrap>
                   <Stack spacing={0}>
                     <Title order={6}>Item Limit</Title>
