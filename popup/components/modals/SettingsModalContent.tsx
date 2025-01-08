@@ -36,7 +36,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { entriesAtom, settingsAtom } from "~popup/states/atoms";
+import { entriesSizeInBytesAtom, settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
@@ -52,13 +52,12 @@ type FormValues = z.infer<typeof schema>;
 
 export const SettingsModalContent = () => {
   const theme = useMantineTheme();
-  const settings = useAtomValue(settingsAtom);
   const systemColorScheme = useColorScheme();
 
-  const [file, setFile] = useState<File | null>(null);
+  const settings = useAtomValue(settingsAtom);
+  const entriesSizeInBytes = useAtomValue(entriesSizeInBytesAtom);
 
-  const entries = useAtomValue(entriesAtom);
-  const entriesSizeInBytes = new Blob([JSON.stringify(entries)]).size - 2; // empty array is 2 bytes
+  const [file, setFile] = useState<File | null>(null);
 
   const {
     control,
