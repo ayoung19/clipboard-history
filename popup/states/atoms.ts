@@ -1,6 +1,5 @@
 import { max } from "date-fns";
 import { atom } from "jotai";
-import { useAtomValue } from "jotai/index";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
