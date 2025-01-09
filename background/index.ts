@@ -114,3 +114,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
   }
 });
+
+chrome.commands.onCommand.addListener(async (command, tab) => {
+  // console.log(`Command "${command}" triggered!`); todo remove this
+  // todo map the command to the right entry
+  if (tab?.id) {
+    const entries = await getEntries();
+    const entry = entries[0];
+    if (entry?.content) {
+      chrome.scripting.executeScript({
+        target: {
+          tabId: tab.id,
+        },
+        func: paste,
+        args: [entry.content],
+      });
+    }
+  }
+});

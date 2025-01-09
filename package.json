@@ -66,6 +66,26 @@
       "contextMenus",
       "scripting",
       "activeTab"
-    ]
+    ],
+    "commands": {
+      "paste-entry-1": {
+        "suggested_key": {
+          "default": "Alt+Shift+1"
+        },
+        "description": "Paste clipboard entry 1"
+      },
+      "paste-entry-2": {
+        "suggested_key": {
+          "default": "Alt+Shift+2"
+        },
+        "description": "Paste clipboard entry 2"
+      },
+      "paste-entry-3": {
+        "suggested_key": {
+          "default": "Alt+Shift+3"
+        },
+        "description": "Paste clipboard entry 3"
+      }
+    }
   }
 }
