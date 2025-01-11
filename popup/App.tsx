@@ -53,6 +53,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
+import { PopupSizeMap, type PopupSizeDimensions } from "~types/popupWindowSize";
 import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -102,6 +103,8 @@ export const App = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
   const [changelogViewedAt, setChangelogViewedAt] = useAtom(changelogViewedAtAtom);
+  const windowSize: PopupSizeDimensions = PopupSizeMap[settings.popupWindowSize];
+
   useEffect(() => {
     (async () => setEntries(await getEntries()))();
     watchEntries((entries) => {
@@ -152,7 +155,12 @@ export const App = () => {
   }
 
   return (
-    <Card h={isFloatingPopup ? "100%" : 600} w={isFloatingPopup ? "100%" : 700} miw={500} p="sm">
+    <Card
+      h={isFloatingPopup ? "100%" : windowSize.height}
+      w={isFloatingPopup ? "100%" : windowSize.width}
+      miw={500}
+      p="sm"
+    >
       <Stack h="100%" spacing="sm">
         <Group align="center" position="apart">
           <Group align="center" spacing="xs">
