@@ -23,7 +23,10 @@ export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => 
         updateClipboardSnapshot(body.content),
         // If we allow blank items then an entry is always created regardless of what the content
         // is. If we don't, then only create an entry if the content isn't blank.
-        (settings.allowBlankItems || body.content.length > 0) && createEntry(body.content),
+        (settings.allowBlankItems || body.content.length > 0) &&
+          (settings.localItemCharacterLimit === null ||
+            body.content.length <= settings.localItemCharacterLimit) &&
+          createEntry(body.content),
       ]);
 
       await handleUpdateContextMenusRequest();

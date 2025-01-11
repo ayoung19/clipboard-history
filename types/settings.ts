@@ -11,6 +11,7 @@ export const defaultSettings = {
   // theme: "light",
   themeV2: "system",
   localItemLimit: null,
+  localItemCharacterLimit: null,
 };
 
 export const Settings = z
@@ -22,6 +23,7 @@ export const Settings = z
     // theme: z.string().default(defaultSettings.theme),
     themeV2: z.string().default(defaultSettings.themeV2),
     localItemLimit: z.number().nullable().default(defaultSettings.localItemLimit),
+    localItemCharacterLimit: z.number().nullable().default(defaultSettings.localItemCharacterLimit),
   })
   .default(defaultSettings);
 export type Settings = z.infer<typeof Settings>;

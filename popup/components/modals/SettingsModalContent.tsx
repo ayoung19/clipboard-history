@@ -47,6 +47,7 @@ import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 const schema = z.object({
   localItemLimit: z.number().min(1).nullable(),
+  localItemCharacterLimit: z.number().min(1).nullable(),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -63,10 +64,12 @@ export const SettingsModalContent = () => {
     setValue,
     handleSubmit,
     reset,
+    trigger,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
       localItemLimit: settings.localItemLimit,
+      localItemCharacterLimit: settings.localItemCharacterLimit,
     },
     mode: "all",
     resolver: zodResolver(schema),
@@ -204,9 +207,9 @@ export const SettingsModalContent = () => {
 
         <Tabs.Panel value="storage">
           <form
-            onSubmit={handleSubmit(async ({ localItemLimit }) => {
-              await setSettings({ ...settings, localItemLimit });
-              reset({ localItemLimit });
+            onSubmit={handleSubmit(async ({ localItemLimit, localItemCharacterLimit }) => {
+              await setSettings({ ...settings, localItemLimit, localItemCharacterLimit });
+              reset({ localItemLimit, localItemCharacterLimit });
             })}
           >
             <Stack p="md">
@@ -221,15 +224,16 @@ export const SettingsModalContent = () => {
                   </Stack>
                   <Switch
                     checked={watch("localItemLimit") !== null}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setValue(
                         "localItemLimit",
                         e.target.checked ? settings.localItemLimit || 150 : null,
                         {
                           shouldDirty: true,
                         },
-                      )
-                    }
+                      );
+                      trigger();
+                    }}
                   />
                 </Group>
                 <Controller
@@ -239,8 +243,47 @@ export const SettingsModalContent = () => {
                     <NumberInput
                       {...field}
                       value={field.value === null ? "" : field.value}
-                      onChange={(value) => (value === "" ? null : field.onChange(value))}
+                      onChange={(value) => field.onChange(value === "" ? 0 : value)}
                       error={errors.localItemLimit?.message}
+                      disabled={field.value === null}
+                      size="xs"
+                    />
+                  )}
+                />
+              </Stack>
+              <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+              <Stack spacing="xs">
+                <Group align="flex-start" position="apart" noWrap>
+                  <Stack spacing={0}>
+                    <Title order={6}>Item Character Limit</Title>
+                    <Text fz="xs">
+                      Set the maximum number of characters an item may have before it's ignored by
+                      the clipboard monitor and not added to the clipboard history.
+                    </Text>
+                  </Stack>
+                  <Switch
+                    checked={watch("localItemCharacterLimit") !== null}
+                    onChange={(e) => {
+                      setValue(
+                        "localItemCharacterLimit",
+                        e.target.checked ? settings.localItemCharacterLimit || 25000 : null,
+                        {
+                          shouldDirty: true,
+                        },
+                      );
+                      trigger();
+                    }}
+                  />
+                </Group>
+                <Controller
+                  name="localItemCharacterLimit"
+                  control={control}
+                  render={({ field }) => (
+                    <NumberInput
+                      {...field}
+                      value={field.value === null ? "" : field.value}
+                      onChange={(value) => field.onChange(value === "" ? 0 : value)}
+                      error={errors.localItemCharacterLimit?.message}
                       disabled={field.value === null}
                       size="xs"
                     />
