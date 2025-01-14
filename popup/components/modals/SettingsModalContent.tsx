@@ -168,7 +168,7 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Adjust size</Title>
+                <Title order={6}>Window Size</Title>
                 <Text fz="xs">Change the size of the extension popup window</Text>
               </Stack>
               <Select
