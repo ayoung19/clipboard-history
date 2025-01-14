@@ -1,4 +1,5 @@
 import { ActionIcon } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
@@ -22,6 +23,7 @@ export const EntryDeleteAction = ({ entryId }: Props) => {
 
         if (!isFavoriteEntry) {
           deleteEntries([entryId]);
+          modals.closeAll();
         }
       }}
     >
