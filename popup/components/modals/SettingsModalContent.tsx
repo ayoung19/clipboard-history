@@ -169,7 +169,7 @@ export const SettingsModalContent = () => {
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Title order={6}>Window Size</Title>
-                <Text fz="xs">Change the size of the extension popup window</Text>
+                <Text fz="xs">Select the size of the extension's window.</Text>
               </Stack>
               <Select
                 value={settings.popupWindowSize}
