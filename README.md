@@ -98,7 +98,7 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
             </td>
             <td align="center">
                 <a href="https://github.com/morph1nX">
-                    <img src="https://avatars.githubusercontent.com/u/48093060?v=4" width="100;" alt="morph1nX"/>
+                    <img src="https://avatars.githubusercontent.com/u/48093060?v=4" width="100;" alt="aichRhythm"/>
                     <br />
                     <sub><b>Rhythm Aich</b></sub>
                 </a>
