@@ -21,8 +21,8 @@ import type { Entry } from "~types/entry";
 import { updateEntryContent } from "~utils/storage";
 import { lightOrDark } from "~utils/sx";
 
-import { EntryFavoriteAction } from "../EntryFavoriteAction";
 import { EntryDeleteAction } from "../EntryDeleteAction";
+import { EntryFavoriteAction } from "../EntryFavoriteAction";
 
 const schema = z.object({
   content: z.string(),

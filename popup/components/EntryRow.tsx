@@ -13,18 +13,14 @@ import { modals } from "@mantine/modals";
 import { IconEdit } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
-import {
-  clipboardSnapshotAtom,
-  entryIdToTagsAtom,
-  nowAtom,
-} from "~popup/states/atoms";
+import { clipboardSnapshotAtom, entryIdToTagsAtom, nowAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
-import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EntryDeleteAction } from "./EntryDeleteAction";
+import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EditEntryModalContent } from "./modals/EditEntryModalContent";
 import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";

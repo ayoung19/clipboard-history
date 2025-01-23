@@ -14,7 +14,7 @@ interface Props {
 export const EntryDeleteAction = ({ entryId }: Props) => {
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
   const isFavoriteEntry = favoriteEntryIdsSet.has(entryId);
-  
+
   return (
     <ActionIcon
       sx={(theme) => commonActionIconSx({ theme, disabled: isFavoriteEntry })}
@@ -27,7 +27,7 @@ export const EntryDeleteAction = ({ entryId }: Props) => {
         }
       }}
     >
-    <IconTrash size="1rem" />
-  </ActionIcon>
+      <IconTrash size="1rem" />
+    </ActionIcon>
   );
 };

@@ -1,6 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
+
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { lightOrDark } from "~utils/sx";
