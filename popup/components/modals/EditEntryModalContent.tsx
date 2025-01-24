@@ -21,6 +21,9 @@ import type { Entry } from "~types/entry";
 import { updateEntryContent } from "~utils/storage";
 import { lightOrDark } from "~utils/sx";
 
+import { EntryDeleteAction } from "../EntryDeleteAction";
+import { EntryFavoriteAction } from "../EntryFavoriteAction";
+
 const schema = z.object({
   content: z.string(),
 });
@@ -112,6 +115,8 @@ export const EditEntryModalContent = ({ entry }: Props) => {
                   )}
                 </Text>
                 <Group align="center" spacing="xs">
+                  <EntryFavoriteAction entryId={entry.id} />
+                  <EntryDeleteAction entryId={entry.id} />
                   <Button size="xs" variant="subtle" disabled={!isDirty} onClick={() => reset()}>
                     Reset
                   </Button>

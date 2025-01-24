@@ -10,22 +10,17 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconEdit, IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
+import { IconEdit } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
-import {
-  clipboardSnapshotAtom,
-  entryIdToTagsAtom,
-  favoriteEntryIdsSetAtom,
-  nowAtom,
-} from "~popup/states/atoms";
+import { clipboardSnapshotAtom, entryIdToTagsAtom, nowAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
-import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
-import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
+import { EntryDeleteAction } from "./EntryDeleteAction";
+import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EditEntryModalContent } from "./modals/EditEntryModalContent";
 import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";
@@ -38,11 +33,8 @@ interface Props {
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
-  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
   const entryIdToTags = useAtomValue(entryIdToTagsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
-
-  const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
 
   return (
     <Stack
@@ -139,44 +131,8 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           >
             <IconEdit size="1rem" />
           </ActionIcon>
-          <ActionIcon
-            sx={(theme) => ({
-              color: isFavoriteEntry ? theme.colors.yellow[5] : theme.colors.gray[5],
-              ":hover": {
-                color: isFavoriteEntry
-                  ? theme.colors.yellow[5]
-                  : lightOrDark(theme, theme.colors.gray[7], theme.colors.gray[3]),
-                backgroundColor: lightOrDark(
-                  theme,
-                  theme.colors.indigo[1],
-                  theme.fn.darken(theme.colors.indigo[9], 0.3),
-                ),
-              },
-            })}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              if (isFavoriteEntry) {
-                deleteFavoriteEntryIds([entry.id]);
-              } else {
-                addFavoriteEntryIds([entry.id]);
-              }
-            }}
-          >
-            {isFavoriteEntry ? <IconStarFilled size="1rem" /> : <IconStar size="1rem" />}
-          </ActionIcon>
-          <ActionIcon
-            sx={(theme) => commonActionIconSx({ theme, disabled: isFavoriteEntry })}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              if (!isFavoriteEntry) {
-                deleteEntries([entry.id]);
-              }
-            }}
-          >
-            <IconTrash size="1rem" />
-          </ActionIcon>
+          <EntryFavoriteAction entryId={entry.id} />
+          <EntryDeleteAction entryId={entry.id} />
         </Group>
       </Group>
       <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
