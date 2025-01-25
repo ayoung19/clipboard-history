@@ -36,7 +36,7 @@ import { z } from "zod";
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
-import { createEntry, deleteEntries } from "~utils/storage";
+import { createEntry, deleteEntries } from "~utils/storage/entries";
 
 import { Draggable } from "../Draggable";
 import { MergeItem } from "../MergeItem";

@@ -10,7 +10,7 @@ import { FixedSizeList } from "react-window";
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
-import { deleteEntries } from "~utils/storage";
+import { deleteEntries } from "~utils/storage/entries";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";

@@ -41,7 +41,7 @@ import { setSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
-import { getEntries } from "~utils/storage";
+import { getEntries } from "~utils/storage/entries";
 import { capitalize } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 

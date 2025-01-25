@@ -8,8 +8,8 @@ import { getFavoriteEntryIds, setFavoriteEntryIds } from "~storage/favoriteEntry
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 
-import { removeActionBadgeText, setActionBadgeText } from "./actionBadge";
-import { applyLocalItemLimit } from "./entries";
+import { removeActionBadgeText, setActionBadgeText } from "../actionBadge";
+import { applyLocalItemLimit } from "../entries";
 
 // Do not change this without a migration.
 const ENTRIES_STORAGE_KEY = "entryIdSetentries";

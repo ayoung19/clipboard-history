@@ -54,7 +54,7 @@ import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
-import { getEntries, watchEntries } from "~utils/storage";
+import { getEntries, watchEntries } from "~utils/storage/entries";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 

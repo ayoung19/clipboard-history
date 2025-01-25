@@ -1,6 +1,7 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
 import { handleCreateEntryRequest } from "~background/messages/createEntry";
+import { updateShortcuts } from "~background/shortcuts/updateShortcuts";
 import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
@@ -13,9 +14,10 @@ import {
 } from "~utils/actionBadge";
 import { watchClipboard } from "~utils/background";
 import { simplePathBasename } from "~utils/simplePath";
-import { getEntries } from "~utils/storage";
+import { getEntries } from "~utils/storage/entries";
 
 import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
+import {executeShortcut} from "~background/shortcuts/executeShortcut";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
@@ -89,10 +91,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     setupOffscreenDocument(),
     setupAction(),
     handleUpdateContextMenusRequest(),
+    updateShortcuts(),
   ]);
 });
 
-function paste(content: string) {
+export function paste(content: string) {
   document.execCommand("insertText", undefined, content);
 }
 
@@ -119,16 +122,6 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   // console.log(`Command "${command}" triggered!`); todo remove this
   // todo map the command to the right entry
   if (tab?.id) {
-    const entries = await getEntries();
-    const entry = entries[0];
-    if (entry?.content) {
-      chrome.scripting.executeScript({
-        target: {
-          tabId: tab.id,
-        },
-        func: paste,
-        args: [entry.content],
-      });
-    }
+    executeShortcut(command, tab.id);
   }
 });

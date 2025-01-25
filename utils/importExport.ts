@@ -5,7 +5,7 @@ import { addFavoriteEntryIds, getFavoriteEntryIds } from "~storage/favoriteEntry
 import type { Entry } from "~types/entry";
 import { ClipboardHistoryIOExport, ClipboardHistoryProExport } from "~types/importExport";
 
-import { getEntries, setEntries } from "./storage";
+import { getEntries, setEntries } from "./storage/entries";
 
 export const getClipboardHistoryIOExport = async (): Promise<ClipboardHistoryIOExport> => {
   const [entries, entryIdToTags, favoriteEntryIds] = await Promise.all([
