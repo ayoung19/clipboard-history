@@ -4,8 +4,8 @@ import { IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
-import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx } from "~utils/sx";
+import {deleteEntries} from "~utils/storage/entries";
 
 interface Props {
   entryId: string;
