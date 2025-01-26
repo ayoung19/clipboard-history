@@ -11,6 +11,9 @@ export const searchAtom = atom<string>("");
 
 export const entriesAtom = atom<Entry[]>([]);
 export const reversedEntriesAtom = atom((get) => get(entriesAtom).toReversed());
+export const entriesSizeInBytesAtom = atom(
+  (get) => new Blob([JSON.stringify(get(entriesAtom))]).size - 2, // empty array is 2 bytes
+);
 
 export const clipboardSnapshotAtom = atom<ClipboardSnapshot>();
 
