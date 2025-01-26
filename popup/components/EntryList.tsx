@@ -133,11 +133,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                             padding: 0,
                             size: "xl",
                             withCloseButton: false,
-                            children: (
-                              <MergeModalContent
-                                initialEntries={getSelectedEntries()}
-                            />
-                          ),
+                            children: <MergeModalContent initialEntries={getSelectedEntries()} />,
                         })
                 }
               >
@@ -146,17 +142,19 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             )}
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size !== 1 })}
-              onClick={
-                selectedEntryIds.size !== 1
-                  ? undefined
-                  : () =>
-                      modals.open({
-                        title: "Assign Shortcut",
-                        children: (
-                          <ShortcutsModalContent selectedEntryId={getSelectedEntries()} />
-                        ),
-                      })
-              }
+              onClick={() => {
+                if (selectedEntryIds.size !== 1) return;
+
+                const [selectedEntry] = getSelectedEntries();
+                if (!selectedEntry) return;
+
+                modals.open({
+                  padding: 0,
+                  size: "xl",
+                  withCloseButton: false,
+                  children: <ShortcutsModalContent selectedEntry={selectedEntry} />,
+                });
+              }}
             >
               <IconKeyboard size="1rem" />
             </ActionIcon>

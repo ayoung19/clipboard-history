@@ -1,66 +1,113 @@
 import {
   Button,
+  CloseButton,
   Group,
   Kbd,
   Paper,
-  Radio,
   SegmentedControl,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 import type { Entry } from "~types/entry";
-import { getShortcuts } from "~utils/storage/shortcuts";
+import type { ShortcutStore } from "~types/shortcut";
+import { getShortcuts, setShortcuts } from "~utils/storage/shortcuts";
 
 interface Props {
-  selectedEntries: Entry[];
+  selectedEntry: Entry;
 }
 
-export const ShortcutsModalContent = ({ selectedEntries }: Props) => {
+export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
+  const [selectedShortcut, setSelectedShortcut] = useState("");
   const shortcutsQuery = useQuery({
     queryKey: ["shortcutsQuery"],
     queryFn: getShortcuts,
   });
+  const shortcutsMutation = useMutation({
+    mutationFn: setShortcuts,
+  });
 
-  if (!shortcutsQuery) {
+  if (!shortcutsQuery || !shortcutsQuery.data) {
     return <Title order={5}>Shortcuts not enabled for this extension.</Title>;
   }
 
-  function formatShortcut(shortcut: string) {
+  const formatShortcut = (shortcut: string) => {
     const keys = shortcut.split("");
 
     return (
-      <div dir="ltr">
+      <>
         {keys.map((key, index) => (
           <span key={index}>
             <Kbd>{key.trim()}</Kbd>
             {index < keys.length - 1 && " + "}
           </span>
         ))}
-      </div>
+      </>
     );
-  }
+  };
 
-  const options =
-    shortcutsQuery.data?.map((shortcut) => ({
-      value: shortcut.shortcut,
-      label: formatShortcut(shortcut.shortcut),
-    })) ?? [];
+  const mapShortcutStoreToOptions = (shortcutStore: ShortcutStore) => {
+    return Object.entries(shortcutStore).map(([commandName, shortcutObject]) => ({
+      label: formatShortcut(shortcutObject.shortcut),
+      value: commandName,
+    }));
+  };
+
+  const shortcutOptions = mapShortcutStoreToOptions(shortcutsQuery.data ?? {});
+
+  const assignEntryToShortcut = () => {
+    const shortcutStore = shortcutsQuery.data;
+    if (!shortcutStore) return;
+
+    const shortcutToUpdate = shortcutStore[selectedShortcut];
+    if (!shortcutToUpdate) return;
+
+    const updatedShortcutStore = {
+      ...shortcutStore,
+      [selectedShortcut]: {
+        ...shortcutToUpdate,
+        entryId: selectedEntry.id,
+      },
+    };
+
+    shortcutsMutation.mutate(updatedShortcutStore);
+  };
+
+  const handleSave = () => {
+    assignEntryToShortcut();
+    modals.closeAll()
+  }
 
   return (
     <Paper p="md">
       <Stack spacing={0}>
-        <Title order={6}>Assign a Shortcut to this Entry</Title>
-        <Text fz="xs">This will overwrite any existing entry for this shortcut.</Text>
+        <Group align="center" position="apart" mb="xs">
+          <Title order={5}>Assign a Shortcut to this Entry</Title>
+          <CloseButton onClick={() => modals.closeAll()} />
+        </Group>
+        <Text fz="xs">This will overwrite any existing entry assigned to the shortcut.</Text>
       </Stack>
       <Group mt="md" position="center">
-        <SegmentedControl size="md" data={options} />
+        <SegmentedControl
+          value={selectedShortcut}
+          onChange={setSelectedShortcut}
+          data={shortcutOptions}
+        />
         <Text fz="xs">
-          You can customize these by navigating to chrome://extensions/shortcuts.
+          You can customize these options by navigating to chrome://extensions/shortcuts.
         </Text>
+        <Button
+          size="xs"
+          fullWidth
+          disabled={selectedShortcut === ""}
+          onClick={handleSave}
+        >
+          Save
+        </Button>
       </Group>
     </Paper>
   );
