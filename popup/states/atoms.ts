@@ -10,7 +10,7 @@ import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 export const searchAtom = atom<string>("");
 
 export const entriesAtom = atom<Entry[]>([]);
-export const reversedEntriesAtom = atom((get) => get(entriesAtom).toReversed());
+export const reversedEntriesAtom = atom((get) => get(entriesAtom).slice().reverse());
 
 export const clipboardSnapshotAtom = atom<ClipboardSnapshot>();
 

@@ -147,7 +147,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               </Text>
             </Text>
             <UnstyledButton
-              onClick={() => setEntries((prevState) => prevState.toReversed())}
+              onClick={() => setEntries((prevState) => prevState.slice().reverse())}
               sx={(theme) => ({
                 color: theme.fn.primaryColor(),
               })}

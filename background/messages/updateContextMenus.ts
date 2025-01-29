@@ -17,7 +17,7 @@ export const handleUpdateContextMenusRequest = async () => {
     getFavoriteEntryIds(),
     getEntryIdToTags(),
   ]);
-  const reversedEntries = entries.toReversed();
+  const reversedEntries = entries.slice().reverse();
   const favoriteEntryIdsSet = new Set(favoriteEntryIds);
   const favoriteEntries = reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id));
   const allTags = entryIdToTagsToAllTags(entryIdToTags).sort();

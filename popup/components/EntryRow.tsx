@@ -109,7 +109,10 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           {entry.content.slice(0, 1000)}
         </Text>
         <Group align="center" spacing={rem(4)} noWrap>
-          {entryIdToTags[entry.id]?.toSorted().map((tag) => <TagBadge key={tag} tag={tag} />)}
+          {entryIdToTags[entry.id]
+            ?.slice()
+            .sort()
+            .map((tag) => <TagBadge key={tag} tag={tag} />)}
         </Group>
         <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
           {entry.content.length}
