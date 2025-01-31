@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Checkbox, Divider, Group, rem, Stack, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
@@ -83,9 +83,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
           <Group align="center" spacing={0}>
             <Tooltip
               label={
-                <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz={"xs"}>Favourite</Text>
-                </Group>
+                <Text fz="xs">Favorite</Text>
               }
             >
               <ActionIcon
@@ -106,9 +104,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             </Tooltip>
             <Tooltip
               label={
-                <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz={"xs"}>Delete</Text>
-                </Group>
+                <Text fz="xs">Delete</Text>
               }
             >
               <ActionIcon
@@ -130,12 +126,10 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             {/* https://github.com/clauderic/dnd-kit/issues/1043 */}
             {process.env.PLASMO_TARGET !== "firefox-mv2" && (
               <Tooltip
-              label={
-                <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz={"xs"}>Merge</Text>
-                </Group>
-              }
-            >
+                label={
+                  <Text fz="xs">Merge</Text>
+                }
+              >
                 <ActionIcon
                   sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
                   onClick={
