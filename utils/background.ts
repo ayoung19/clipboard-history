@@ -47,5 +47,5 @@ export const watchClipboard = (
     } finally {
       fetching = false;
     }
-  }, 400);
+  }, 800);
 };
