@@ -85,6 +85,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
               label={
                 <Text fz="xs">Favorite</Text>
               }
+              disabled={selectedEntryIds.size===0}
             >
               <ActionIcon
                 sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
@@ -106,6 +107,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
               label={
                 <Text fz="xs">Delete</Text>
               }
+              disabled={selectedEntryIds.size===0}
             >
               <ActionIcon
                 sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
@@ -129,6 +131,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                 label={
                   <Text fz="xs">Merge</Text>
                 }
+                disabled={selectedEntryIds.size===0}
               >
                 <ActionIcon
                   sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
