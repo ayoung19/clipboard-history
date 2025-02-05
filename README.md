@@ -124,6 +124,13 @@ The easiest way to deploy your Plasmo extension is to use the built-in [bpp](htt
                     <sub><b>aanand3</b></sub>
                 </a>
             </td>
+            <td align="center">
+                <a href="https://github.com/riyan04">
+                    <img src="https://avatars.githubusercontent.com/u/119859849?v=4" width="100;" alt="riyan04"/>
+                    <br />
+                    <sub><b>riyan04</b></sub>
+                </a>
+            </td>
 		</tr>
 	<tbody>
 </table>
