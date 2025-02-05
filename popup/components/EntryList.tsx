@@ -81,45 +81,35 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
         />
         <Group align="center" w="100%" position="apart">
           <Group align="center" spacing={0}>
-            <Tooltip
-              label={
-                <Text fz="xs">Favorite</Text>
-              }
-              disabled={selectedEntryIds.size===0}
-            >
+            <Tooltip label={<Text fz="xs">Favorite</Text>} disabled={selectedEntryIds.size === 0}>
               <ActionIcon
                 sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
                 onClick={
                   selectedEntryIds.size === 0
                     ? undefined
                     : () =>
-                      Array.from(selectedEntryIds).every((selectedEntryId) =>
-                        favoriteEntryIdsSet.has(selectedEntryId),
-                      )
-                        ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
-                        : addFavoriteEntryIds(Array.from(selectedEntryIds))
+                        Array.from(selectedEntryIds).every((selectedEntryId) =>
+                          favoriteEntryIdsSet.has(selectedEntryId),
+                        )
+                          ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
+                          : addFavoriteEntryIds(Array.from(selectedEntryIds))
                 }
               >
                 <IconStar size="1rem" />
               </ActionIcon>
             </Tooltip>
-            <Tooltip
-              label={
-                <Text fz="xs">Delete</Text>
-              }
-              disabled={selectedEntryIds.size===0}
-            >
+            <Tooltip label={<Text fz="xs">Delete</Text>} disabled={selectedEntryIds.size === 0}>
               <ActionIcon
                 sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
                 onClick={
                   selectedEntryIds.size === 0
                     ? undefined
                     : () =>
-                      deleteEntries(
-                        Array.from(selectedEntryIds).filter(
-                          (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
-                        ),
-                      )
+                        deleteEntries(
+                          Array.from(selectedEntryIds).filter(
+                            (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
+                          ),
+                        )
                 }
               >
                 <IconTrash size="1rem" />
@@ -127,30 +117,25 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             </Tooltip>
             {/* https://github.com/clauderic/dnd-kit/issues/1043 */}
             {process.env.PLASMO_TARGET !== "firefox-mv2" && (
-              <Tooltip
-                label={
-                  <Text fz="xs">Merge</Text>
-                }
-                disabled={selectedEntryIds.size===0}
-              >
+              <Tooltip label={<Text fz="xs">Merge</Text>} disabled={selectedEntryIds.size < 2}>
                 <ActionIcon
                   sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
                   onClick={
                     selectedEntryIds.size < 2
                       ? undefined
                       : () =>
-                        modals.open({
-                          padding: 0,
-                          size: "xl",
-                          withCloseButton: false,
-                          children: (
-                            <MergeModalContent
-                              initialEntries={entries.filter((entry) =>
-                                selectedEntryIds.has(entry.id),
-                              )}
-                            />
-                          ),
-                        })
+                          modals.open({
+                            padding: 0,
+                            size: "xl",
+                            withCloseButton: false,
+                            children: (
+                              <MergeModalContent
+                                initialEntries={entries.filter((entry) =>
+                                  selectedEntryIds.has(entry.id),
+                                )}
+                              />
+                            ),
+                          })
                   }
                 >
                   <IconFold size="1rem" />
