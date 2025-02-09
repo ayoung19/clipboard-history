@@ -136,11 +136,12 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                             size: "xl",
                             withCloseButton: false,
                             children: <MergeModalContent initialEntries={getSelectedEntries()} />,
-                        })
-                }
-              >
-                <IconFold size="1rem" />
-              </ActionIcon></Tooltip>
+                          })
+                  }
+                >
+                  <IconFold size="1rem" />
+                </ActionIcon>
+              </Tooltip>
             )}
             <ActionIcon
               sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size !== 1 })}
