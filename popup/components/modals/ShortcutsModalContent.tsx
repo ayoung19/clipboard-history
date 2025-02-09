@@ -10,7 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useEffect, useState} from "react";
 
 import type { Entry } from "~types/entry";
@@ -23,12 +23,14 @@ interface Props {
 
 export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
   const [selectedShortcut, setSelectedShortcut] = useState("");
+  const queryClient = useQueryClient();
   const shortcutsQuery = useQuery({
     queryKey: ["shortcutsQuery"],
     queryFn: getShortcuts,
   });
   const shortcutsMutation = useMutation({
     mutationFn: setShortcuts,
+    onMutate: () => queryClient.invalidateQueries({queryKey: ["shortcutsQuery"]}),
   });
 
   useEffect(() => {
