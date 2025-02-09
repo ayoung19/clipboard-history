@@ -143,24 +143,26 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                 </ActionIcon>
               </Tooltip>
             )}
-            <ActionIcon
-              sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size !== 1 })}
-              onClick={() => {
-                if (selectedEntryIds.size !== 1) return;
+            <Tooltip label={<Text fz="xs">Shortcuts</Text>} disabled={selectedEntryIds.size !== 1}>
+              <ActionIcon
+                sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size !== 1 })}
+                onClick={() => {
+                  if (selectedEntryIds.size !== 1) return;
 
-                const [selectedEntry] = getSelectedEntries();
-                if (!selectedEntry) return;
+                  const [selectedEntry] = getSelectedEntries();
+                  if (!selectedEntry) return;
 
-                modals.open({
-                  padding: 0,
-                  size: "xl",
-                  withCloseButton: false,
-                  children: <ShortcutsModalContent selectedEntry={selectedEntry} />,
-                });
-              }}
-            >
-              <IconKeyboard size="1rem" />
-            </ActionIcon>
+                  modals.open({
+                    padding: 0,
+                    size: "xl",
+                    withCloseButton: false,
+                    children: <ShortcutsModalContent selectedEntry={selectedEntry} />,
+                  });
+                }}
+              >
+                <IconKeyboard size="1rem" />
+              </ActionIcon>
+            </Tooltip>
           </Group>
           <Text fz="xs">
             {selectedEntryIds.size} of {entries.length} selected
