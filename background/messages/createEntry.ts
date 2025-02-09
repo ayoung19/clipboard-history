@@ -2,7 +2,7 @@ import type { PlasmoMessaging } from "@plasmohq/messaging";
 
 import { getClipboardSnapshot, updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { getSettings } from "~storage/settings";
-import { createEntry } from "~utils/storage/entries";
+import { createEntry } from "~utils/storage";
 
 import { handleUpdateContextMenusRequest } from "./updateContextMenus";
 

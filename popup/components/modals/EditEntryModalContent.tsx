@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import type { Entry } from "~types/entry";
-import { updateEntryContent } from "~utils/storage/entries";
+import { updateEntryContent } from "~utils/storage";
 import { lightOrDark } from "~utils/sx";
 
 import { EntryDeleteAction } from "../EntryDeleteAction";

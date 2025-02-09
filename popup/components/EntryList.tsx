@@ -12,7 +12,7 @@ import { favoriteEntryIdsSetAtom, shortcutsAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import type { CommandNameToShortcut } from "~types/shortcut";
-import { deleteEntries } from "~utils/storage/entries";
+import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";
@@ -57,9 +57,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
 
   const shortcuts = useAtomValue(shortcutsAtom);
 
-  function getSelectedEntries() {
-    return entries.filter((entry) => selectedEntryIds.has(entry.id));
-  }
+  const getSelectedEntries = () => entries.filter((entry) => selectedEntryIds.has(entry.id));
 
   return (
     <Stack

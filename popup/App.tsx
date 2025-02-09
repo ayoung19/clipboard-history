@@ -55,7 +55,7 @@ import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEnt
 import { getSettings, watchSettings } from "~storage/settings";
 import { getShortcuts, watchShortcuts } from "~storage/shortcuts";
 import { Tab } from "~types/tab";
-import { getEntries, watchEntries } from "~utils/storage/entries";
+import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 

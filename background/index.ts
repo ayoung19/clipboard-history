@@ -15,7 +15,7 @@ import {
 } from "~utils/actionBadge";
 import { watchClipboard } from "~utils/background";
 import { simplePathBasename } from "~utils/simplePath";
-import { getEntries } from "~utils/storage/entries";
+import { getEntries } from "~utils/storage";
 
 import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
 
@@ -119,8 +119,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
-  // console.log(`Command "${command}" triggered!`); todo remove this
-  // todo map the command to the right entry
   if (tab?.id) {
     executeShortcut(command, tab.id);
   }

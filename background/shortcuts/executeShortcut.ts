@@ -1,6 +1,6 @@
 import { paste } from "~background";
 import { getShortcuts } from "~storage/shortcuts";
-import { getEntries } from "~utils/storage/entries";
+import { getEntries } from "~utils/storage";
 
 export const executeShortcut = async (command: string, tabId: number) => {
   const entries = await getEntries();

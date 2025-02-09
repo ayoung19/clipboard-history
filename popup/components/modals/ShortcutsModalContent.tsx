@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Center,
   CloseButton,
@@ -10,7 +9,6 @@ import {
   Stack,
   Text,
   Title,
-  Tooltip,
   type SegmentedControlItem,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
@@ -35,7 +33,6 @@ export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
   const shortcutsMutation = useMutation({
     mutationFn: setShortcuts,
     onMutate: async (newShortcuts) => {
-      // optimistically update atom and close modal
       setShortcutsAtom(newShortcuts);
       modals.closeAll();
     },

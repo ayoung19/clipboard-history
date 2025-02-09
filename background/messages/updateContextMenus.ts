@@ -4,7 +4,7 @@ import { getEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 import { simplePathJoin } from "~utils/simplePath";
-import { getEntries } from "~utils/storage/entries";
+import { getEntries } from "~utils/storage";
 
 export type UpdateContextMenusRequestBody = undefined;
 
