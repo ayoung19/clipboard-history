@@ -6,7 +6,11 @@ export const executeShortcut = async (command: string, tabId: number) => {
   const entries = await getEntries();
   const shortcuts = await getShortcuts();
 
-  const shortcutToExecute = shortcuts.find((shortcut) => shortcut.commandName === command);
+  if (!shortcuts) {
+    console.log("no shortcuts found");
+    return;
+  }
+  const shortcutToExecute = shortcuts[command];
   if (!shortcutToExecute) {
     return;
   }

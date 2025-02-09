@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
 import type { Entry } from "~types/entry";
 import type { ShortcutStore } from "~types/shortcut";
@@ -30,6 +30,19 @@ export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
   const shortcutsMutation = useMutation({
     mutationFn: setShortcuts,
   });
+
+  useEffect(() => {
+    if (shortcutsQuery.data) {
+      // Find shortcut already assigned to this entry
+      const existingShortcut = Object.entries(shortcutsQuery.data).find(
+          ([, shortcutObject]) => shortcutObject.entryId === selectedEntry.id
+      );
+
+      if (existingShortcut) {
+        setSelectedShortcut(existingShortcut[0]); // Set commandName as initial value
+      }
+    }
+  }, [shortcutsQuery.data, selectedEntry.id]);
 
   if (!shortcutsQuery || !shortcutsQuery.data) {
     return <Title order={5}>Shortcuts not enabled for this extension.</Title>;
@@ -98,7 +111,7 @@ export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
           data={shortcutOptions}
         />
         <Text fz="xs">
-          You can customize these options by navigating to chrome://extensions/shortcuts.
+          You can customize these options by navigating to <code>chrome://extensions/shortcuts</code>
         </Text>
         <Button
           size="xs"
