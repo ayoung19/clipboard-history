@@ -6,5 +6,5 @@ const Shortcut = z.object({
 });
 export type Shortcut = z.infer<typeof Shortcut>;
 
-const ShortcutStore = z.record(z.string(), Shortcut)
-export type ShortcutStore = z.infer<typeof ShortcutStore>;
+export const CommandNameToShortcut = z.record(z.string(), Shortcut);
+export type CommandNameToShortcut = z.infer<typeof CommandNameToShortcut>;

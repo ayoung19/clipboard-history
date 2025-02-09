@@ -1,13 +1,12 @@
 import { paste } from "~background";
+import { getShortcuts } from "~storage/shortcuts";
 import { getEntries } from "~utils/storage/entries";
-import { getShortcuts } from "~utils/storage/shortcuts";
 
 export const executeShortcut = async (command: string, tabId: number) => {
   const entries = await getEntries();
   const shortcuts = await getShortcuts();
 
   if (!shortcuts) {
-    console.log("no shortcuts found");
     return;
   }
   const shortcutToExecute = shortcuts[command];
@@ -17,7 +16,7 @@ export const executeShortcut = async (command: string, tabId: number) => {
 
   const entryToPaste = entries.find((entry) => entry.id === shortcutToExecute.entryId);
   if (entryToPaste?.content) {
-    chrome.scripting.executeScript({
+    await chrome.scripting.executeScript({
       target: {
         tabId,
       },

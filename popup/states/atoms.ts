@@ -5,6 +5,7 @@ import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
+import type { CommandNameToShortcut } from "~types/shortcut";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 
 export const searchAtom = atom<string>("");
@@ -28,3 +29,5 @@ export const entryIdToTagsAtom = atom<EntryIdToTags>({});
 export const allTagsAtom = atom((get) => entryIdToTagsToAllTags(get(entryIdToTagsAtom)));
 
 export const changelogViewedAtAtom = atom<string>();
+
+export const shortcutsAtom = atom<CommandNameToShortcut>({});

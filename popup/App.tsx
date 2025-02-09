@@ -53,6 +53,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
+import { getShortcuts, watchShortcuts } from "~storage/shortcuts";
 import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage/entries";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -70,6 +71,7 @@ import {
   favoriteEntryIdsAtom,
   searchAtom,
   settingsAtom,
+  shortcutsAtom,
 } from "./states/atoms";
 
 export const App = () => {
@@ -98,6 +100,7 @@ export const App = () => {
 
   const setEntries = useSetAtom(entriesAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
+  const setShortcuts = useSetAtom(shortcutsAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
@@ -111,6 +114,9 @@ export const App = () => {
 
     (async () => setClipboardSnapshot(await getClipboardSnapshot()))();
     watchClipboardSnapshot(setClipboardSnapshot);
+
+    (async () => setShortcuts(await getShortcuts()))();
+    watchShortcuts(setShortcuts);
 
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds((favoriteEntryIds) => {

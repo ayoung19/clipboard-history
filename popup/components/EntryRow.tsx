@@ -13,11 +13,11 @@ import { modals } from "@mantine/modals";
 import { IconEdit } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { ShortcutsModalContent } from "~popup/components/modals/ShortcutsModalContent";
+import { ShortcutBadge } from "~popup/components/ShortcutBadge";
 import { clipboardSnapshotAtom, entryIdToTagsAtom, nowAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
-import type { ShortcutStore } from "~types/shortcut";
+import type { CommandNameToShortcut } from "~types/shortcut";
 import { badgeDateFormatter } from "~utils/date";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
@@ -30,7 +30,7 @@ import { TagSelect } from "./TagSelect";
 interface Props {
   entry: Entry;
   selectedEntryIds: Set<string>;
-  shortcuts: ShortcutStore;
+  shortcuts: CommandNameToShortcut;
 }
 
 export const EntryRow = ({ entry, selectedEntryIds, shortcuts }: Props) => {
@@ -43,7 +43,7 @@ export const EntryRow = ({ entry, selectedEntryIds, shortcuts }: Props) => {
     ([, shortcutObject]) => shortcutObject.entryId === entry.id,
   );
 
-  const formattedShortcut = assignedShortcut ? assignedShortcut[1].shortcut : null;
+  const keyboardShortcut = assignedShortcut ? assignedShortcut[1].shortcut : null;
 
   return (
     <Stack
@@ -117,30 +117,12 @@ export const EntryRow = ({ entry, selectedEntryIds, shortcuts }: Props) => {
           {/* Don't fully render large content. */}
           {entry.content.slice(0, 1000)}
         </Text>
-        {formattedShortcut && (
-          <Badge
-            variant="filled"
-            w={50}
-            sx={{ flexShrink: 0 }}
-            size="sm"
-            mx="sm"
-            onClick={() => {
-              modals.open({
-                padding: 0,
-                size: "xl",
-                withCloseButton: false,
-                children: <ShortcutsModalContent selectedEntry={entry} />,
-              });
-            }}
-          >
-            {formattedShortcut}
-          </Badge>
-        )}
         <Group align="center" spacing={rem(4)} noWrap>
           {entryIdToTags[entry.id]
             ?.slice()
             .sort()
             .map((tag) => <TagBadge key={tag} tag={tag} />)}
+          {keyboardShortcut && <ShortcutBadge formattedShortcut={keyboardShortcut} entry={entry} />}
         </Group>
         <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
           {entry.content.length}

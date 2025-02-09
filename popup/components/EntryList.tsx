@@ -2,23 +2,21 @@ import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from 
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconKeyboard, IconStar, IconTrash } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 
 import { ShortcutsModalContent } from "~popup/components/modals/ShortcutsModalContent";
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { favoriteEntryIdsSetAtom, shortcutsAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
+import type { CommandNameToShortcut } from "~types/shortcut";
 import { deleteEntries } from "~utils/storage/entries";
-import { getShortcuts } from "~utils/storage/shortcuts";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
 import { EntryRow } from "./EntryRow";
 import { MergeModalContent } from "./modals/MergeModalContent";
-import type {ShortcutStore} from "~types/shortcut";
 
 interface Props {
   entries: Entry[];
@@ -33,7 +31,7 @@ const EntryRowRenderer = ({
   data: {
     entries: Entry[];
     selectedEntryIds: Set<string>;
-    shortcuts: ShortcutStore;
+    shortcuts: CommandNameToShortcut;
   };
   index: number;
   style: CSSProperties;
@@ -42,7 +40,7 @@ const EntryRowRenderer = ({
 
   return (
     <Box style={style}>
-      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} shortcuts={data.shortcuts}/>
+      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} shortcuts={data.shortcuts} />
     </Box>
   );
 };
@@ -57,11 +55,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
     selectedEntryIds.clear();
   }, [entryIdsStringified]);
 
-  const shortcutsQuery = useQuery({
-    queryKey: ["shortcutsQuery"],
-    queryFn: getShortcuts,
-  });
-  const shortcuts = shortcutsQuery.data ?? {}
+  const shortcuts = useAtomValue(shortcutsAtom);
 
   function getSelectedEntries() {
     return entries.filter((entry) => selectedEntryIds.has(entry.id));

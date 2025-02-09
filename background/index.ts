@@ -1,7 +1,8 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
 import { handleCreateEntryRequest } from "~background/messages/createEntry";
-import { updateShortcuts } from "~background/shortcuts/updateShortcuts";
+import { createShortcutMap } from "~background/shortcuts/createShortcutMap";
+import { executeShortcut } from "~background/shortcuts/executeShortcut";
 import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
@@ -17,7 +18,6 @@ import { simplePathBasename } from "~utils/simplePath";
 import { getEntries } from "~utils/storage/entries";
 
 import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
-import {executeShortcut} from "~background/shortcuts/executeShortcut";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
@@ -91,7 +91,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     setupOffscreenDocument(),
     setupAction(),
     handleUpdateContextMenusRequest(),
-    updateShortcuts(),
+    createShortcutMap(),
   ]);
 });
 
