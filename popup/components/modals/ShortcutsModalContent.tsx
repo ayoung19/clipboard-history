@@ -24,10 +24,9 @@ interface Props {
 
 export const ShortcutsModalContent = ({ entry }: Props) => {
   const clipboard = useClipboard();
+
   const entryCommands = useAtomValue(entryCommandsAtom);
   const commands = useAtomValue(commandsAtom);
-
-  console.log(commands);
 
   return (
     <Paper p="md">
