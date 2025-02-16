@@ -13,6 +13,7 @@ import { useClipboard } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconCopy, IconKeyboardOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
+import { Fragment } from "react";
 
 import { commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
 import { createEntryCommand, deleteEntryCommand } from "~storage/entryCommands";
@@ -66,10 +67,10 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
                 label: command.shortcut ? (
                   <Group align="center" spacing={4} noWrap>
                     {command.shortcut.split("").map((c, i) => (
-                      <>
+                      <Fragment key={`${c}${i}`}>
                         {i > 0 && <>+</>}
                         <Kbd>{c}</Kbd>
-                      </>
+                      </Fragment>
                     ))}
                   </Group>
                 ) : (
