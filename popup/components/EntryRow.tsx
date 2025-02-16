@@ -46,11 +46,10 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const commands = useAtomValue(commandsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
 
-  const shortcut = commands.find(
-    (command) =>
-      command.name ===
-      entryCommands.find((entryCommand) => entryCommand.entryId === entry.id)?.commandName,
-  )?.shortcut;
+  const commandName = entryCommands.find(
+    (entryCommand) => entryCommand.entryId === entry.id,
+  )?.commandName;
+  const shortcut = commands.find((command) => command.name === commandName)?.shortcut;
 
   return (
     <Stack
