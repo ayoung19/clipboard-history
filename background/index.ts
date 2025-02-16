@@ -1,12 +1,11 @@
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
 import { handleCreateEntryRequest } from "~background/messages/createEntry";
-import { createShortcutMap } from "~background/shortcuts/createShortcutMap";
-import { executeShortcut } from "~background/shortcuts/executeShortcut";
 import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
+import { getEntryCommands } from "~storage/entryCommands";
 import { getSettings } from "~storage/settings";
 import {
   removeActionBadgeText,
@@ -91,11 +90,10 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     setupOffscreenDocument(),
     setupAction(),
     handleUpdateContextMenusRequest(),
-    createShortcutMap(),
   ]);
 });
 
-export function paste(content: string) {
+function paste(content: string) {
   document.execCommand("insertText", undefined, content);
 }
 
@@ -120,6 +118,21 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
   if (tab?.id) {
-    executeShortcut(command, tab.id);
+    const [entries, entryCommands] = await Promise.all([getEntries(), getEntryCommands()]);
+
+    const entryId = entryCommands.find(
+      (entryCommand) => entryCommand.commandName === command,
+    )?.entryId;
+    const entry = entries.find((entry) => entry.id === entryId);
+
+    if (entry?.content) {
+      chrome.scripting.executeScript({
+        target: {
+          tabId: tab.id,
+        },
+        func: paste,
+        args: [entry.content],
+      });
+    }
   }
 });

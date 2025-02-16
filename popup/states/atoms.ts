@@ -3,9 +3,9 @@ import { atom } from "jotai";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
+import type { EntryCommand } from "~types/entryCommand";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
-import type { CommandNameToShortcut } from "~types/shortcut";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 
 export const searchAtom = atom<string>("");
@@ -30,4 +30,5 @@ export const allTagsAtom = atom((get) => entryIdToTagsToAllTags(get(entryIdToTag
 
 export const changelogViewedAtAtom = atom<string>();
 
-export const shortcutsAtom = atom<CommandNameToShortcut>({});
+export const entryCommandsAtom = atom<EntryCommand[]>([]);
+export const commandsAtom = atom<{ name: string; shortcut?: string }[]>([]);

@@ -40,12 +40,12 @@ export default function IndexPopup() {
       withGlobalStyles
       withNormalizeCSS
     >
-      <QueryClientProvider client={queryClient}>
-        <ModalsProvider>
+      <ModalsProvider>
+        <QueryClientProvider client={queryClient}>
           <Notifications />
           <App />
-        </ModalsProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

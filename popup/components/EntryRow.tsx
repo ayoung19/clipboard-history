@@ -10,40 +10,47 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconKeyboard } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
-import { ShortcutBadge } from "~popup/components/ShortcutBadge";
-import { clipboardSnapshotAtom, entryIdToTagsAtom, nowAtom } from "~popup/states/atoms";
+import {
+  clipboardSnapshotAtom,
+  commandsAtom,
+  entryCommandsAtom,
+  entryIdToTagsAtom,
+  nowAtom,
+} from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
-import type { CommandNameToShortcut } from "~types/shortcut";
 import { badgeDateFormatter } from "~utils/date";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { EntryDeleteAction } from "./EntryDeleteAction";
 import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EditEntryModalContent } from "./modals/EditEntryModalContent";
+import { ShortcutsModalContent } from "./modals/ShortcutsModalContent";
+import { ShortcutBadge } from "./ShortcutBadge";
 import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";
 
 interface Props {
   entry: Entry;
   selectedEntryIds: Set<string>;
-  shortcuts: CommandNameToShortcut;
 }
 
-export const EntryRow = ({ entry, selectedEntryIds, shortcuts }: Props) => {
+export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
   const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const entryCommands = useAtomValue(entryCommandsAtom);
+  const commands = useAtomValue(commandsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
 
-  const assignedShortcut = Object.entries(shortcuts).find(
-    ([, shortcutObject]) => shortcutObject.entryId === entry.id,
-  );
-
-  const keyboardShortcut = assignedShortcut ? assignedShortcut[1].shortcut : null;
+  const shortcut = commands.find(
+    (command) =>
+      command.name ===
+      entryCommands.find((entryCommand) => entryCommand.entryId === entry.id)?.commandName,
+  )?.shortcut;
 
   return (
     <Stack
@@ -122,13 +129,28 @@ export const EntryRow = ({ entry, selectedEntryIds, shortcuts }: Props) => {
             ?.slice()
             .sort()
             .map((tag) => <TagBadge key={tag} tag={tag} />)}
-          {keyboardShortcut && <ShortcutBadge formattedShortcut={keyboardShortcut} entry={entry} />}
+          {shortcut !== undefined && <ShortcutBadge shortcut={shortcut || "Not set"} />}
         </Group>
         <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
           {entry.content.length}
         </Text>
         <Group align="center" spacing={0} noWrap ml={rem(4)}>
           <TagSelect entryId={entry.id} />
+          <ActionIcon
+            sx={(theme) => commonActionIconSx({ theme })}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              modals.open({
+                padding: 0,
+                size: "xl",
+                withCloseButton: false,
+                children: <ShortcutsModalContent entry={entry} />,
+              });
+            }}
+          >
+            <IconKeyboard size="1rem" />
+          </ActionIcon>
           <ActionIcon
             sx={(theme) => commonActionIconSx({ theme })}
             onClick={(e) => {

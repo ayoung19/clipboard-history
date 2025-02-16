@@ -1,17 +1,15 @@
 import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import { IconFold, IconKeyboard, IconStar, IconTrash } from "@tabler/icons-react";
+import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 
-import { ShortcutsModalContent } from "~popup/components/modals/ShortcutsModalContent";
-import { favoriteEntryIdsSetAtom, shortcutsAtom } from "~popup/states/atoms";
+import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
-import type { CommandNameToShortcut } from "~types/shortcut";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
@@ -31,7 +29,6 @@ const EntryRowRenderer = ({
   data: {
     entries: Entry[];
     selectedEntryIds: Set<string>;
-    shortcuts: CommandNameToShortcut;
   };
   index: number;
   style: CSSProperties;
@@ -40,7 +37,7 @@ const EntryRowRenderer = ({
 
   return (
     <Box style={style}>
-      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} shortcuts={data.shortcuts} />
+      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} />
     </Box>
   );
 };
@@ -54,10 +51,6 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
   useEffect(() => {
     selectedEntryIds.clear();
   }, [entryIdsStringified]);
-
-  const shortcuts = useAtomValue(shortcutsAtom);
-
-  const getSelectedEntries = () => entries.filter((entry) => selectedEntryIds.has(entry.id));
 
   return (
     <Stack
@@ -135,7 +128,13 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                             padding: 0,
                             size: "xl",
                             withCloseButton: false,
-                            children: <MergeModalContent initialEntries={getSelectedEntries()} />,
+                            children: (
+                              <MergeModalContent
+                                initialEntries={entries.filter((entry) =>
+                                  selectedEntryIds.has(entry.id),
+                                )}
+                              />
+                            ),
                           })
                   }
                 >
@@ -143,26 +142,6 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                 </ActionIcon>
               </Tooltip>
             )}
-            <Tooltip label={<Text fz="xs">Shortcuts</Text>} disabled={selectedEntryIds.size !== 1}>
-              <ActionIcon
-                sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size !== 1 })}
-                onClick={() => {
-                  if (selectedEntryIds.size !== 1) return;
-
-                  const [selectedEntry] = getSelectedEntries();
-                  if (!selectedEntry) return;
-
-                  modals.open({
-                    padding: 0,
-                    size: "xl",
-                    withCloseButton: false,
-                    children: <ShortcutsModalContent selectedEntry={selectedEntry} />,
-                  });
-                }}
-              >
-                <IconKeyboard size="1rem" />
-              </ActionIcon>
-            </Tooltip>
           </Group>
           <Text fz="xs">
             {selectedEntryIds.size} of {entries.length} selected
@@ -179,7 +158,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
               <FixedSizeList
                 height={height}
                 width={width}
-                itemData={{ entries, selectedEntryIds, shortcuts }}
+                itemData={{ entries, selectedEntryIds }}
                 itemCount={entries.length}
                 itemSize={33}
               >

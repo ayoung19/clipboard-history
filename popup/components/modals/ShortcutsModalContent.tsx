@@ -1,6 +1,5 @@
 import {
-  Button,
-  Center,
+  Anchor,
   CloseButton,
   Group,
   Kbd,
@@ -9,109 +8,24 @@ import {
   Stack,
   Text,
   Title,
-  type SegmentedControlItem,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconKeyboardOff } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
-import { useAtom } from "jotai";
-import { useEffect, useMemo, useState } from "react";
+import { useAtomValue } from "jotai";
 
-import { shortcutsAtom } from "~popup/states/atoms";
-import { setShortcuts } from "~storage/shortcuts";
+import { commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
+import { createEntryCommand, deleteEntryCommand } from "~storage/entryCommands";
 import type { Entry } from "~types/entry";
-import type { CommandNameToShortcut } from "~types/shortcut";
 
 interface Props {
-  selectedEntry: Entry;
+  entry: Entry;
 }
 
-export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
-  const [selectedShortcutKey, setSelectedShortcutKey] = useState("");
-  const [shortcuts, setShortcutsAtom] = useAtom(shortcutsAtom);
+export const ShortcutsModalContent = ({ entry }: Props) => {
+  const entryCommands = useAtomValue(entryCommandsAtom);
+  const commands = useAtomValue(commandsAtom);
 
-  const shortcutsMutation = useMutation({
-    mutationFn: setShortcuts,
-    onMutate: async (newShortcuts) => {
-      setShortcutsAtom(newShortcuts);
-      modals.closeAll();
-    },
-  });
-
-  const existingShortcutEntry = useMemo(() => {
-    return Object.entries(shortcuts).find(
-      ([, shortcutObject]) => shortcutObject.entryId === selectedEntry.id,
-    );
-  }, [shortcuts, selectedEntry.id]);
-
-  useEffect(() => {
-    if (existingShortcutEntry) setSelectedShortcutKey(existingShortcutEntry[0]);
-  }, [existingShortcutEntry]);
-
-  if (!shortcuts) {
-    return <Title order={5}>Shortcuts not enabled for this extension.</Title>;
-  }
-
-  const formatShortcut = (shortcut: string) => {
-    const keys = shortcut.split("");
-
-    return (
-      <Center h="30px">
-        {keys.map((key, index) => (
-          <span key={index}>
-            <Kbd>{key.trim()}</Kbd>
-            {index < keys.length - 1 && " + "}
-          </span>
-        ))}
-      </Center>
-    );
-  };
-
-  const mapShortcutStoreToOptions = (
-    shortcutStore: CommandNameToShortcut,
-  ): SegmentedControlItem[] => {
-    const options = Object.entries(shortcutStore).map(([commandName, shortcutObject]) => ({
-      label: formatShortcut(shortcutObject.shortcut),
-      value: commandName,
-    }));
-    options.push({
-      label: (
-        <Center h="30px">
-          <IconKeyboardOff />
-        </Center>
-      ),
-      value: "",
-    });
-    return options;
-  };
-
-  const removeExistingShortcut = (updatedShortcuts: CommandNameToShortcut) => {
-    if (existingShortcutEntry) {
-      updatedShortcuts[existingShortcutEntry[0]] = {
-        ...existingShortcutEntry[1],
-        entryId: undefined,
-      };
-    }
-  };
-
-  const assignEntryToShortcut = (updatedShortcuts: CommandNameToShortcut) => {
-    const shortcutToUpdate = updatedShortcuts[selectedShortcutKey];
-    if (shortcutToUpdate) {
-      updatedShortcuts[selectedShortcutKey] = {
-        ...shortcutToUpdate,
-        entryId: selectedEntry.id,
-      };
-    }
-  };
-
-  const handleSave = () => {
-    const updatedShortcutStore = { ...shortcuts };
-
-    removeExistingShortcut(updatedShortcutStore);
-    assignEntryToShortcut(updatedShortcutStore);
-
-    shortcutsMutation.mutate(updatedShortcutStore);
-  };
+  console.log(commands);
 
   return (
     <Paper p="md">
@@ -126,24 +40,69 @@ export const ShortcutsModalContent = ({ selectedEntry }: Props) => {
 
         <Stack align="center" spacing="xs">
           <SegmentedControl
-            value={selectedShortcutKey}
-            onChange={setSelectedShortcutKey}
-            data={mapShortcutStoreToOptions(shortcuts)}
+            size="md"
+            value={
+              entryCommands.find((entryCommand) => entryCommand.entryId === entry.id)
+                ?.commandName || ""
+            }
+            onChange={(value) =>
+              value.length === 0
+                ? deleteEntryCommand(entry.id)
+                : createEntryCommand(entry.id, value)
+            }
+            data={[
+              ...commands
+                .filter((command) => command.name.startsWith("paste-item"))
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((command) => ({
+                  label: command.shortcut ? (
+                    <Group align="center" spacing={4} noWrap>
+                      {command.shortcut.split("").map((c, i) => (
+                        <>
+                          {i > 0 && <>+</>}
+                          <Kbd>{c}</Kbd>
+                        </>
+                      ))}
+                    </Group>
+                  ) : (
+                    <Group align="center" noWrap>
+                      <Kbd>Not set</Kbd>
+                    </Group>
+                  ),
+                  value: command.name,
+                })),
+              {
+                label: (
+                  <Group align="center" noWrap h="100%">
+                    <IconKeyboardOff />
+                  </Group>
+                ),
+                value: "",
+              },
+            ]}
+            sx={{
+              ".mantine-SegmentedControl-label": {
+                height: "100%",
+              },
+            }}
           />
           <Text fz="xs">
             You can customize these options by navigating to{" "}
-            <code>chrome://extensions/shortcuts</code>
+            <Anchor href="chrome://extensions/shortcuts" target="_blank">
+              chrome://extensions/shortcuts
+            </Anchor>
           </Text>
         </Stack>
 
-        <Group align="end" position="right" spacing="xs">
+        {/* <Group align="end" position="right" spacing="xs">
           <Button size="xs" variant="subtle" onClick={() => setSelectedShortcutKey("")}>
             Reset
           </Button>
           <Button size="xs" onClick={handleSave}>
             Save
           </Button>
-        </Group>
+        </Group> */}
       </Stack>
     </Paper>
   );

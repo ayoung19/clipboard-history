@@ -50,10 +50,10 @@ import {
   toggleClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
+import { getEntryCommands, watchEntryCommands } from "~storage/entryCommands";
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings, watchSettings } from "~storage/settings";
-import { getShortcuts, watchShortcuts } from "~storage/shortcuts";
 import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -66,12 +66,13 @@ import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   changelogViewedAtAtom,
   clipboardSnapshotAtom,
+  commandsAtom,
   entriesAtom,
+  entryCommandsAtom,
   entryIdToTagsAtom,
   favoriteEntryIdsAtom,
   searchAtom,
   settingsAtom,
-  shortcutsAtom,
 } from "./states/atoms";
 
 export const App = () => {
@@ -99,8 +100,9 @@ export const App = () => {
   );
 
   const setEntries = useSetAtom(entriesAtom);
+  const setEntryCommands = useSetAtom(entryCommandsAtom);
+  const setCommands = useSetAtom(commandsAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
-  const setShortcuts = useSetAtom(shortcutsAtom);
   const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
@@ -112,11 +114,20 @@ export const App = () => {
       updateContextMenus();
     });
 
+    getEntryCommands().then(setEntryCommands);
+    watchEntryCommands(setEntryCommands);
+
+    // Filter out commands without names as they aren't useful to us.
+    chrome.commands.getAll((commands) =>
+      setCommands(
+        commands.flatMap((command) =>
+          command.name ? { name: command.name, shortcut: command.shortcut } : [],
+        ),
+      ),
+    );
+
     (async () => setClipboardSnapshot(await getClipboardSnapshot()))();
     watchClipboardSnapshot(setClipboardSnapshot);
-
-    (async () => setShortcuts(await getShortcuts()))();
-    watchShortcuts(setShortcuts);
 
     (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
     watchFavoriteEntryIds((favoriteEntryIds) => {
