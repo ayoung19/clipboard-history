@@ -21,7 +21,7 @@ import { useAtomValue } from "jotai";
 import { match } from "ts-pattern";
 
 import { commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
-import { createEntryCommand, deleteEntryCommand } from "~storage/entryCommands";
+import { createEntryCommand, deleteEntryCommands } from "~storage/entryCommands";
 import type { Entry } from "~types/entry";
 
 interface Props {
@@ -60,7 +60,9 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
             ""
           }
           onChange={(value) =>
-            value.length === 0 ? deleteEntryCommand(entry.id) : createEntryCommand(entry.id, value)
+            value.length === 0
+              ? deleteEntryCommands([entry.id])
+              : createEntryCommand(entry.id, value)
           }
           data={[
             ...commands

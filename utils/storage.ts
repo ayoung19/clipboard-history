@@ -3,6 +3,7 @@ import { Err, Ok, Result } from "ts-results";
 
 import { Storage } from "@plasmohq/storage";
 
+import { _setEntryCommands, deleteEntryCommands, getEntryCommands } from "~storage/entryCommands";
 import { getEntryIdToTags, setEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, setFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings } from "~storage/settings";
@@ -74,10 +75,12 @@ export const createEntry = async (content: string) => {
 
   await Promise.all([
     setEntries(newEntries),
-    ...(skippedEntryIds.length > 0 ? [setEntryIdToTags(entryIdToTags)] : []),
+    skippedEntryIds.length > 0 && setEntryIdToTags(entryIdToTags),
+    skippedEntryIds.length > 0 && deleteEntryCommands(skippedEntryIds),
   ]);
 };
 
+// TODO: Prevent favorited entries from being deleted.
 export const deleteEntries = async (entryIds: string[]) => {
   const entryIdSet = new Set(entryIds);
 
@@ -87,6 +90,7 @@ export const deleteEntries = async (entryIds: string[]) => {
   await Promise.all([
     setEntries(entries.filter(({ id }) => !entryIdSet.has(id))),
     setEntryIdToTags(entryIdToTags),
+    deleteEntryCommands(entryIds),
   ]);
 };
 
@@ -94,10 +98,11 @@ export const updateEntryContent = async (
   entryId: string,
   content: string,
 ): Promise<Result<undefined, "content must be unique">> => {
-  const [entries, favoriteEntryIds, entryIdToTags] = await Promise.all([
+  const [entries, favoriteEntryIds, entryIdToTags, entryCommands] = await Promise.all([
     getEntries(),
     getFavoriteEntryIds(),
     getEntryIdToTags(),
+    getEntryCommands(),
   ]);
 
   const newEntryId = createHash("sha256").update(content).digest("hex");
@@ -124,6 +129,11 @@ export const updateEntryContent = async (
       ),
     ),
     setEntryIdToTags(entryIdToTags),
+    _setEntryCommands(
+      entryCommands.map((entryCommand) =>
+        entryCommand.entryId === entryId ? { ...entryCommand, entryId: newEntryId } : entryCommand,
+      ),
+    ),
   ]);
 
   return Ok(undefined);

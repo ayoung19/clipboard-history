@@ -24,14 +24,14 @@ export const getEntryCommands = async () => {
     .parse(await storage.get(ENTRY_COMMANDS_STORAGE_KEY));
 };
 
-const setEntryCommands = async (entryCommands: EntryCommand[]) => {
+export const _setEntryCommands = async (entryCommands: EntryCommand[]) => {
   await storage.set(ENTRY_COMMANDS_STORAGE_KEY, entryCommands);
 };
 
 export const createEntryCommand = async (entryId: string, commandName: string) => {
   const entryCommands = await getEntryCommands();
 
-  await setEntryCommands([
+  await _setEntryCommands([
     ...entryCommands.filter(
       (entryCommand) =>
         entryCommand.entryId !== entryId && entryCommand.commandName !== commandName,
@@ -40,8 +40,10 @@ export const createEntryCommand = async (entryId: string, commandName: string) =
   ]);
 };
 
-export const deleteEntryCommand = async (entryId: string) => {
+export const deleteEntryCommands = async (entryIds: string[]) => {
+  const s = new Set(entryIds);
+
   const entryCommands = await getEntryCommands();
 
-  await setEntryCommands(entryCommands.filter((entryCommand) => entryCommand.entryId !== entryId));
+  await _setEntryCommands(entryCommands.filter((entryCommand) => !s.has(entryCommand.entryId)));
 };
