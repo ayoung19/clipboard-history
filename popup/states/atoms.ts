@@ -3,6 +3,7 @@ import { atom } from "jotai";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
 import { Entry } from "~types/entry";
+import type { EntryCommand } from "~types/entryCommand";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
@@ -28,3 +29,6 @@ export const entryIdToTagsAtom = atom<EntryIdToTags>({});
 export const allTagsAtom = atom((get) => entryIdToTagsToAllTags(get(entryIdToTagsAtom)));
 
 export const changelogViewedAtAtom = atom<string>();
+
+export const entryCommandsAtom = atom<EntryCommand[]>([]);
+export const commandsAtom = atom<{ name: string; shortcut?: string }[]>([]);

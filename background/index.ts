@@ -5,6 +5,7 @@ import {
   getClipboardMonitorIsEnabled,
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
+import { getEntryCommands } from "~storage/entryCommands";
 import { getSettings } from "~storage/settings";
 import {
   removeActionBadgeText,
@@ -102,6 +103,27 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const entry = entries.find(
       (entry) => entry.id === simplePathBasename(info.menuItemId.toString()),
     );
+
+    if (entry?.content) {
+      chrome.scripting.executeScript({
+        target: {
+          tabId: tab.id,
+        },
+        func: paste,
+        args: [entry.content],
+      });
+    }
+  }
+});
+
+chrome.commands.onCommand.addListener(async (command, tab) => {
+  if (tab?.id) {
+    const [entries, entryCommands] = await Promise.all([getEntries(), getEntryCommands()]);
+
+    const entryId = entryCommands.find(
+      (entryCommand) => entryCommand.commandName === command,
+    )?.entryId;
+    const entry = entries.find((entry) => entry.id === entryId);
 
     if (entry?.content) {
       chrome.scripting.executeScript({
