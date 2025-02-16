@@ -1,7 +1,6 @@
 import {
   CloseButton,
   Group,
-  Kbd,
   Paper,
   SegmentedControl,
   Text,
@@ -11,9 +10,15 @@ import {
 } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import { IconCopy, IconKeyboardOff } from "@tabler/icons-react";
+import {
+  IconCircleNumber1,
+  IconCircleNumber2,
+  IconCircleNumber3,
+  IconCopy,
+  IconKeyboardOff,
+} from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { Fragment } from "react";
+import { match } from "ts-pattern";
 
 import { commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
 import { createEntryCommand, deleteEntryCommand } from "~storage/entryCommands";
@@ -50,7 +55,6 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
       </Text>
       <Group align="center" position="center">
         <SegmentedControl
-          size="md"
           value={
             entryCommands.find((entryCommand) => entryCommand.entryId === entry.id)?.commandName ||
             ""
@@ -64,18 +68,14 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
               .slice()
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((command) => ({
-                label: command.shortcut ? (
-                  <Group align="center" spacing={4} noWrap>
-                    {command.shortcut.split("").map((c, i) => (
-                      <Fragment key={`${c}${i}`}>
-                        {i > 0 && <>+</>}
-                        <Kbd>{c}</Kbd>
-                      </Fragment>
-                    ))}
-                  </Group>
-                ) : (
-                  <Group align="center" noWrap>
-                    <Kbd>Not set</Kbd>
+                label: (
+                  <Group align="center" spacing={8} noWrap>
+                    {match(command.name)
+                      .with("paste-item-1", () => <IconCircleNumber1 size="1.125rem" />)
+                      .with("paste-item-2", () => <IconCircleNumber2 size="1.125rem" />)
+                      .with("paste-item-3", () => <IconCircleNumber3 size="1.125rem" />)
+                      .otherwise(() => null)}
+                    <Text>{command.shortcut || "Not set"}</Text>
                   </Group>
                 ),
                 value: command.name,
@@ -83,7 +83,7 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
             {
               label: (
                 <Group align="center" noWrap h="100%">
-                  <IconKeyboardOff />
+                  <IconKeyboardOff size="1.125rem" />
                 </Group>
               ),
               value: "",
