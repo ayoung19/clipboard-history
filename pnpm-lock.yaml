@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  "@clerk/chrome-extension":
+    specifier: ^2.2.10
+    version: 2.2.10(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
   "@dnd-kit/core":
     specifier: ^6.1.0
     version: 6.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -23,6 +26,12 @@ dependencies:
   "@hookform/resolvers":
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.53.0)
+  "@instantdb/core":
+    specifier: ^0.17.21
+    version: 0.17.21
+  "@instantdb/react":
+    specifier: ^0.17.21
+    version: 0.17.21(react@18.2.0)
   "@mantine/core":
     specifier: 6.0.21
     version: 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -349,6 +358,138 @@ packages:
       "@babel/helper-validator-identifier": 7.24.7
       to-fast-properties: 2.0.0
 
+  /@clerk/chrome-extension@2.2.10(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-5ICWyxew8s8E0k8Sjf6jso6vrHdEjhrAwetohgho9wJu7v30iEVyH48QYyfs5vUpmwUzCLbp+mi3J8kQ6+vkeg==,
+      }
+    engines: { node: ">=18.17.0" }
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+    dependencies:
+      "@clerk/clerk-js": 5.53.0(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      "@clerk/clerk-react": 5.23.0(react-dom@18.2.0)(react@18.2.0)
+      "@clerk/shared": 2.22.0(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      webextension-polyfill: 0.10.0
+    transitivePeerDependencies:
+      - "@types/react"
+      - supports-color
+    dev: false
+
+  /@clerk/clerk-js@5.53.0(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-i5UY3n9Xl8jcqP0HGw76E0AUDyuIY0YQN/UCjPUtoJqse9fr8lTzxigd8+QOzcCOsUSqpBmeR0CqRqWx1AKBZg==,
+      }
+    engines: { node: ">=18.17.0" }
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+    dependencies:
+      "@clerk/localizations": 3.10.7
+      "@clerk/shared": 2.22.0(react-dom@18.2.0)(react@18.2.0)
+      "@clerk/types": 4.46.1
+      "@coinbase/wallet-sdk": 4.3.0
+      "@emotion/cache": 11.11.0
+      "@emotion/react": 11.11.1(@types/react@18.2.48)(react@18.2.0)
+      "@floating-ui/react": 0.25.4(react-dom@18.2.0)(react@18.2.0)
+      "@floating-ui/react-dom": 2.1.2(react-dom@18.2.0)(react@18.2.0)
+      "@formkit/auto-animate": 0.8.2
+      "@swc/helpers": 0.5.13
+      "@zxcvbn-ts/core": 3.0.4
+      "@zxcvbn-ts/language-common": 3.0.4
+      browser-tabs-lock: 1.2.15
+      copy-to-clipboard: 3.3.3
+      core-js: 3.26.1
+      crypto-js: 4.2.0
+      dequal: 2.0.3
+      qrcode.react: 3.1.0(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      regenerator-runtime: 0.13.11
+    transitivePeerDependencies:
+      - "@types/react"
+      - supports-color
+    dev: false
+
+  /@clerk/clerk-react@5.23.0(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-2BMT3+KOWRJsAPDuhFoVdee2solukUcHw8BuKFfiOw6XXbU01H7WBezQCgF8gGFwrygEzZ0P5MBIz3L6MC/LYQ==,
+      }
+    engines: { node: ">=18.17.0" }
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+    dependencies:
+      "@clerk/shared": 2.22.0(react-dom@18.2.0)(react@18.2.0)
+      "@clerk/types": 4.46.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.4.1
+    dev: false
+
+  /@clerk/localizations@3.10.7:
+    resolution:
+      {
+        integrity: sha512-+Np7Vjx9KSIamZLm+8UTmm0OTF5HkcJfDFFYnNhfJz1/+JbwhcYOHspYTdsWjsml/VxM8OhfgyaBAgUUiAUSVA==,
+      }
+    engines: { node: ">=18.17.0" }
+    dependencies:
+      "@clerk/types": 4.46.1
+    dev: false
+
+  /@clerk/shared@2.22.0(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-VWBeddOJVa3sqUPdvquaaQYw4h5hACSG3EUDOW7eSu2F6W3BXUozyLJQPBJ9C0MuoeHhOe/DeV8x2KqOgxVZaQ==,
+      }
+    engines: { node: ">=18.17.0" }
+    requiresBuild: true
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      "@clerk/types": 4.46.1
+      dequal: 2.0.3
+      glob-to-regexp: 0.4.1
+      js-cookie: 3.0.5
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      std-env: 3.8.0
+      swr: 2.3.2(react@18.2.0)
+    dev: false
+
+  /@clerk/types@4.46.1:
+    resolution:
+      {
+        integrity: sha512-QwomMjG1v2GqOITU2/rQUC11LFFsqNFUA92VKDo8dS1nN9iQadT6cNk7MZWqEYTxAfAM/IgX/gB00aGsLKaV8g==,
+      }
+    engines: { node: ">=18.17.0" }
+    dependencies:
+      csstype: 3.1.3
+    dev: false
+
+  /@coinbase/wallet-sdk@4.3.0:
+    resolution:
+      {
+        integrity: sha512-T3+SNmiCw4HzDm4we9wCHCxlP0pqCiwKe4sOwPH3YAK2KSKjxPRydKu6UQJrdONFVLG7ujXvbd/6ZqmvJb8rkw==,
+      }
+    dependencies:
+      "@noble/hashes": 1.7.1
+      clsx: 1.2.1
+      eventemitter3: 5.0.1
+      preact: 10.26.2
+    dev: false
+
   /@cspotcode/source-map-support@0.8.1:
     resolution:
       {
@@ -449,6 +590,19 @@ packages:
       - supports-color
     dev: false
 
+  /@emotion/cache@11.11.0:
+    resolution:
+      {
+        integrity: sha512-P34z9ssTCBi3e9EI1ZsWpNHcfY1r09ZO0rZbRO2ob3ZQMnFI35jB536qoXbkdesr5EUhYi22anuEJuyxifaqAQ==,
+      }
+    dependencies:
+      "@emotion/memoize": 0.8.1
+      "@emotion/sheet": 1.4.0
+      "@emotion/utils": 1.4.0
+      "@emotion/weak-memoize": 0.3.1
+      stylis: 4.2.0
+    dev: false
+
   /@emotion/cache@11.13.1:
     resolution:
       {
@@ -469,11 +623,44 @@ packages:
       }
     dev: false
 
+  /@emotion/memoize@0.8.1:
+    resolution:
+      {
+        integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==,
+      }
+    dev: false
+
   /@emotion/memoize@0.9.0:
     resolution:
       {
         integrity: sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==,
       }
+    dev: false
+
+  /@emotion/react@11.11.1(@types/react@18.2.48)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==,
+      }
+    peerDependencies:
+      "@types/react": "*"
+      react: ">=16.8.0"
+    peerDependenciesMeta:
+      "@types/react":
+        optional: true
+    dependencies:
+      "@babel/runtime": 7.25.6
+      "@emotion/babel-plugin": 11.12.0
+      "@emotion/cache": 11.13.1
+      "@emotion/serialize": 1.3.1
+      "@emotion/use-insertion-effect-with-fallbacks": 1.1.0(react@18.2.0)
+      "@emotion/utils": 1.4.0
+      "@emotion/weak-memoize": 0.3.1
+      "@types/react": 18.2.48
+      hoist-non-react-statics: 3.3.2
+      react: 18.2.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@emotion/react@11.13.3(@types/react@18.2.48)(react@18.2.0):
@@ -544,6 +731,13 @@ packages:
     resolution:
       {
         integrity: sha512-spEnrA1b6hDR/C68lC2M7m6ALPUHZC0lIY7jAS/B/9DuuO1ZP04eov8SMv/6fwRd8pzmsn2AuJEznRREWlQrlQ==,
+      }
+    dev: false
+
+  /@emotion/weak-memoize@0.3.1:
+    resolution:
+      {
+        integrity: sha512-EsBwpc7hBUJWAsNPBmJy4hxWx12v6bshQsldrVmjxJoc3isbxhOrF2IcCpaXxfvq03NwkI7sbsOLXbYuqF/8Ww==,
       }
     dev: false
 
@@ -965,6 +1159,20 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@floating-ui/react-dom@2.1.2(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-06okr5cgPzMNBy+Ycse2A6udMi4bqwW/zgBF/rwjcNqWkyr82Mcg8b0vjX8OJpZFy/FKjJmw6wV7t44kK6kW7A==,
+      }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+    dependencies:
+      "@floating-ui/dom": 1.6.10
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@floating-ui/react@0.19.2(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
@@ -981,10 +1189,40 @@ packages:
       tabbable: 6.2.0
     dev: false
 
+  /@floating-ui/react@0.25.4(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-lWRQ/UiTvSIBxohn0/2HFHEmnmOVRjl7j6XcRJuLH0ls6f/9AyHMWVzkAJFuwx0n9gaEeCmg9VccCSCJzbEJig==,
+      }
+    peerDependencies:
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+    dependencies:
+      "@floating-ui/react-dom": 2.1.2(react-dom@18.2.0)(react@18.2.0)
+      "@floating-ui/utils": 0.1.6
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tabbable: 6.2.0
+    dev: false
+
+  /@floating-ui/utils@0.1.6:
+    resolution:
+      {
+        integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==,
+      }
+    dev: false
+
   /@floating-ui/utils@0.2.7:
     resolution:
       {
         integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==,
+      }
+    dev: false
+
+  /@formkit/auto-animate@0.8.2:
+    resolution:
+      {
+        integrity: sha512-SwPWfeRa5veb1hOIBMdzI+73te5puUBHmqqaF1Bu7FjvxlYSz/kJcZKSa9Cg60zL0uRNeJL2SbRxV6Jp6Q1nFQ==,
       }
     dev: false
 
@@ -1064,6 +1302,28 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@instantdb/core@0.17.21:
+    resolution:
+      {
+        integrity: sha512-iYauRnK607AQIlWkeCI4vDCXnaI0k4HQOEvJOoWFZE4OBsCwtgY+58BXjQPZg4aJvISMhy9IYEibJwalxYyo1Q==,
+      }
+    dependencies:
+      mutative: 1.1.0
+      uuid: 9.0.1
+    dev: false
+
+  /@instantdb/react@0.17.21(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-htlcCxRYYHst7xF6hxhqxsM2nmFCvtB2Bozwybeu1Llc+p25B6q2yTWMkRU7TDUsh7F4RT1ofEMWjasXZP6qTw==,
+      }
+    peerDependencies:
+      react: ">=16"
+    dependencies:
+      "@instantdb/core": 0.17.21
+      react: 18.2.0
+    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution:
@@ -1501,6 +1761,14 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@noble/hashes@1.7.1:
+    resolution:
+      {
+        integrity: sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ==,
+      }
+    engines: { node: ^14.21.3 || >=16 }
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution:
@@ -4523,6 +4791,22 @@ packages:
       }
     dev: false
 
+  /@zxcvbn-ts/core@3.0.4:
+    resolution:
+      {
+        integrity: sha512-aQeiT0F09FuJaAqNrxynlAwZ2mW/1MdXakKWNmGM1Qp/VaY6CnB/GfnMS2T8gB2231Esp1/maCWd8vTG4OuShw==,
+      }
+    dependencies:
+      fastest-levenshtein: 1.0.16
+    dev: false
+
+  /@zxcvbn-ts/language-common@3.0.4:
+    resolution:
+      {
+        integrity: sha512-viSNNnRYtc7ULXzxrQIVUNwHAPSXRtoIwy/Tq4XQQdIknBzw4vz36lQLF6mvhMlTIlpjoN/Z1GFu/fwiAlUSsw==,
+      }
+    dev: false
+
   /abortcontroller-polyfill@1.7.5:
     resolution:
       {
@@ -4851,6 +5135,16 @@ packages:
     dependencies:
       fill-range: 7.1.1
 
+  /browser-tabs-lock@1.2.15:
+    resolution:
+      {
+        integrity: sha512-J8K9vdivK0Di+b8SBdE7EZxDr88TnATing7XoLw6+nFkXMQ6sVBh92K3NQvZlZU91AIkFRi0w3sztk5Z+vsswA==,
+      }
+    requiresBuild: true
+    dependencies:
+      lodash: 4.17.21
+    dev: false
+
   /browserslist@4.22.1:
     resolution:
       {
@@ -5104,6 +5398,14 @@ packages:
     engines: { node: ">=6" }
     dev: false
 
+  /clsx@1.2.1:
+    resolution:
+      {
+        integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==,
+      }
+    engines: { node: ">=6" }
+    dev: false
+
   /code-red@1.0.4:
     resolution:
       {
@@ -5230,6 +5532,23 @@ packages:
       is-what: 3.14.1
     dev: false
 
+  /copy-to-clipboard@3.3.3:
+    resolution:
+      {
+        integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==,
+      }
+    dependencies:
+      toggle-selection: 1.0.6
+    dev: false
+
+  /core-js@3.26.1:
+    resolution:
+      {
+        integrity: sha512-21491RRQVzUn0GGM9Z1Jrpr6PNPxPi+Za8OM9q4tksTSnlbXXGKK1nXNg/QvwFYettXvSX6zWKCtHHfjN4puyA==,
+      }
+    requiresBuild: true
+    dev: false
+
   /cosmiconfig@7.1.0:
     resolution:
       {
@@ -5292,6 +5611,13 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /crypto-js@4.2.0:
+    resolution:
+      {
+        integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==,
+      }
+    dev: false
 
   /crypto-random-string@4.0.0:
     resolution:
@@ -5898,6 +6224,13 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
+  /eventemitter3@5.0.1:
+    resolution:
+      {
+        integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==,
+      }
+    dev: false
+
   /events@3.3.0:
     resolution:
       {
@@ -5984,6 +6317,14 @@ packages:
         integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==,
       }
     dev: true
+
+  /fastest-levenshtein@1.0.16:
+    resolution:
+      {
+        integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==,
+      }
+    engines: { node: ">= 4.9.1" }
+    dev: false
 
   /fastq@1.17.1:
     resolution:
@@ -6192,6 +6533,13 @@ packages:
     dependencies:
       is-glob: 4.0.3
     dev: true
+
+  /glob-to-regexp@0.4.1:
+    resolution:
+      {
+        integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==,
+      }
+    dev: false
 
   /glob@10.4.5:
     resolution:
@@ -6784,6 +7132,14 @@ packages:
         integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==,
       }
     engines: { node: ">=10" }
+    dev: false
+
+  /js-cookie@3.0.5:
+    resolution:
+      {
+        integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==,
+      }
+    engines: { node: ">=14" }
     dev: false
 
   /js-tokens@4.0.0:
@@ -7541,6 +7897,14 @@ packages:
       msgpackr-extract: 3.0.3
     dev: false
 
+  /mutative@1.1.0:
+    resolution:
+      {
+        integrity: sha512-2PJADREjOusk3iJkD3rXV2YjAxTuaLxdfqtqTEt6vcY07LtEBR1seHuBHXWEIuscqRDGvbauYPs+A4Rj/KTczQ==,
+      }
+    engines: { node: ">=14.0" }
+    dev: false
+
   /mute-stream@1.0.0:
     resolution:
       {
@@ -8142,6 +8506,13 @@ packages:
       posthtml-render: 3.0.0
     dev: false
 
+  /preact@10.26.2:
+    resolution:
+      {
+        integrity: sha512-0gNmv4qpS9HaN3+40CLBAnKe0ZfyE4ZWo5xKlC1rVrr0ckkEvJvAQqKaHANdFKsGstoxrY4AItZ7kZSGVoVjgg==,
+      }
+    dev: false
+
   /prebuild-install@7.1.2:
     resolution:
       {
@@ -8232,6 +8603,17 @@ packages:
         integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==,
       }
     engines: { node: ">=6" }
+
+  /qrcode.react@3.1.0(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /queue-microtask@1.2.3:
     resolution:
@@ -8847,6 +9229,13 @@ packages:
     deprecated: "Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility"
     dev: false
 
+  /std-env@3.8.0:
+    resolution:
+      {
+        integrity: sha512-Bc3YwwCB+OzldMxOXJIIvC6cPRWr/LxOp48CdQTOkPyk/t4JWWJbrilwBd7RJzKV8QW7tJkcgAmeuLLJugl5/w==,
+      }
+    dev: false
+
   /streamx@2.20.0:
     resolution:
       {
@@ -9033,6 +9422,19 @@ packages:
       stable: 0.1.8
     dev: false
 
+  /swr@2.3.2(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-RosxFpiabojs75IwQ316DGoDRmOqtiAj0tg8wCcbEu4CiLZBs/a9QNtHV7TUfDXmmlgqij/NqzKq/eLelyv9xA==,
+      }
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      dequal: 2.0.3
+      react: 18.2.0
+      use-sync-external-store: 1.4.0(react@18.2.0)
+    dev: false
+
   /tabbable@6.2.0:
     resolution:
       {
@@ -9172,6 +9574,13 @@ packages:
     dependencies:
       is-number: 7.0.0
 
+  /toggle-selection@1.0.6:
+    resolution:
+      {
+        integrity: sha512-BiZS+C1OS8g/q2RRbJmy59xpyghNBqrr6k5L/uKBGRsTfxmu3ffiRnd8mlGPUVayg8pvfi5urfnu8TU7DVOkLQ==,
+      }
+    dev: false
+
   /tr46@1.0.1:
     resolution:
       {
@@ -9259,6 +9668,13 @@ packages:
     resolution:
       {
         integrity: sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==,
+      }
+    dev: false
+
+  /tslib@2.4.1:
+    resolution:
+      {
+        integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==,
       }
     dev: false
 
@@ -9539,6 +9955,17 @@ packages:
       tslib: 2.7.0
     dev: false
 
+  /use-sync-external-store@1.4.0(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /util-deprecate@1.0.2:
     resolution:
       {
@@ -9552,6 +9979,14 @@ packages:
         integrity: sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw==,
       }
     engines: { node: ">= 4" }
+    dev: false
+
+  /uuid@9.0.1:
+    resolution:
+      {
+        integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==,
+      }
+    hasBin: true
     dev: false
 
   /v8-compile-cache-lib@3.0.1:
@@ -9586,6 +10021,13 @@ packages:
     resolution:
       {
         integrity: sha512-DEAoo25RfSYMuTGc9vPJzZcZullwIqRDSI9LOy+fkCJPi6hykCnfKaXTuPBDuXAUcqHXyOgFtHNp/kB2FjYHbw==,
+      }
+    dev: false
+
+  /webextension-polyfill@0.10.0:
+    resolution:
+      {
+        integrity: sha512-c5s35LgVa5tFaHhrZDnr3FpQpjj1BB+RXhLTYUxGqBVN460HkbM8TBtEqdXWbpTKfzwCcjAZVF7zXCYSKtcp9g==,
       }
     dev: false
 
