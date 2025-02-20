@@ -31,3 +31,11 @@ export const getEntryIdToTags = async () => {
 export const setEntryIdToTags = async (entryIdToTags: EntryIdToTags) => {
   await storage.set(ENTRY_ID_TO_TAGS_STORAGE_KEY, entryIdToTags);
 };
+
+export const deleteEntryIdsFromEntryIdToTags = async (entryIds: string[]) => {
+  const entryIdToTags = await getEntryIdToTags();
+
+  entryIds.forEach((entryId) => delete entryIdToTags[entryId]);
+
+  await setEntryIdToTags(entryIdToTags);
+};

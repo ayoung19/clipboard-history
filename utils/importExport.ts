@@ -5,7 +5,7 @@ import { addFavoriteEntryIds, getFavoriteEntryIds } from "~storage/favoriteEntry
 import type { Entry } from "~types/entry";
 import { ClipboardHistoryIOExport, ClipboardHistoryProExport } from "~types/importExport";
 
-import { getEntries, setEntries } from "./storage";
+import { _setEntries, getEntries } from "./storage";
 
 export const getClipboardHistoryIOExport = async (): Promise<ClipboardHistoryIOExport> => {
   const [entries, entryIdToTags, favoriteEntryIds] = await Promise.all([
@@ -75,7 +75,7 @@ const importClipboardHistoryIO = async (clipboardHistoryIOEntries: ClipboardHist
     // recent copy is kept. Since reducing from the end of the list and pushing
     // to a new list will cause items to be in the reverse order, undo this
     // reversal by reversing the list after reducing.
-    setEntries(
+    _setEntries(
       entries
         .sort((a, b) => a.createdAt - b.createdAt)
         .reduceRight<[Entry[], Set<string>]>(
