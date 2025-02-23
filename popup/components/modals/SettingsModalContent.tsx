@@ -25,6 +25,7 @@ import { notifications } from "@mantine/notifications";
 import {
   IconAdjustmentsHorizontal,
   IconAlertTriangle,
+  IconAppWindow,
   IconDatabase,
   IconDeviceFloppy,
   IconFileExport,
@@ -36,12 +37,17 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { sendToBackground } from "@plasmohq/messaging";
+
+import {
+  type UpdateTotalItemsBadgeRequestBody,
+  type UpdateTotalItemsBadgeResponseBody,
+} from "~background/messages/updateTotalItemsBadge";
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
-import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
-import { getEntries } from "~utils/storage";
 import { capitalize } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
@@ -86,6 +92,9 @@ export const SettingsModalContent = () => {
           <Tabs.Tab value="general" icon={<IconAdjustmentsHorizontal size="0.8rem" />}>
             General
           </Tabs.Tab>
+          <Tabs.Tab value="interface" icon={<IconAppWindow size="0.8rem" />}>
+            Interface
+          </Tabs.Tab>
           <Tabs.Tab
             value="storage"
             icon={
@@ -112,6 +121,48 @@ export const SettingsModalContent = () => {
           <Stack p="md">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
+                <Title order={6}>Blank Items</Title>
+                <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
+              </Stack>
+              <Switch
+                checked={settings.allowBlankItems}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
+
+                  await setSettings({ ...settings, allowBlankItems: checked });
+                }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Storage Location</Title>
+                <Text fz="xs">TODO.</Text>
+              </Stack>
+              <Select
+                value={settings.storageLocation}
+                onChange={(newStorageLocation) =>
+                  newStorageLocation &&
+                  setSettings({
+                    ...settings,
+                    storageLocation: StorageLocation.parse(newStorageLocation),
+                  })
+                }
+                data={[
+                  { value: StorageLocation.Enum.Local, label: StorageLocation.Enum.Local },
+                  { value: StorageLocation.Enum.Cloud, label: StorageLocation.Enum.Cloud },
+                ]}
+                size="xs"
+                withinPortal
+              />
+            </Group>
+          </Stack>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="interface">
+          <Stack p="md">
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
                 <Title order={6}>Total Items Badge</Title>
                 <Text fz="xs">
                   Show number of items in the clipboard history on the extension icon.
@@ -122,12 +173,14 @@ export const SettingsModalContent = () => {
                 onChange={async (e) => {
                   const checked = e.target.checked;
 
-                  await Promise.all([
-                    checked
-                      ? setActionBadgeText((await getEntries()).length)
-                      : removeActionBadgeText(),
-                    setSettings({ ...settings, totalItemsBadge: checked }),
-                  ]);
+                  await setSettings({ ...settings, totalItemsBadge: checked });
+
+                  await sendToBackground<
+                    UpdateTotalItemsBadgeRequestBody,
+                    UpdateTotalItemsBadgeResponseBody
+                  >({
+                    name: "updateTotalItemsBadge",
+                  });
                 }}
               />
             </Group>
@@ -146,21 +199,6 @@ export const SettingsModalContent = () => {
                   const checked = e.target.checked;
 
                   await setSettings({ ...settings, changelogIndicator: checked });
-                }}
-              />
-            </Group>
-            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-            <Group align="flex-start" spacing="md" position="apart" noWrap>
-              <Stack spacing={0}>
-                <Title order={6}>Blank Items</Title>
-                <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
-              </Stack>
-              <Switch
-                checked={settings.allowBlankItems}
-                onChange={async (e) => {
-                  const checked = e.target.checked;
-
-                  await setSettings({ ...settings, allowBlankItems: checked });
                 }}
               />
             </Group>

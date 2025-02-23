@@ -9,10 +9,11 @@ const _schema = i.schema({
       email: i.string().unique().indexed(),
     }),
     entries: i.entity({
-      emailContent: i.string().unique().indexed(),
+      emailContentHash: i.string().unique().indexed(),
       createdAt: i.number().indexed(),
       content: i.string(),
-      isFavorited: i.boolean(),
+      isFavorited: i.boolean().optional(),
+      tags: i.string().optional(),
     }),
   },
   links: {
@@ -20,7 +21,7 @@ const _schema = i.schema({
       forward: { on: "subscriptions", has: "one", label: "$user" },
       reverse: { on: "$users", has: "one", label: "subscription" },
     },
-    todosUser: {
+    entriesUser: {
       forward: { on: "entries", has: "one", label: "$user" },
       reverse: { on: "$users", has: "many", label: "entries" },
     },

@@ -6,6 +6,14 @@ const storage = new Storage({
   area: "local",
 });
 
+export const watchClipboardMonitorIsEnabled = (
+  cb: (clipboardMonitorIsEnabled: boolean) => void,
+) => {
+  return storage.watch({
+    clipboardMonitorIsEnabled: (c) => cb(!!c.newValue),
+  });
+};
+
 export const getClipboardMonitorIsEnabled = async () =>
   !!(await storage.get("clipboardMonitorIsEnabled"));
 

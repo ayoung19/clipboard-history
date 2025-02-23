@@ -6,17 +6,13 @@ import {
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getEntryCommands } from "~storage/entryCommands";
-import { getSettings } from "~storage/settings";
-import {
-  removeActionBadgeText,
-  setActionBadgeText,
-  setActionIconAndBadgeBackgroundColor,
-} from "~utils/actionBadge";
+import { setActionIconAndBadgeBackgroundColor } from "~utils/actionBadge";
 import { watchClipboard } from "~utils/background";
 import { simplePathBasename } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
 
 import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
+import { handleUpdateTotalItemsBadgeRequest } from "./messages/updateTotalItemsBadge";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
@@ -57,14 +53,13 @@ const setupOffscreenDocument = async () => {
 };
 
 const setupAction = async () => {
-  const [entries, clipboardMonitorIsEnabled, settings] = await Promise.all([
+  const [entries, clipboardMonitorIsEnabled] = await Promise.all([
     getEntries(),
     getClipboardMonitorIsEnabled(),
-    getSettings(),
   ]);
 
   await Promise.all([
-    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
+    handleUpdateTotalItemsBadgeRequest(entries.length),
     setActionIconAndBadgeBackgroundColor(clipboardMonitorIsEnabled),
   ]);
 };

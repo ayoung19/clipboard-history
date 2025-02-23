@@ -13,11 +13,11 @@ import { modals } from "@mantine/modals";
 import { IconEdit, IconKeyboard } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
+import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import {
   clipboardSnapshotAtom,
   commandsAtom,
   entryCommandsAtom,
-  entryIdToTagsAtom,
   nowAtom,
 } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
@@ -41,7 +41,7 @@ interface Props {
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
-  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const entryIdToTags = useEntryIdToTags();
   const entryCommands = useAtomValue(entryCommandsAtom);
   const commands = useAtomValue(commandsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);

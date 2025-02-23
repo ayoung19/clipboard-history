@@ -1,3 +1,9 @@
+import type { InstaQLEntity } from "@instantdb/core";
+
+import type { AppSchema } from "~instant.schema";
+
+import db from "./db/core";
+
 export const watchClipboard = (
   w: Window,
   d: Document,
@@ -48,4 +54,22 @@ export const watchClipboard = (
       fetching = false;
     }
   }, 800);
+};
+
+export const watchCloudEntries = (
+  cb: (cloudEntries: InstaQLEntity<AppSchema, "entries">[]) => Promise<void>,
+) => {
+  // TODO: Check for refresh token.
+  db.subscribeQuery(
+    {
+      entries: {},
+    },
+    async (res) => {
+      if (!res.data) {
+        return;
+      }
+
+      await cb(res.data.entries);
+    },
+  );
 };

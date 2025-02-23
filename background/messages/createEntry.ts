@@ -1,7 +1,13 @@
+import { createHash } from "crypto";
+import { lookup } from "@instantdb/core";
+import { match } from "ts-pattern";
+
 import type { PlasmoMessaging } from "@plasmohq/messaging";
 
 import { getClipboardSnapshot, updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { getSettings } from "~storage/settings";
+import { StorageLocation } from "~types/storageLocation";
+import db from "~utils/db/core";
 import { createEntry } from "~utils/storage";
 
 import { handleUpdateContextMenusRequest } from "./updateContextMenus";
@@ -26,7 +32,21 @@ export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => 
         (settings.allowBlankItems || body.content.length > 0) &&
           (settings.localItemCharacterLimit === null ||
             body.content.length <= settings.localItemCharacterLimit) &&
-          createEntry(body.content),
+          match(settings.storageLocation)
+            .with(StorageLocation.Enum.Local, () => createEntry(body.content))
+            .with(StorageLocation.Enum.Cloud, async () => {
+              const user = await db.getAuth();
+
+              const contentHash = createHash("sha256").update(body.content).digest("hex");
+
+              await db.transact(
+                db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
+                  content: body.content,
+                  createdAt: Date.now(),
+                }).link({ $user: lookup("email", user.email) }),
+              );
+            })
+            .exhaustive(),
       ]);
 
       await handleUpdateContextMenusRequest();

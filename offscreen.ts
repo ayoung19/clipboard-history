@@ -8,7 +8,11 @@ import type {
   GetClipboardMonitorIsEnabledRequestBody,
   GetClipboardMonitorIsEnabledResponseBody,
 } from "~background/messages/getClipboardMonitorIsEnabled";
-import { watchClipboard } from "~utils/background";
+import type {
+  UpdateTotalItemsBadgeRequestBody,
+  UpdateTotalItemsBadgeResponseBody,
+} from "~background/messages/updateTotalItemsBadge";
+import { watchClipboard, watchCloudEntries } from "~utils/background";
 
 watchClipboard(
   window,
@@ -33,3 +37,12 @@ watchClipboard(
     });
   },
 );
+
+watchCloudEntries(async () => {
+  await Promise.all([
+    // TODO: Update context menus.
+    sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+      name: "updateTotalItemsBadge",
+    }),
+  ]);
+});

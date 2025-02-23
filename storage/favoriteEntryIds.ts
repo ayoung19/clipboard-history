@@ -2,6 +2,9 @@ import { z } from "zod";
 
 import { Storage } from "@plasmohq/storage";
 
+import db from "~utils/db/core";
+import { handleEntryIds } from "~utils/entries";
+
 const storage = new Storage({
   area: "local",
 });
@@ -16,7 +19,7 @@ export const watchFavoriteEntryIds = (cb: (entryIds: string[]) => void) => {
         return;
       }
 
-      setFavoriteEntryIds([]);
+      _setFavoriteEntryIds([]);
 
       cb([]);
     },
@@ -31,22 +34,48 @@ export const getFavoriteEntryIds = async () => {
     return parsed.data;
   }
 
-  await setFavoriteEntryIds([]);
+  await _setFavoriteEntryIds([]);
 
   return [];
 };
 
-export const setFavoriteEntryIds = async (entryIds: string[]) =>
+export const _setFavoriteEntryIds = async (entryIds: string[]) =>
   storage.set("favoriteEntryIds", entryIds);
 
 export const addFavoriteEntryIds = async (entryIds: string[]) => {
-  const favoriteEntryIds = await getFavoriteEntryIds();
-  await setFavoriteEntryIds(Array.from(new Set([...favoriteEntryIds, ...entryIds])));
+  await handleEntryIds({
+    entryIds,
+    handleLocalEntryIds: async (localEntryIds) => {
+      const favoriteEntryIds = await getFavoriteEntryIds();
+      await _setFavoriteEntryIds(Array.from(new Set([...favoriteEntryIds, ...localEntryIds])));
+    },
+    handleCloudEntryIds: async (cloudEntryIds) => {
+      await db.transact(
+        cloudEntryIds.map((cloudEntryId) =>
+          db.tx.entries[cloudEntryId]!.update({ isFavorited: true }),
+        ),
+      );
+    },
+  });
 };
 
 export const deleteFavoriteEntryIds = async (entryIds: string[]) => {
-  const s = new Set(entryIds);
+  await handleEntryIds({
+    entryIds,
+    handleLocalEntryIds: async (localEntryIds) => {
+      const s = new Set(localEntryIds);
 
-  const favoriteEntryIds = await getFavoriteEntryIds();
-  await setFavoriteEntryIds(favoriteEntryIds.filter((favoriteEntryId) => !s.has(favoriteEntryId)));
+      const favoriteEntryIds = await getFavoriteEntryIds();
+      await _setFavoriteEntryIds(
+        favoriteEntryIds.filter((favoriteEntryId) => !s.has(favoriteEntryId)),
+      );
+    },
+    handleCloudEntryIds: async (cloudEntryIds) => {
+      await db.transact(
+        cloudEntryIds.map((cloudEntryId) =>
+          db.tx.entries[cloudEntryId]!.update({ isFavorited: false }),
+        ),
+      );
+    },
+  });
 };

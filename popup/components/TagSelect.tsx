@@ -10,10 +10,9 @@ import {
 } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { IconTags } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { allTagsAtom } from "~popup/states/atoms";
+import { useAllTags } from "~popup/contexts/AllTagsContext";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { TagOption } from "./TagOption";
@@ -23,7 +22,7 @@ interface Props {
 }
 
 export const TagSelect = ({ entryId }: Props) => {
-  const allTags = useAtomValue(allTagsAtom);
+  const allTags = useAllTags();
   const [opened, handlers] = useDisclosure(false);
   const [tagSearch, setTagSearch] = useState("");
   const tagSearchLowercase = useMemo(() => tagSearch.toLowerCase(), [tagSearch]);
