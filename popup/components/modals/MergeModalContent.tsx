@@ -26,14 +26,13 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconArrowsSort } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { Controller, useForm } from "react-hook-form";
 import { FixedSizeList } from "react-window";
 import { z } from "zod";
 
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { createEntry, deleteEntries } from "~utils/storage";
@@ -84,7 +83,7 @@ const DraggableMergeItemRenderer = ({
 };
 
 export const MergeModalContent = ({ initialEntries }: Props) => {
-  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const favoriteEntryIdsSet = useFavoriteEntryIds();
 
   const {
     control,

@@ -4,19 +4,17 @@ import { useAtomValue } from "jotai";
 
 import { EntryList } from "~popup/components/EntryList";
 import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
-import {
-  entryIdToTagsAtom,
-  favoriteEntryIdsSetAtom,
-  reversedEntriesAtom,
-  searchAtom,
-} from "~popup/states/atoms";
+import { useEntries } from "~popup/contexts/EntriesContext";
+import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
+import { searchAtom } from "~popup/states/atoms";
 import { commonActionIconSx } from "~utils/sx";
 
 export const FavoritesPage = () => {
-  const reversedEntries = useAtomValue(reversedEntriesAtom);
-  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const entries = useEntries();
+  const favoriteEntryIdsSet = useFavoriteEntryIds();
   const search = useAtomValue(searchAtom);
-  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const entryIdToTags = useEntryIdToTags();
 
   return (
     <EntryList
@@ -38,7 +36,7 @@ export const FavoritesPage = () => {
           <NoEntriesOverlay title={`No items found for "${search}"`} />
         )
       }
-      entries={reversedEntries.filter(
+      entries={entries.filter(
         (entry) =>
           favoriteEntryIdsSet.has(entry.id) &&
           (search.length === 0 ||

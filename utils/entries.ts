@@ -1,6 +1,32 @@
 import type { Entry } from "~types/entry";
 import type { Settings } from "~types/settings";
 
+interface HandleEntryIdsProps {
+  entryIds: string[];
+  handleLocalEntryIds: (entryIds: string[]) => Promise<void>;
+  handleCloudEntryIds: (entryIds: string[]) => Promise<void>;
+}
+
+export const handleEntryIds = async ({
+  entryIds,
+  handleLocalEntryIds,
+  handleCloudEntryIds,
+}: HandleEntryIdsProps) => {
+  const localEntryIds = entryIds.filter((entryId) => entryId.length !== 36);
+  const cloudEntryIds = entryIds.filter((entryId) => entryId.length === 36);
+
+  const results = await Promise.allSettled([
+    localEntryIds.length > 0 && handleLocalEntryIds(localEntryIds),
+    cloudEntryIds.length > 0 && handleCloudEntryIds(cloudEntryIds),
+  ]);
+
+  for (const result of results) {
+    if (result.status === "rejected") {
+      console.log(result.reason);
+    }
+  }
+};
+
 export const applyLocalItemLimit = (
   entries: Entry[],
   { localItemLimit }: Settings,

@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { StorageLocation } from "./storageLocation";
 import { Tab } from "./tab";
 
 // DO NOT REUSE DEPRECATED FIELDS.
 export const defaultSettings = {
+  storageLocation: StorageLocation.Enum.Local,
   totalItemsBadge: true,
   changelogIndicator: true,
   allowBlankItems: true,
@@ -16,6 +18,7 @@ export const defaultSettings = {
 
 export const Settings = z
   .object({
+    storageLocation: StorageLocation.default(defaultSettings.storageLocation),
     totalItemsBadge: z.boolean().default(defaultSettings.totalItemsBadge),
     changelogIndicator: z.boolean().default(defaultSettings.changelogIndicator),
     allowBlankItems: z.boolean().default(defaultSettings.allowBlankItems),

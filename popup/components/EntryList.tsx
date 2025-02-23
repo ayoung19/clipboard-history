@@ -2,12 +2,11 @@ import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from 
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
@@ -43,7 +42,7 @@ const EntryRowRenderer = ({
 };
 
 export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
-  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const favoriteEntryIdsSet = useFavoriteEntryIds();
 
   const selectedEntryIds = useSet<string>();
   const entryIdsStringified = useMemo(() => JSON.stringify(entries.map(({ id }) => id)), [entries]);

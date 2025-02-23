@@ -29,7 +29,6 @@ import {
   IconSettings,
   IconStar,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -48,29 +47,34 @@ import {
 import {
   getClipboardMonitorIsEnabled,
   toggleClipboardMonitorIsEnabled,
+  watchClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
 import { getEntryCommands, watchEntryCommands } from "~storage/entryCommands";
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import { getRefreshToken, watchRefreshToken } from "~storage/refreshToken";
 import { getSettings, watchSettings } from "~storage/settings";
 import { Tab } from "~types/tab";
 import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
+import { UserActionIcon } from "./components/cloud/UserActionIcon";
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { AllPage } from "./pages/AllPage";
 import { CloudPage } from "./pages/CloudPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   changelogViewedAtAtom,
+  clipboardMonitorIsEnabledAtom,
   clipboardSnapshotAtom,
   commandsAtom,
   entriesAtom,
   entryCommandsAtom,
   entryIdToTagsAtom,
   favoriteEntryIdsAtom,
+  refreshTokenAtom,
   searchAtom,
   settingsAtom,
 } from "./states/atoms";
@@ -99,6 +103,9 @@ export const App = () => {
     100,
   );
 
+  const [clipboardMonitorIsEnabled, setClipboardMonitorIsEnabled] = useAtom(
+    clipboardMonitorIsEnabledAtom,
+  );
   const setEntries = useSetAtom(entriesAtom);
   const setEntryCommands = useSetAtom(entryCommandsAtom);
   const setCommands = useSetAtom(commandsAtom);
@@ -107,7 +114,11 @@ export const App = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
   const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
   const [changelogViewedAt, setChangelogViewedAt] = useAtom(changelogViewedAtAtom);
+  const [refreshToken, setRefreshToken] = useAtom(refreshTokenAtom);
   useEffect(() => {
+    getClipboardMonitorIsEnabled().then(setClipboardMonitorIsEnabled);
+    watchClipboardMonitorIsEnabled(setClipboardMonitorIsEnabled);
+
     (async () => setEntries(await getEntries()))();
     watchEntries((entries) => {
       setEntries(entries);
@@ -151,20 +162,12 @@ export const App = () => {
 
     getChangelogViewedAt().then(setChangelogViewedAt);
     watchChangelogViewedAt(setChangelogViewedAt);
+
+    getRefreshToken().then(setRefreshToken);
+    watchRefreshToken(setRefreshToken);
   }, []);
 
-  const clipboardMonitorIsEnabledQuery = useQuery({
-    queryKey: ["clipboardMonitorIsEnabled"],
-    queryFn: getClipboardMonitorIsEnabled,
-  });
-
-  const queryClient = useQueryClient();
-  const toggleClipboardMonitorIsEnabledMutation = useMutation({
-    mutationFn: toggleClipboardMonitorIsEnabled,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
-  });
-
-  if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
+  if (clipboardMonitorIsEnabled === undefined) {
     return null;
   }
 
@@ -281,12 +284,13 @@ export const App = () => {
                 <IconSettings size="1.125rem" />
               </ActionIcon>
             </Tooltip>
+            {refreshToken && <UserActionIcon />}
             <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
             <Switch
               size="md"
               color="indigo.5"
-              checked={clipboardMonitorIsEnabledQuery.data}
-              onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+              checked={clipboardMonitorIsEnabled}
+              onChange={() => toggleClipboardMonitorIsEnabled()}
             />
           </Group>
         </Group>

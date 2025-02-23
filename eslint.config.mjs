@@ -30,6 +30,12 @@ export default tseslint.config(
             "`Array.prototype.toSorted()` is not allowed. Use `Array.prototype.slice().sort()` instead.",
         },
       ],
+      "@typescript-eslint/no-empty-object-type": [
+        "error",
+        {
+          allowInterfaces: "with-single-extends",
+        },
+      ],
     },
   },
 );

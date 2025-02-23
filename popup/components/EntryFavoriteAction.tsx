@@ -1,8 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
 
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { lightOrDark } from "~utils/sx";
 
@@ -11,7 +10,7 @@ interface Props {
 }
 
 export const EntryFavoriteAction = ({ entryId }: Props) => {
-  const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const favoriteEntryIdsSet = useFavoriteEntryIds();
   const isFavoriteEntry = favoriteEntryIdsSet.has(entryId);
 
   return (
