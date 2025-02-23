@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { lookup } from "@instantdb/core";
 import { Err, Ok, Result } from "ts-results";
 
 import { Storage } from "@plasmohq/storage";
@@ -13,6 +14,7 @@ import {
 import { _setFavoriteEntryIds, getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
+import { StorageLocation } from "~types/storageLocation";
 
 import db from "./db/core";
 import { applyLocalItemLimit, handleEntryIds } from "./entries";
@@ -62,9 +64,25 @@ export const _setEntries = async (entries: Entry[]) => {
 
 // TODO: Move cloud logic here to make merging work.
 export const createEntry = async (content: string) => {
-  const [entries, settings, favoriteEntryIds] = await Promise.all([
+  const settings = await getSettings();
+
+  if (settings.storageLocation === StorageLocation.Enum.Cloud) {
+    const user = await db.getAuth();
+
+    const contentHash = createHash("sha256").update(content).digest("hex");
+
+    await db.transact(
+      db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
+        createdAt: Date.now(),
+        content: content,
+      }).link({ $user: lookup("email", user.email) }),
+    );
+
+    return;
+  }
+
+  const [entries, favoriteEntryIds] = await Promise.all([
     getEntries(),
-    getSettings(),
     getFavoriteEntryIds(),
     getEntryIdToTags(),
   ]);
