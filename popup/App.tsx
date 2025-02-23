@@ -15,7 +15,6 @@ import {
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { useDebouncedCallback } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
   IconClipboardList,
@@ -29,142 +28,46 @@ import {
   IconSettings,
   IconStar,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import iconSrc from "data-base64:~assets/icon.png";
-import { useAtom, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import { useState } from "react";
 
-import { sendToBackground } from "@plasmohq/messaging";
-
-import type {
-  UpdateContextMenusRequestBody,
-  UpdateContextMenusResponseBody,
-} from "~background/messages/updateContextMenus";
-import {
-  getChangelogViewedAt,
-  updateChangelogViewedAt,
-  watchChangelogViewedAt,
-} from "~storage/changelogViewedAt";
-import {
-  getClipboardMonitorIsEnabled,
-  toggleClipboardMonitorIsEnabled,
-} from "~storage/clipboardMonitorIsEnabled";
-import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboardSnapshot";
-import { getEntryCommands, watchEntryCommands } from "~storage/entryCommands";
-import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
-import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
-import { getSettings, watchSettings } from "~storage/settings";
+import { updateChangelogViewedAt } from "~storage/changelogViewedAt";
+import { toggleClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
 import { Tab } from "~types/tab";
-import { getEntries, watchEntries } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
+import { useApp } from "./hooks/useApp";
 import { AllPage } from "./pages/AllPage";
 import { CloudPage } from "./pages/CloudPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   changelogViewedAtAtom,
-  clipboardSnapshotAtom,
-  commandsAtom,
-  entriesAtom,
-  entryCommandsAtom,
-  entryIdToTagsAtom,
-  favoriteEntryIdsAtom,
+  clipboardMonitorIsEnabledAtom,
   searchAtom,
   settingsAtom,
+  tabAtom,
 } from "./states/atoms";
 
 export const App = () => {
+  useApp();
+
   const theme = useMantineTheme();
 
-  const [tab, setTab] = useState<Tab>(Tab.Enum.All);
   const [isFloatingPopup] = useState(
     new URLSearchParams(window.location.search).get("ref") === "popup",
   );
 
   const [search, setSearch] = useAtom(searchAtom);
+  const [tab, setTab] = useAtom(tabAtom);
 
-  // TODO: For actions that take a while to render (e.g. deleting an entry), the user could close
-  // the popup before the mutation is rendered causing the context menus to be stale until the user
-  // switches tabs. I decided on this approach as opposed to directly calling the sync function in
-  // the respective storage mutation functions because I like the idea of keeping context menu
-  // updates as separate from core extension logic. We can stick with this until it becomes a
-  // serious pain point for users.
-  const updateContextMenus = useDebouncedCallback(
-    () =>
-      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
-        name: "updateContextMenus",
-      }),
-    100,
-  );
+  const clipboardMonitorIsEnabled = useAtomValue(clipboardMonitorIsEnabledAtom);
+  const settings = useAtomValue(settingsAtom);
+  const changelogViewedAt = useAtomValue(changelogViewedAtAtom);
 
-  const setEntries = useSetAtom(entriesAtom);
-  const setEntryCommands = useSetAtom(entryCommandsAtom);
-  const setCommands = useSetAtom(commandsAtom);
-  const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
-  const setFavoriteEntryIds = useSetAtom(favoriteEntryIdsAtom);
-  const [settings, setSettings] = useAtom(settingsAtom);
-  const setEntryIdToTags = useSetAtom(entryIdToTagsAtom);
-  const [changelogViewedAt, setChangelogViewedAt] = useAtom(changelogViewedAtAtom);
-  useEffect(() => {
-    (async () => setEntries(await getEntries()))();
-    watchEntries((entries) => {
-      setEntries(entries);
-      updateContextMenus();
-    });
-
-    getEntryCommands().then(setEntryCommands);
-    watchEntryCommands(setEntryCommands);
-
-    // Filter out commands without names as they aren't useful to us.
-    chrome.commands.getAll((commands) =>
-      setCommands(
-        commands.flatMap((command) =>
-          command.name ? { name: command.name, shortcut: command.shortcut } : [],
-        ),
-      ),
-    );
-
-    (async () => setClipboardSnapshot(await getClipboardSnapshot()))();
-    watchClipboardSnapshot(setClipboardSnapshot);
-
-    (async () => setFavoriteEntryIds(await getFavoriteEntryIds()))();
-    watchFavoriteEntryIds((favoriteEntryIds) => {
-      setFavoriteEntryIds(favoriteEntryIds);
-      updateContextMenus();
-    });
-
-    (async () => {
-      const s = await getSettings();
-
-      setSettings(s);
-      setTab(s.defaultTab);
-    })();
-    watchSettings(setSettings);
-
-    (async () => setEntryIdToTags(await getEntryIdToTags()))();
-    watchEntryIdToTags((entryIdToTags) => {
-      setEntryIdToTags(entryIdToTags);
-      updateContextMenus();
-    });
-
-    getChangelogViewedAt().then(setChangelogViewedAt);
-    watchChangelogViewedAt(setChangelogViewedAt);
-  }, []);
-
-  const clipboardMonitorIsEnabledQuery = useQuery({
-    queryKey: ["clipboardMonitorIsEnabled"],
-    queryFn: getClipboardMonitorIsEnabled,
-  });
-
-  const queryClient = useQueryClient();
-  const toggleClipboardMonitorIsEnabledMutation = useMutation({
-    mutationFn: toggleClipboardMonitorIsEnabled,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clipboardMonitorIsEnabled"] }),
-  });
-
-  if (clipboardMonitorIsEnabledQuery.isPending || clipboardMonitorIsEnabledQuery.isError) {
+  if (clipboardMonitorIsEnabled === undefined) {
     return null;
   }
 
@@ -285,8 +188,8 @@ export const App = () => {
             <Switch
               size="md"
               color="indigo.5"
-              checked={clipboardMonitorIsEnabledQuery.data}
-              onChange={() => toggleClipboardMonitorIsEnabledMutation.mutate()}
+              checked={clipboardMonitorIsEnabled}
+              onChange={() => toggleClipboardMonitorIsEnabled()}
             />
           </Group>
         </Group>

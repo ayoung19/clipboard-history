@@ -6,9 +6,13 @@ import { Entry } from "~types/entry";
 import type { EntryCommand } from "~types/entryCommand";
 import { EntryIdToTags } from "~types/entryIdToTags";
 import { defaultSettings, Settings } from "~types/settings";
+import { Tab } from "~types/tab";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 
 export const searchAtom = atom<string>("");
+export const tabAtom = atom<Tab>(Tab.Enum.All);
+
+export const clipboardMonitorIsEnabledAtom = atom<boolean>();
 
 export const entriesAtom = atom<Entry[]>([]);
 export const reversedEntriesAtom = atom((get) => get(entriesAtom).slice().reverse());
