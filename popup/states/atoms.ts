@@ -36,3 +36,5 @@ export const changelogViewedAtAtom = atom<string>();
 
 export const entryCommandsAtom = atom<EntryCommand[]>([]);
 export const commandsAtom = atom<{ name: string; shortcut?: string }[]>([]);
+
+export const refreshTokenAtom = atom<string | null>(null);

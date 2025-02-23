@@ -23,6 +23,12 @@ dependencies:
   "@hookform/resolvers":
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.53.0)
+  "@instantdb/core":
+    specifier: ^0.17.21
+    version: 0.17.21
+  "@instantdb/react":
+    specifier: ^0.17.21
+    version: 0.17.21(react@18.2.0)
   "@mantine/core":
     specifier: 6.0.21
     version: 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -1061,6 +1067,28 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@instantdb/core@0.17.21:
+    resolution:
+      {
+        integrity: sha512-iYauRnK607AQIlWkeCI4vDCXnaI0k4HQOEvJOoWFZE4OBsCwtgY+58BXjQPZg4aJvISMhy9IYEibJwalxYyo1Q==,
+      }
+    dependencies:
+      mutative: 1.1.0
+      uuid: 9.0.1
+    dev: false
+
+  /@instantdb/react@0.17.21(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-htlcCxRYYHst7xF6hxhqxsM2nmFCvtB2Bozwybeu1Llc+p25B6q2yTWMkRU7TDUsh7F4RT1ofEMWjasXZP6qTw==,
+      }
+    peerDependencies:
+      react: ">=16"
+    dependencies:
+      "@instantdb/core": 0.17.21
+      react: 18.2.0
+    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution:
@@ -7519,6 +7547,14 @@ packages:
       msgpackr-extract: 3.0.3
     dev: false
 
+  /mutative@1.1.0:
+    resolution:
+      {
+        integrity: sha512-2PJADREjOusk3iJkD3rXV2YjAxTuaLxdfqtqTEt6vcY07LtEBR1seHuBHXWEIuscqRDGvbauYPs+A4Rj/KTczQ==,
+      }
+    engines: { node: ">=14.0" }
+    dev: false
+
   /mute-stream@1.0.0:
     resolution:
       {
@@ -9530,6 +9566,14 @@ packages:
         integrity: sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw==,
       }
     engines: { node: ">= 4" }
+    dev: false
+
+  /uuid@9.0.1:
+    resolution:
+      {
+        integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==,
+      }
+    hasBin: true
     dev: false
 
   /v8-compile-cache-lib@3.0.1:
