@@ -17,6 +17,7 @@ import { getClipboardSnapshot, watchClipboardSnapshot } from "~storage/clipboard
 import { getEntryCommands, watchEntryCommands } from "~storage/entryCommands";
 import { getEntryIdToTags, watchEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds, watchFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import { getRefreshToken, watchRefreshToken } from "~storage/refreshToken";
 import { getSettings, watchSettings } from "~storage/settings";
 import { getEntries, watchEntries } from "~utils/storage";
 
@@ -29,6 +30,7 @@ import {
   entryCommandsAtom,
   entryIdToTagsAtom,
   favoriteEntryIdsAtom,
+  refreshTokenAtom,
   settingsAtom,
   tabAtom,
 } from "../states/atoms";
@@ -58,6 +60,7 @@ export const useApp = () => {
   const setClipboardMonitorIsEnabled = useSetAtom(clipboardMonitorIsEnabledAtom);
   const setClipboardSnapshot = useSetAtom(clipboardSnapshotAtom);
   const setEntryCommands = useSetAtom(entryCommandsAtom);
+  const setRefreshToken = useSetAtom(refreshTokenAtom);
   const setSettings = useSetAtom(settingsAtom);
   useEffect(() => {
     getEntries().then(setEntries);
@@ -89,6 +92,9 @@ export const useApp = () => {
 
     getEntryCommands().then(setEntryCommands);
     watchEntryCommands(setEntryCommands);
+
+    getRefreshToken().then(setRefreshToken);
+    watchRefreshToken(setRefreshToken);
 
     getSettings().then((settings) => {
       setSettings(settings);

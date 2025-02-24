@@ -38,6 +38,7 @@ import { Tab } from "~types/tab";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
+import { UserActionIcon } from "./components/cloud/UserActionIcon";
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { useApp } from "./hooks/useApp";
 import { AllPage } from "./pages/AllPage";
@@ -46,6 +47,7 @@ import { FavoritesPage } from "./pages/FavoritesPage";
 import {
   changelogViewedAtAtom,
   clipboardMonitorIsEnabledAtom,
+  refreshTokenAtom,
   searchAtom,
   settingsAtom,
   tabAtom,
@@ -66,6 +68,7 @@ export const App = () => {
   const clipboardMonitorIsEnabled = useAtomValue(clipboardMonitorIsEnabledAtom);
   const settings = useAtomValue(settingsAtom);
   const changelogViewedAt = useAtomValue(changelogViewedAtAtom);
+  const refreshToken = useAtomValue(refreshTokenAtom);
 
   if (clipboardMonitorIsEnabled === undefined) {
     return null;
@@ -184,6 +187,7 @@ export const App = () => {
                 <IconSettings size="1.125rem" />
               </ActionIcon>
             </Tooltip>
+            {refreshToken && <UserActionIcon />}
             <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
             <Switch
               size="md"
