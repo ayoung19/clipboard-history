@@ -1,128 +1,208 @@
-import { type User } from "@instantdb/react";
+import {
+  ActionIcon,
+  Button,
+  Card,
+  Center,
+  Group,
+  Image,
+  MantineProvider,
+  PinInput,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import iconSrc from "data-base64:~assets/icon.png";
 import React, { useEffect, useState } from "react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { match } from "ts-pattern";
 
 import { setRefreshToken } from "~storage/refreshToken";
 import db from "~utils/db/react";
 
+import "./sign-in.css";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IconPencilMinus } from "@tabler/icons-react";
+import { z } from "zod";
+
+import { useTheme } from "~popup/hooks/useTheme";
+
+const schema = z.object({
+  email: z.string(),
+  code: z.string(),
+});
+type FormValues = z.infer<typeof schema>;
+
 export default function Page() {
-  const { isLoading, user, error } = db.useAuth();
+  const theme = useTheme();
+  const auth = db.useAuth();
 
-  if (isLoading) {
-    return;
-  }
+  const [step, setStep] = useState<0 | 1>(0);
 
-  if (error) {
-    return <div className="p-4 text-red-500">Uh oh! {error.message}</div>;
-  }
+  const {
+    control,
+    setError,
+    setValue,
+    watch,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    defaultValues: {
+      email: "",
+      code: "",
+    },
+    mode: "all",
+    resolver: zodResolver(schema),
+  });
 
-  if (user) {
-    // The user is logged in! Let's load the `Main`
-    return <Main user={user} />;
-  }
-  // The use isn't logged in yet. Let's show them the `Login` component
-  return <Login />;
-}
+  const onSubmit: SubmitHandler<FormValues> = async ({ email, code }) => {
+    await match(step)
+      .with(0, async () => {
+        try {
+          await db.auth.sendMagicCode({ email });
+        } catch (e) {
+          console.log(e);
 
-function Main({ user }: { user: User }) {
+          setError("email", { type: "manual", message: "Invalid email" });
+
+          return;
+        }
+
+        setStep(1);
+      })
+      .with(1, async () => {
+        try {
+          await db.auth.signInWithMagicCode({ email, code });
+        } catch (e) {
+          console.log(e);
+
+          setError("code", { type: "manual", message: "Invalid code" });
+          setValue("code", "");
+
+          return;
+        }
+
+        // Reset step and form so it can be reused if the user signs out from the popup while this
+        // page is still open.
+        setStep(0);
+        reset();
+      })
+      .exhaustive();
+  };
+
   useEffect(() => {
-    setRefreshToken(user.refresh_token);
-  }, []);
+    if (!auth.user?.refresh_token) {
+      return;
+    }
+
+    setRefreshToken(auth.user?.refresh_token);
+  }, [auth.user?.refresh_token]);
 
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Hello {user.email}!</h1>
-      <button
-        onClick={() => db.auth.signOut()}
-        className="px-3 py-1 bg-blue-600 text-white font-bold hover:bg-blue-700"
-      >
-        Sign out
-      </button>
-    </div>
-  );
-}
-
-function Login() {
-  const [sentEmail, setSentEmail] = useState("");
-
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="max-w-sm">
-        {!sentEmail ? <EmailStep onSendEmail={setSentEmail} /> : <CodeStep sentEmail={sentEmail} />}
-      </div>
-    </div>
-  );
-}
-
-function EmailStep({ onSendEmail }: { onSendEmail: (email: string) => void }) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const inputEl = inputRef.current!;
-    const email = inputEl.value;
-    onSendEmail(email);
-    db.auth.sendMagicCode({ email }).catch((err) => {
-      alert("Uh oh :" + err.body?.message);
-      onSendEmail("");
-    });
-  };
-  return (
-    <form key="email" onSubmit={handleSubmit} className="flex flex-col space-y-4">
-      <h2 className="text-xl font-bold">Let's log you in</h2>
-      <p className="text-gray-700">
-        Enter your email, and we'll send you a verification code. We'll create an account for you
-        too if you don't already have one.
-      </p>
-      <input
-        ref={inputRef}
-        type="email"
-        className="border border-gray-300 px-3 py-1  w-full"
-        placeholder="Enter your email"
-        required
-        autoFocus
-      />
-      <button
-        type="submit"
-        className="px-3 py-1 bg-blue-600 text-white font-bold hover:bg-blue-700 w-full"
-      >
-        Send Code
-      </button>
-    </form>
-  );
-}
-
-function CodeStep({ sentEmail }: { sentEmail: string }) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const inputEl = inputRef.current!;
-    const code = inputEl.value;
-    db.auth.signInWithMagicCode({ email: sentEmail, code }).catch((err) => {
-      inputEl.value = "";
-      alert("Uh oh :" + err.body?.message);
-    });
-  };
-
-  return (
-    <form key="code" onSubmit={handleSubmit} className="flex flex-col space-y-4">
-      <h2 className="text-xl font-bold">Enter your code</h2>
-      <p className="text-gray-700">
-        We sent an email to <strong>{sentEmail}</strong>. Check your email, and paste the code you
-        see.
-      </p>
-      <input
-        ref={inputRef}
-        type="text"
-        className="border border-gray-300 px-3 py-1  w-full"
-        placeholder="123456..."
-        required
-        autoFocus
-      />
-      <button
-        type="submit"
-        className="px-3 py-1 bg-blue-600 text-white font-bold hover:bg-blue-700 w-full"
-      >
-        Verify Code
-      </button>
-    </form>
+    <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+      {auth.user ? (
+        <Text size="xs">Success! You may close this window.</Text>
+      ) : (
+        <Center h="100%">
+          <Card w={400} px={40} py={32} shadow="md" withBorder>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Stack p="xs" spacing="xl">
+                {match(step)
+                  .with(0, () => (
+                    <Stack align="center" spacing={0}>
+                      <Image src={iconSrc} maw={32} mb="md" />
+                      <Text fw="bold" mb={2}>
+                        Sign in to Clipboard History IO Pro
+                      </Text>
+                      <Text color="dimmed" fz="xs">
+                        Welcome! Please enter your email to continue
+                      </Text>
+                    </Stack>
+                  ))
+                  .with(1, () => (
+                    <Stack align="center" spacing={0}>
+                      <Text fw="bold" mb={4}>
+                        Check your email
+                      </Text>
+                      <Text color="dimmed" fz="xs">
+                        to continue to Clipboard History IO Pro
+                      </Text>
+                      <Group align="center" spacing={0}>
+                        <Text color="dimmed" fz="xs">
+                          {watch("email")}
+                        </Text>
+                        <ActionIcon
+                          variant="transparent"
+                          color="indigo"
+                          onClick={() => {
+                            setStep(0);
+                            reset();
+                          }}
+                        >
+                          <IconPencilMinus size="1rem" />
+                        </ActionIcon>
+                      </Group>
+                    </Stack>
+                  ))
+                  .exhaustive()}
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) =>
+                    step === 0 ? (
+                      <TextInput
+                        {...field}
+                        label="Email address"
+                        size="xs"
+                        error={errors.email?.message}
+                        required
+                        autoFocus
+                      />
+                    ) : (
+                      <></>
+                    )
+                  }
+                />
+                <Controller
+                  name="code"
+                  control={control}
+                  render={({ field }) =>
+                    step === 1 ? (
+                      <Stack align="center" spacing="xs">
+                        <PinInput
+                          {...field}
+                          length={6}
+                          error={!!errors.code?.message}
+                          // This is okay because `onComplete` is called when and only when the
+                          // length of `value` is the same as the provided length. I was concerned
+                          // by a potential race between `onComplete` and `onChange` but there is
+                          // none because `onComplete` is called inside a `useEffect` that depends
+                          // on `value` and not alongside `onChange`.
+                          // https://github.com/mantinedev/mantine/blob/84e6d7177d221be47af5294b74e6dcdac8eb4f13/src/mantine-core/src/PinInput/PinInput.tsx#L252-L256
+                          onComplete={() => handleSubmit(onSubmit)()}
+                          required
+                          autoFocus
+                        />
+                        {errors.code?.message && (
+                          <Text size="xs" color="red">
+                            {errors.code.message}
+                          </Text>
+                        )}
+                      </Stack>
+                    ) : (
+                      <></>
+                    )
+                  }
+                />
+                <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
+                  Continue
+                </Button>
+              </Stack>
+            </form>
+          </Card>
+        </Center>
+      )}
+    </MantineProvider>
   );
 }
