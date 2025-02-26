@@ -38,6 +38,7 @@ import { z } from "zod";
 
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { PopupSize } from "~types/popupWindowSize";
 import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
@@ -162,6 +163,27 @@ export const SettingsModalContent = () => {
 
                   await setSettings({ ...settings, allowBlankItems: checked });
                 }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Window Size</Title>
+                <Text fz="xs">Select the size of the extension's window.</Text>
+              </Stack>
+              <Select
+                value={settings.popupWindowSize}
+                onChange={(newPopupWindowSize: PopupSize) =>
+                  newPopupWindowSize &&
+                  setSettings({ ...settings, popupWindowSize: newPopupWindowSize })
+                }
+                data={[
+                  { value: PopupSize.Enum.sm, label: "Small" },
+                  { value: PopupSize.Enum.md, label: "Medium" },
+                  { value: PopupSize.Enum.lg, label: "Large" },
+                ]}
+                size="xs"
+                withinPortal
               />
             </Group>
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />

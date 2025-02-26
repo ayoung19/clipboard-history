@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { PopupSize } from "./popupWindowSize";
 import { Tab } from "./tab";
 
 // DO NOT REUSE DEPRECATED FIELDS.
@@ -12,6 +13,7 @@ export const defaultSettings = {
   themeV2: "system",
   localItemLimit: null,
   localItemCharacterLimit: null,
+  popupWindowSize: PopupSize.Enum.md,
 };
 
 export const Settings = z
@@ -24,6 +26,7 @@ export const Settings = z
     themeV2: z.string().default(defaultSettings.themeV2),
     localItemLimit: z.number().nullable().default(defaultSettings.localItemLimit),
     localItemCharacterLimit: z.number().nullable().default(defaultSettings.localItemCharacterLimit),
+    popupWindowSize: PopupSize.default(defaultSettings.popupWindowSize),
   })
   .default(defaultSettings);
 export type Settings = z.infer<typeof Settings>;
