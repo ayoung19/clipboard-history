@@ -1,4 +1,4 @@
-import { Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Box, Checkbox, Divider, Group, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
@@ -98,12 +98,28 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             <Tooltip label={<Text fz="xs">Delete</Text>} disabled={selectedEntryIds.size === 0}>
               <CommonActionIcon
                 disabled={selectedEntryIds.size === 0}
-                onClick={() =>
-                  deleteEntries(
-                    Array.from(selectedEntryIds).filter(
-                      (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
-                    ),
-                  )
+                onClick={
+                  selectedEntryIds.size === 0
+                    ? undefined
+                    : () =>
+                        modals.openConfirmModal({
+                          title: <Title order={5}>Delete Items</Title>,
+                          children: (
+                            <Text fz="xs" mb="xs">
+                              Are you sure you want to delete all selected items? Favorited items
+                              will not be deleted.
+                            </Text>
+                          ),
+                          labels: { confirm: "Delete All", cancel: "Cancel" },
+                          confirmProps: { color: "red", size: "xs" },
+                          cancelProps: { size: "xs" },
+                          onConfirm: () =>
+                            deleteEntries(
+                              Array.from(selectedEntryIds).filter(
+                                (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
+                              ),
+                            ),
+                        })
                 }
               >
                 <IconTrash size="1rem" />
