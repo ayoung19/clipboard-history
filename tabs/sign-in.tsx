@@ -99,6 +99,10 @@ export default function Page() {
     setRefreshToken(auth.user?.refresh_token);
   }, [auth.user?.refresh_token]);
 
+  if (auth.isLoading) {
+    return null;
+  }
+
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       {auth.user ? (
