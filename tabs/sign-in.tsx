@@ -22,10 +22,12 @@ import db from "~utils/db/react";
 import "./sign-in.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { User } from "@instantdb/core";
 import { IconPencilMinus } from "@tabler/icons-react";
 import { z } from "zod";
 
 import { useTheme } from "~popup/hooks/useTheme";
+import env from "~utils/env";
 
 const schema = z.object({
   email: z.string(),
@@ -38,6 +40,7 @@ export default function Page() {
   const auth = db.useAuth();
 
   const [step, setStep] = useState<0 | 1>(0);
+  const [subscriptionsQueryIsLoading, setSubscriptionsQueryIsLoading] = useState(true);
 
   const {
     control,
@@ -86,18 +89,36 @@ export default function Page() {
         // Reset step and form so it can be reused if the user signs out from the popup while this
         // page is still open.
         setStep(0);
+        setSubscriptionsQueryIsLoading(true);
         reset();
       })
       .exhaustive();
   };
 
-  useEffect(() => {
-    if (!auth.user?.refresh_token) {
+  const setRefreshTokenAndRedirectIfNotSubscribed = async (user: User) => {
+    await setRefreshToken(user.refresh_token);
+
+    const { data } = await db.queryOnce({
+      subscriptions: {},
+    });
+
+    // Only show success message if the user already has an active subscription.
+    if (data.subscriptions.length) {
+      setSubscriptionsQueryIsLoading(false);
+
       return;
     }
 
-    setRefreshToken(auth.user?.refresh_token);
-  }, [auth.user?.refresh_token]);
+    window.location.replace(`${env.BASE_URL}/checkout/${user.id}`);
+  };
+
+  useEffect(() => {
+    if (!auth.user) {
+      return;
+    }
+
+    setRefreshTokenAndRedirectIfNotSubscribed(auth.user);
+  }, [auth.user]);
 
   if (auth.isLoading) {
     return null;
@@ -106,7 +127,9 @@ export default function Page() {
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       {auth.user ? (
-        <Text size="xs">Success! You may close this window.</Text>
+        subscriptionsQueryIsLoading ? null : (
+          <Text size="xs">Success! You may close this window.</Text>
+        )
       ) : (
         <Center h="100%">
           <Card w={400} px={40} py={32} shadow="md" withBorder>
