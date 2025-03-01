@@ -2,12 +2,14 @@ import { useAtomValue } from "jotai";
 
 import { EntryList } from "~popup/components/EntryList";
 import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
-import { entryIdToTagsAtom, reversedEntriesAtom, searchAtom } from "~popup/states/atoms";
+import { useEntries } from "~popup/contexts/EntriesContext";
+import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { searchAtom } from "~popup/states/atoms";
 
 export const AllPage = () => {
-  const reversedEntries = useAtomValue(reversedEntriesAtom);
+  const reversedEntries = useEntries();
   const search = useAtomValue(searchAtom);
-  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const entryIdToTags = useEntryIdToTags();
 
   return (
     <EntryList

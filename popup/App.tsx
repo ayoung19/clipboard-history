@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Badge,
   Card,
   Divider,
   Group,
@@ -31,6 +32,7 @@ import {
 import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useAtomValue } from "jotai";
 import { useState } from "react";
+import { match } from "ts-pattern";
 
 import { updateChangelogViewedAt } from "~storage/changelogViewedAt";
 import { toggleClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
@@ -81,6 +83,9 @@ export const App = () => {
           <Group align="center" spacing="xs">
             <Image src={iconSrc} maw={28} />
             <Title order={6}>Clipboard History IO</Title>
+            <Badge size="xs" color="cyan">
+              Pro
+            </Badge>
           </Group>
           <Group align="center" spacing="xs" grow={false}>
             <Tooltip
@@ -219,9 +224,11 @@ export const App = () => {
             value={tab}
             onChange={(newTab) => setTab(Tab.parse(newTab))}
             size="xs"
-            color={
-              tab === Tab.Enum.All ? "indigo.5" : tab === Tab.Enum.Favorites ? "yellow.5" : "cyan.5"
-            }
+            color={match(tab)
+              .with(Tab.Enum.All, () => "indigo.5")
+              .with(Tab.Enum.Favorites, () => "yellow.5")
+              .with(Tab.Enum.Cloud, () => "cyan.5")
+              .exhaustive()}
             data={[
               {
                 label: (
@@ -253,13 +260,11 @@ export const App = () => {
             ]}
           />
         </Group>
-        {tab === Tab.Enum.All ? (
-          <AllPage />
-        ) : tab === Tab.Enum.Favorites ? (
-          <FavoritesPage />
-        ) : (
-          <CloudPage />
-        )}
+        {match(tab)
+          .with(Tab.Enum.All, () => <AllPage />)
+          .with(Tab.Enum.Favorites, () => <FavoritesPage />)
+          .with(Tab.Enum.Cloud, () => <CloudPage />)
+          .exhaustive()}
       </Stack>
     </Card>
   );

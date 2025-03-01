@@ -135,7 +135,9 @@ export const SettingsModalContent = () => {
               <Stack spacing={0}>
                 <Group align="center" spacing="xs">
                   <Title order={6}>Storage Location</Title>
-                  <Badge size="xs">Pro</Badge>
+                  <Badge size="xs" color="cyan">
+                    Pro
+                  </Badge>
                 </Group>
                 <Text fz="xs">TODO.</Text>
               </Stack>
