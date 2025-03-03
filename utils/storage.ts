@@ -167,6 +167,10 @@ export const updateEntryContent = async (
       }),
     ]);
 
+    if (user === null) {
+      return Ok(undefined);
+    }
+
     if (entriesQuery.data.entries.length > 0) {
       return Err("content must be unique");
     }
@@ -285,6 +289,11 @@ export const toggleEntryStorageLocation = async (entryId: string) => {
     getEntryIdToTags(),
     db.getAuth(),
   ]);
+
+  // Return early if user is not signed in.
+  if (user === null) {
+    return;
+  }
 
   // Return early if local entry doesn't exist.
   const localEntry = entries.find((entry) => entry.id === entryId);
