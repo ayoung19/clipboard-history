@@ -168,7 +168,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           >
             <IconEdit size="1rem" />
           </ActionIcon>
-          {refreshToken && <EntryCloudAction entryId={entry.id} />}
+          {refreshToken && <EntryCloudAction entry={entry} />}
           <EntryFavoriteAction entryId={entry.id} />
           <EntryDeleteAction entryId={entry.id} />
         </Group>

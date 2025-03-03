@@ -3,7 +3,7 @@ import { useFocusWithin, useHotkeys, useMouse } from "@mantine/hooks";
 import { useEffect } from "react";
 
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
-import { setEntryIdToTags } from "~storage/entryIdToTags";
+import { toggleEntryTag } from "~storage/entryIdToTags";
 import { lightOrDark } from "~utils/sx";
 
 import { TagBadge } from "./TagBadge";
@@ -20,15 +20,6 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
   const { ref: groupRef, x, y } = useMouse({ resetOnExit: true });
   const { ref: checkboxRef, focused: checkboxFocused } = useFocusWithin<HTMLInputElement>();
   const entryIdToTags = useEntryIdToTags();
-  const currentTags = entryIdToTags[entryId] || [];
-  const checked = currentTags.includes(tag);
-
-  const toggleTag = () => {
-    setEntryIdToTags({
-      ...entryIdToTags,
-      [entryId]: checked ? currentTags.filter((x) => x !== tag) : [...currentTags, tag],
-    });
-  };
 
   useEffect(() => {
     if (x === 0 && y === 0) {
@@ -52,7 +43,7 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
         "Enter",
         () => {
           if (focused) {
-            toggleTag();
+            toggleEntryTag(entryId, tag);
             onClose();
           }
         },
@@ -78,16 +69,16 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
       })}
       noWrap
       onClick={() => {
-        toggleTag();
+        toggleEntryTag(entryId, tag);
         onClose();
       }}
     >
       <Checkbox
         ref={checkboxRef}
-        checked={checked}
+        checked={!!entryIdToTags[entryId]?.includes(tag)}
         size="xs"
         onChange={() => {
-          toggleTag();
+          toggleEntryTag(entryId, tag);
         }}
         onClick={(e) => {
           e.stopPropagation();

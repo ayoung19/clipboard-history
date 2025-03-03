@@ -9,6 +9,7 @@ import { Tab } from "~types/tab";
 
 export const searchAtom = atom<string>("");
 export const tabAtom = atom<Tab>(Tab.Enum.All);
+export const transitioningEntryContentHashAtom = atom<string>();
 
 export const clipboardMonitorIsEnabledAtom = atom<boolean>();
 

@@ -1,13 +1,18 @@
 import { useAtomValue } from "jotai";
 import { createContext, useContext, type PropsWithChildren } from "react";
 
-import { entriesAtom, refreshTokenAtom } from "~popup/states/atoms";
+import {
+  entriesAtom,
+  refreshTokenAtom,
+  transitioningEntryContentHashAtom,
+} from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
 
 const EntriesContext = createContext<Entry[]>([]);
 
 export const EntriesProvider = ({ children }: PropsWithChildren) => {
+  const transitioningEntryContentHash = useAtomValue(transitioningEntryContentHashAtom);
   const refreshToken = useAtomValue(refreshTokenAtom);
   const entries = useAtomValue(entriesAtom);
   const cloudEntriesQuery = db.useQuery(
@@ -35,6 +40,14 @@ export const EntriesProvider = ({ children }: PropsWithChildren) => {
 
     if (entry.createdAt > cloudEntry.createdAt) {
       out.push(entry);
+      i--;
+    } else if (entry.createdAt < cloudEntry.createdAt) {
+      out.push(cloudEntry);
+      j--;
+    } else if (
+      entry.id === cloudEntry.emailContentHash.split("+").at(-1) &&
+      transitioningEntryContentHash === entry.id
+    ) {
       i--;
     } else {
       out.push(cloudEntry);

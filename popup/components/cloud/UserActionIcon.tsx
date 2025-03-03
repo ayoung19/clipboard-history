@@ -2,7 +2,6 @@ import { ActionIcon, Menu, Text, Tooltip } from "@mantine/core";
 import { IconCreditCard, IconLogout, IconUserCircle } from "@tabler/icons-react";
 import { useState } from "react";
 
-import { deleteRefreshToken } from "~storage/refreshToken";
 import db from "~utils/db/react";
 import env from "~utils/env";
 
@@ -37,7 +36,6 @@ export const UserActionIcon = () => {
         <Menu.Item
           icon={<IconLogout size="0.8rem" />}
           onClick={async () => {
-            await deleteRefreshToken();
             await db.auth.signOut();
           }}
         >

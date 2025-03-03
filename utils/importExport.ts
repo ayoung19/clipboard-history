@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 
-import { getEntryIdToTags, setEntryIdToTags } from "~storage/entryIdToTags";
+import { _setEntryIdToTags, getEntryIdToTags } from "~storage/entryIdToTags";
 import { addFavoriteEntryIds, getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { ClipboardHistoryIOExport, ClipboardHistoryProExport } from "~types/importExport";
@@ -91,7 +91,7 @@ const importClipboardHistoryIO = async (clipboardHistoryIOEntries: ClipboardHist
         )[0]
         .reverse(),
     ),
-    setEntryIdToTags(entryIdToTags),
+    _setEntryIdToTags(entryIdToTags),
     addFavoriteEntryIds(favoriteEntryIdsToBeAdded),
   ]);
 };
