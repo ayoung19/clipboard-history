@@ -1,4 +1,3 @@
-import { max } from "date-fns";
 import { atom } from "jotai";
 
 import { ClipboardSnapshot } from "~types/clipboardSnapshot";
@@ -21,10 +20,7 @@ export const favoriteEntryIdsAtom = atom<string[]>([]);
 
 export const settingsAtom = atom<Settings>(defaultSettings);
 
-const staticNowAtom = atom(() => new Date());
-export const nowAtom = atom((get) =>
-  max([new Date(get(entriesAtom).at(-1)?.createdAt || 0), get(staticNowAtom)]),
-);
+export const staticNowAtom = atom(() => new Date());
 
 export const entryIdToTagsAtom = atom<EntryIdToTags>({});
 

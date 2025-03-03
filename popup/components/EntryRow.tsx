@@ -14,11 +14,11 @@ import { IconEdit, IconKeyboard } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { useNow } from "~popup/hooks/useNow";
 import {
   clipboardSnapshotAtom,
   commandsAtom,
   entryCommandsAtom,
-  nowAtom,
   refreshTokenAtom,
 } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
@@ -42,7 +42,7 @@ interface Props {
 
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
-  const now = useAtomValue(nowAtom);
+  const now = useNow();
   const entryIdToTags = useEntryIdToTags();
   const refreshToken = useAtomValue(refreshTokenAtom);
   const entryCommands = useAtomValue(entryCommandsAtom);
