@@ -1,6 +1,7 @@
 import { ActionIcon } from "@mantine/core";
 import { IconCloud, IconCloudFilled } from "@tabler/icons-react";
 
+import db from "~utils/db/react";
 import { lightOrDark } from "~utils/sx";
 
 interface Props {
@@ -8,7 +9,12 @@ interface Props {
 }
 
 export const EntryCloudAction = ({ entryId }: Props) => {
+  const auth = db.useAuth();
   const isCloudEntry = entryId.length === 36;
+
+  if (!auth.user) {
+    return null;
+  }
 
   return (
     <ActionIcon
