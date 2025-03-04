@@ -33,12 +33,7 @@ export const UserActionIcon = () => {
         >
           <Text fz="xs">Manage Subscription</Text>
         </Menu.Item>
-        <Menu.Item
-          icon={<IconLogout size="0.8rem" />}
-          onClick={async () => {
-            await db.auth.signOut();
-          }}
-        >
+        <Menu.Item icon={<IconLogout size="0.8rem" />} onClick={() => db.auth.signOut()}>
           <Text fz="xs">Sign Out</Text>
         </Menu.Item>
       </Menu.Dropdown>
