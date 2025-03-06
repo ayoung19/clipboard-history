@@ -15,7 +15,7 @@ export const handleUpdateTotalItemsBadgeRequest = async (totalLocalEntries: numb
   const [settings, refreshToken] = await Promise.all([getSettings(), getRefreshToken()]);
 
   if (!settings.totalItemsBadge) {
-    removeActionBadgeText();
+    await removeActionBadgeText();
     return;
   }
 
