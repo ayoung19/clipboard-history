@@ -38,7 +38,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { settingsAtom } from "~popup/states/atoms";
+import { refreshTokenAtom, settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
@@ -57,6 +57,7 @@ type FormValues = z.infer<typeof schema>;
 export const SettingsModalContent = () => {
   const theme = useMantineTheme();
   const settings = useAtomValue(settingsAtom);
+  const refreshToken = useAtomValue(refreshTokenAtom);
   const systemColorScheme = useColorScheme();
 
   const [file, setFile] = useState<File | null>(null);
@@ -154,6 +155,7 @@ export const SettingsModalContent = () => {
                 ]}
                 size="xs"
                 withinPortal
+                disabled={!refreshToken}
               />
             </Group>
           </Stack>
