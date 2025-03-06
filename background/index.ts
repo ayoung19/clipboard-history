@@ -1,3 +1,4 @@
+import { match } from "ts-pattern";
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
 import { handleCreateEntryRequest } from "~background/messages/createEntry";
@@ -10,6 +11,7 @@ import { getRefreshToken } from "~storage/refreshToken";
 import { getSettings } from "~storage/settings";
 import { setActionIconAndBadgeBackgroundColor } from "~utils/actionBadge";
 import { watchClipboard, watchCloudEntries } from "~utils/background";
+import db from "~utils/db/core";
 import { simplePathBasename } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
 
@@ -29,9 +31,14 @@ if (process.env.PLASMO_TARGET === "firefox-mv2") {
   );
 
   watchCloudEntries(window, getRefreshToken, async () => {
-    const entries = await getEntries();
+    await Promise.all([
+      handleUpdateContextMenusRequest(),
+      async () => {
+        const entries = await getEntries();
 
-    await handleUpdateTotalItemsBadgeRequest(entries.length);
+        await handleUpdateTotalItemsBadgeRequest(entries.length);
+      },
+    ]);
   });
 }
 
@@ -103,10 +110,27 @@ function paste(content: string) {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (tab?.id) {
-    const entries = await getEntries();
-    const entry = entries.find(
-      (entry) => entry.id === simplePathBasename(info.menuItemId.toString()),
-    );
+    const entryId = simplePathBasename(info.menuItemId.toString());
+
+    const entry = await match(entryId.length)
+      .with(36, async () => {
+        const cloudEntriesQuery = await db.queryOnce({
+          entries: {
+            $: {
+              where: {
+                id: entryId,
+              },
+            },
+          },
+        });
+
+        return cloudEntriesQuery.data.entries[0];
+      })
+      .otherwise(async () => {
+        const entries = await getEntries();
+
+        return entries.find((entry) => entry.id === simplePathBasename(info.menuItemId.toString()));
+      });
 
     if (entry?.content) {
       chrome.scripting.executeScript({

@@ -1,4 +1,3 @@
-import { useDebouncedCallback } from "@mantine/hooks";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
@@ -48,19 +47,15 @@ export const useApp = () => {
     setTimeout(() => setTransitioningEntryContentHash(undefined), 1200);
   }, [transitioningEntryContentHash]);
 
-  // TODO: For actions that take a while to render (e.g. deleting an entry), the user could close
-  // the popup before the mutation is rendered causing the context menus to be stale until the user
-  // switches tabs. I decided on this approach as opposed to directly calling the sync function in
-  // the respective storage mutation functions because I like the idea of keeping context menu
-  // updates as separate from core extension logic. We can stick with this until it becomes a
-  // serious pain point for users.
-  const updateContextMenus = useDebouncedCallback(
-    () =>
-      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
-        name: "updateContextMenus",
-      }),
-    100,
-  );
+  // I decided on this approach as opposed to directly calling the sync function in the respective
+  // storage mutation functions because I like the idea of keeping context menu updates as separate
+  // from core extension logic. We can stick with this until it becomes a serious pain point for
+  // users.
+  const updateContextMenus = async () => {
+    await sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+      name: "updateContextMenus",
+    });
+  };
 
   const setTab = useSetAtom(tabAtom);
 

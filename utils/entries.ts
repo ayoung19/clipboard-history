@@ -1,6 +1,40 @@
 import type { Entry } from "~types/entry";
 import type { Settings } from "~types/settings";
 
+export const reverseMergeSortedEntries = (localEntries: Entry[], cloudEntries: Entry[]) => {
+  let i = localEntries.length - 1;
+  let j = cloudEntries.length - 1;
+
+  const out: Entry[] = [];
+
+  while (i >= 0 && j >= 0) {
+    const localEntry = localEntries[i]!;
+    const cloudEntry = cloudEntries[j]!;
+
+    if (localEntry.createdAt > cloudEntry.createdAt) {
+      out.push(localEntry);
+      i--;
+    } else {
+      out.push(cloudEntry);
+      j--;
+    }
+  }
+
+  while (i >= 0) {
+    const localEntry = localEntries[i]!;
+    out.push(localEntry);
+    i--;
+  }
+
+  while (j >= 0) {
+    const cloudEntry = cloudEntries[j]!;
+    out.push(cloudEntry);
+    j--;
+  }
+
+  return out;
+};
+
 export const handleEntryIds = async ({
   entryIds,
   handleLocalEntryIds,
