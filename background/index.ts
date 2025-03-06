@@ -28,7 +28,11 @@ if (process.env.PLASMO_TARGET === "firefox-mv2") {
     }),
   );
 
-  watchCloudEntries(window, getRefreshToken, () => handleUpdateContextMenusRequest());
+  watchCloudEntries(window, getRefreshToken, async () => {
+    const entries = await getEntries();
+
+    await handleUpdateTotalItemsBadgeRequest(entries.length);
+  });
 }
 
 // A global promise to avoid concurrency issues.
