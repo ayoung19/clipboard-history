@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Badge,
   Card,
   Divider,
   Group,
@@ -40,6 +39,7 @@ import { Tab } from "~types/tab";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
+import { ProBadge } from "./components/cloud/ProBadge";
 import { UserActionIcon } from "./components/cloud/UserActionIcon";
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { useApp } from "./hooks/useApp";
@@ -83,9 +83,7 @@ export const App = () => {
           <Group align="center" spacing="xs">
             <Image src={iconSrc} maw={28} />
             <Title order={6}>Clipboard History IO</Title>
-            <Badge size="xs" color="cyan">
-              Pro
-            </Badge>
+            {refreshToken && <ProBadge />}
           </Group>
           <Group align="center" spacing="xs" grow={false}>
             <Tooltip
