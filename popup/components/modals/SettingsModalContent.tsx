@@ -134,10 +134,10 @@ export const SettingsModalContent = () => {
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Group align="center" spacing="xs">
-                  <Title order={6}>Storage Location</Title>
+                  <Title order={6}>Default Storage Location</Title>
                   <Badge size="xs">Pro</Badge>
                 </Group>
-                <Text fz="xs">TODO.</Text>
+                <Text fz="xs">Select where new items will be stored.</Text>
               </Stack>
               <Select
                 value={settings.storageLocation}
@@ -215,6 +215,7 @@ export const SettingsModalContent = () => {
                 data={[
                   { value: Tab.Enum.All, label: Tab.Enum.All },
                   { value: Tab.Enum.Favorites, label: Tab.Enum.Favorites },
+                  { value: Tab.Enum.Cloud, label: Tab.Enum.Cloud },
                 ]}
                 size="xs"
                 withinPortal
