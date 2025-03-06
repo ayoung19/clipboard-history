@@ -1,28 +1,15 @@
 import { useAtomValue } from "jotai";
 import { createContext, useContext, type PropsWithChildren } from "react";
 
-import { favoriteEntryIdsAtom, refreshTokenAtom } from "~popup/states/atoms";
-import db from "~utils/db/react";
+import { useCloudFavoritedEntriesQuery } from "~popup/hooks/useCloudFavoritedEntriesQuery";
+import { favoriteEntryIdsAtom } from "~popup/states/atoms";
 
 const FavoriteEntryIdsContext = createContext<Set<string>>(new Set());
 
 export const FavoriteEntryIdsProvider = ({ children }: PropsWithChildren) => {
-  const refreshToken = useAtomValue(refreshTokenAtom);
   const favoriteEntryIds = useAtomValue(favoriteEntryIdsAtom);
-  const cloudFavoriteEntriesQuery = db.useQuery(
-    refreshToken
-      ? {
-          entries: {
-            $: {
-              where: {
-                isFavorited: true,
-              },
-            },
-          },
-        }
-      : null,
-  );
-  const cloudFavoriteEntries = cloudFavoriteEntriesQuery.data?.entries || [];
+  const cloudFavoritedEntriesQuery = useCloudFavoritedEntriesQuery();
+  const cloudFavoriteEntries = cloudFavoritedEntriesQuery.data?.entries || [];
 
   return (
     <FavoriteEntryIdsContext.Provider

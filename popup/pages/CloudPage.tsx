@@ -6,8 +6,8 @@ import { EntryList } from "~popup/components/EntryList";
 import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
 import { useEntries } from "~popup/contexts/EntriesContext";
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import { refreshTokenAtom, searchAtom } from "~popup/states/atoms";
-import db from "~utils/db/react";
 import { commonActionIconSx } from "~utils/sx";
 
 export const CloudPage = () => {
@@ -17,13 +17,7 @@ export const CloudPage = () => {
   const entries = useEntries();
   const entryIdToTags = useEntryIdToTags();
 
-  const subscriptionsQuery = db.useQuery(
-    refreshToken
-      ? {
-          subscriptions: {},
-        }
-      : null,
-  );
+  const subscriptionsQuery = useSubscriptionsQuery();
 
   // TODO: Highlight mobile app.
   if (!refreshToken || !subscriptionsQuery.data?.subscriptions.length) {
