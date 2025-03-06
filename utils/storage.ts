@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { Storage } from "@plasmohq/storage";
 
+import { handleUpdateTotalItemsBadgeRequest } from "~background/messages/updateTotalItemsBadge";
 import { _setEntryCommands, deleteEntryCommands, getEntryCommands } from "~storage/entryCommands";
 import {
   _setEntryIdToTags,
@@ -21,7 +22,6 @@ import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 import { StorageLocation } from "~types/storageLocation";
 
-import { removeActionBadgeText, setActionBadgeText } from "./actionBadge";
 import db from "./db/core";
 import { applyLocalItemLimit, handleEntryIds } from "./entries";
 
@@ -62,11 +62,9 @@ export const getEntries = async () => {
 };
 
 export const _setEntries = async (entries: Entry[]) => {
-  const settings = await getSettings();
-
   await Promise.all([
     storage.set(ENTRIES_STORAGE_KEY, entries),
-    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
+    handleUpdateTotalItemsBadgeRequest(entries.length),
   ]);
 };
 

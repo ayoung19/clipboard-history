@@ -1,3 +1,9 @@
+import type { InstaQLEntity } from "@instantdb/core";
+
+import type { AppSchema } from "~instant.schema";
+
+import db from "./db/core";
+
 export const watchClipboard = (
   w: Window,
   d: Document,
@@ -41,6 +47,53 @@ export const watchClipboard = (
 
       if (await getClipboardMonitorIsEnabled()) {
         d.execCommand("paste");
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      fetching = false;
+    }
+  }, 800);
+};
+
+export const watchCloudEntries = async (
+  w: Window,
+  getRefreshToken: () => Promise<string | null>,
+  cb: (cloudEntries: InstaQLEntity<AppSchema, "entries">[]) => Promise<void>,
+) => {
+  let watching = false;
+  let fetching = false;
+
+  w.setInterval(async () => {
+    if (watching || fetching) {
+      return;
+    }
+
+    try {
+      fetching = true;
+
+      const refreshToken = await getRefreshToken();
+      if (refreshToken !== null) {
+        watching = true;
+
+        db.subscribeQuery(
+          {
+            entries: {
+              $: {
+                order: {
+                  createdAt: "asc",
+                },
+              },
+            },
+          },
+          async (cloudEntriesQuery) => {
+            if (!cloudEntriesQuery.data) {
+              return;
+            }
+
+            await cb(cloudEntriesQuery.data.entries);
+          },
+        );
       }
     } catch (e) {
       console.log(e);
