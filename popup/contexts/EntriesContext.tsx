@@ -4,14 +4,16 @@ import { createContext, useContext, type PropsWithChildren } from "react";
 import { useCloudEntriesQuery } from "~popup/hooks/useCloudEntriesQuery";
 import { entriesAtom, transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
+import db from "~utils/db/react";
 
 const EntriesContext = createContext<Entry[]>([]);
 
 export const EntriesProvider = ({ children }: PropsWithChildren) => {
+  const connectionStatus = db.useConnectionStatus();
   const transitioningEntryContentHash = useAtomValue(transitioningEntryContentHashAtom);
   const entries = useAtomValue(entriesAtom);
   const cloudEntriesQuery = useCloudEntriesQuery();
-  const cloudEntries = cloudEntriesQuery.data?.entries || [];
+  const cloudEntries = connectionStatus === "closed" ? [] : cloudEntriesQuery.data?.entries || [];
 
   let i = entries.length - 1;
   let j = cloudEntries.length - 1;

@@ -78,23 +78,24 @@ export const App = () => {
   const refreshToken = useAtomValue(refreshTokenAtom);
 
   // Preload queries.
+  const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
   const cloudEntriesQuery = useCloudEntriesQuery();
   const cloudFavoritedEntriesQuery = useCloudFavoritedEntriesQuery();
   const cloudTaggedEntriesQuery = useCloudTaggedEntriesQuery();
   const subscriptionsQuery = useSubscriptionsQuery();
-  const auth = db.useAuth();
 
   if (clipboardMonitorIsEnabled === undefined || refreshToken === undefined) {
     return null;
   }
 
-  if (refreshToken) {
+  if (refreshToken && connectionStatus !== "closed") {
     if (
+      auth.isLoading ||
       cloudEntriesQuery.isLoading ||
       cloudFavoritedEntriesQuery.isLoading ||
       cloudTaggedEntriesQuery.isLoading ||
-      subscriptionsQuery.isLoading ||
-      auth.isLoading
+      subscriptionsQuery.isLoading
     ) {
       return null;
     }
@@ -107,7 +108,7 @@ export const App = () => {
           <Group align="center" spacing="xs">
             <Image src={iconSrc} maw={28} />
             <Title order={6}>Clipboard History IO</Title>
-            {refreshToken && <ProBadge />}
+            <ProBadge />
           </Group>
           <Group align="center" spacing="xs" grow={false}>
             <Tooltip
@@ -214,7 +215,7 @@ export const App = () => {
                 <IconSettings size="1.125rem" />
               </ActionIcon>
             </Tooltip>
-            {refreshToken && <UserActionIcon />}
+            <UserActionIcon />
             <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
             <Switch
               size="md"

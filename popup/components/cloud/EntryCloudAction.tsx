@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { useMemo } from "react";
 
 import { useEntries } from "~popup/contexts/EntriesContext";
+import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import { transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
@@ -19,7 +20,8 @@ interface Props {
 
 export const EntryCloudAction = ({ entry }: Props) => {
   const theme = useMantineTheme();
-  const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
+  const subscriptionsQuery = useSubscriptionsQuery();
   const entries = useEntries();
   const [transitioningEntryContentHash, setTransitioningEntryContentHash] = useAtom(
     transitioningEntryContentHashAtom,
@@ -30,7 +32,7 @@ export const EntryCloudAction = ({ entry }: Props) => {
   );
   const isCloudEntry = entry.id.length === 36;
 
-  if (!auth.user) {
+  if (!subscriptionsQuery.data?.subscriptions.length || connectionStatus === "closed") {
     return null;
   }
 

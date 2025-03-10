@@ -5,12 +5,7 @@ import { useAtom, useAtomValue } from "jotai";
 
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useNow } from "~popup/hooks/useNow";
-import {
-  clipboardSnapshotAtom,
-  commandsAtom,
-  entryCommandsAtom,
-  refreshTokenAtom,
-} from "~popup/states/atoms";
+import { clipboardSnapshotAtom, commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
@@ -35,7 +30,6 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useNow();
   const entryIdToTags = useEntryIdToTags();
-  const refreshToken = useAtomValue(refreshTokenAtom);
   const entryCommands = useAtomValue(entryCommandsAtom);
   const commands = useAtomValue(commandsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
@@ -153,7 +147,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           >
             <IconEdit size="1rem" />
           </CommonActionIcon>
-          {refreshToken && <EntryCloudAction entry={entry} />}
+          <EntryCloudAction entry={entry} />
           <EntryFavoriteAction entryId={entry.id} />
           <EntryDeleteAction entryId={entry.id} />
         </Group>

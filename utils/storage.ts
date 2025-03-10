@@ -74,24 +74,28 @@ export const createEntry = async (content: string) => {
   const settings = await getSettings();
 
   if (settings.storageLocation === StorageLocation.Enum.Cloud) {
-    const [user, subscriptionsQuery] = await Promise.all([
-      db.getAuth(),
-      db.queryOnce({
-        subscriptions: {},
-      }),
-    ]);
+    try {
+      const [user, subscriptionsQuery] = await Promise.all([
+        db.getAuth(),
+        db.queryOnce({
+          subscriptions: {},
+        }),
+      ]);
 
-    if (user !== null && subscriptionsQuery.data.subscriptions.length > 0) {
-      const contentHash = createHash("sha256").update(content).digest("hex");
+      if (user !== null && subscriptionsQuery.data.subscriptions.length > 0) {
+        const contentHash = createHash("sha256").update(content).digest("hex");
 
-      await db.transact(
-        db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
-          createdAt: Date.now(),
-          content: content,
-        }).link({ $user: lookup("email", user.email) }),
-      );
+        await db.transact(
+          db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
+            createdAt: Date.now(),
+            content: content,
+          }).link({ $user: lookup("email", user.email) }),
+        );
 
-      return;
+        return;
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
