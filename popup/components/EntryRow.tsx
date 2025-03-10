@@ -1,14 +1,4 @@
-import {
-  ActionIcon,
-  Badge,
-  Checkbox,
-  Divider,
-  Group,
-  rem,
-  Stack,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { Badge, Checkbox, Divider, Group, rem, Stack, Text, useMantineTheme } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconKeyboard } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
@@ -24,9 +14,10 @@ import {
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
-import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
+import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { EntryCloudAction } from "./cloud/EntryCloudAction";
+import { CommonActionIcon } from "./CommonActionIcon";
 import { EntryDeleteAction } from "./EntryDeleteAction";
 import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EditEntryModalContent } from "./modals/EditEntryModalContent";
@@ -138,36 +129,30 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         </Text>
         <Group align="center" spacing={0} noWrap ml={rem(4)}>
           <TagSelect entryId={entry.id} />
-          <ActionIcon
-            sx={(theme) => commonActionIconSx({ theme })}
-            onClick={(e) => {
-              e.stopPropagation();
-
+          <CommonActionIcon
+            onClick={() =>
               modals.open({
                 padding: 0,
                 size: "xl",
                 withCloseButton: false,
                 children: <ShortcutsModalContent entry={entry} />,
-              });
-            }}
+              })
+            }
           >
             <IconKeyboard size="1rem" />
-          </ActionIcon>
-          <ActionIcon
-            sx={(theme) => commonActionIconSx({ theme })}
-            onClick={(e) => {
-              e.stopPropagation();
-
+          </CommonActionIcon>
+          <CommonActionIcon
+            onClick={() =>
               modals.open({
                 padding: 0,
                 size: "xl",
                 withCloseButton: false,
                 children: <EditEntryModalContent entry={entry} />,
-              });
-            }}
+              })
+            }
           >
             <IconEdit size="1rem" />
-          </ActionIcon>
+          </CommonActionIcon>
           {refreshToken && <EntryCloudAction entry={entry} />}
           <EntryFavoriteAction entryId={entry.id} />
           <EntryDeleteAction entryId={entry.id} />

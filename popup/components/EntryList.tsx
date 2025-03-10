@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Box, Checkbox, Divider, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
@@ -10,8 +10,9 @@ import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
-import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
+import { defaultBorderColor } from "~utils/sx";
 
+import { CommonActionIcon } from "./CommonActionIcon";
 import { EntryRow } from "./EntryRow";
 import { MergeModalContent } from "./modals/MergeModalContent";
 
@@ -81,64 +82,53 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
         <Group align="center" w="100%" position="apart">
           <Group align="center" spacing={0}>
             <Tooltip label={<Text fz="xs">Favorite</Text>} disabled={selectedEntryIds.size === 0}>
-              <ActionIcon
-                sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
-                onClick={
-                  selectedEntryIds.size === 0
-                    ? undefined
-                    : () =>
-                        Array.from(selectedEntryIds).every((selectedEntryId) =>
-                          favoriteEntryIdsSet.has(selectedEntryId),
-                        )
-                          ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
-                          : addFavoriteEntryIds(Array.from(selectedEntryIds))
+              <CommonActionIcon
+                disabled={selectedEntryIds.size === 0}
+                onClick={() =>
+                  Array.from(selectedEntryIds).every((selectedEntryId) =>
+                    favoriteEntryIdsSet.has(selectedEntryId),
+                  )
+                    ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
+                    : addFavoriteEntryIds(Array.from(selectedEntryIds))
                 }
               >
                 <IconStar size="1rem" />
-              </ActionIcon>
+              </CommonActionIcon>
             </Tooltip>
             <Tooltip label={<Text fz="xs">Delete</Text>} disabled={selectedEntryIds.size === 0}>
-              <ActionIcon
-                sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size === 0 })}
-                onClick={
-                  selectedEntryIds.size === 0
-                    ? undefined
-                    : () =>
-                        deleteEntries(
-                          Array.from(selectedEntryIds).filter(
-                            (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
-                          ),
-                        )
+              <CommonActionIcon
+                disabled={selectedEntryIds.size === 0}
+                onClick={() =>
+                  deleteEntries(
+                    Array.from(selectedEntryIds).filter(
+                      (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
+                    ),
+                  )
                 }
               >
                 <IconTrash size="1rem" />
-              </ActionIcon>
+              </CommonActionIcon>
             </Tooltip>
             {/* https://github.com/clauderic/dnd-kit/issues/1043 */}
             {process.env.PLASMO_TARGET !== "firefox-mv2" && (
               <Tooltip label={<Text fz="xs">Merge</Text>} disabled={selectedEntryIds.size < 2}>
-                <ActionIcon
-                  sx={(theme) => commonActionIconSx({ theme, disabled: selectedEntryIds.size < 2 })}
-                  onClick={
-                    selectedEntryIds.size < 2
-                      ? undefined
-                      : () =>
-                          modals.open({
-                            padding: 0,
-                            size: "xl",
-                            withCloseButton: false,
-                            children: (
-                              <MergeModalContent
-                                initialEntries={entries.filter((entry) =>
-                                  selectedEntryIds.has(entry.id),
-                                )}
-                              />
-                            ),
-                          })
+                <CommonActionIcon
+                  disabled={selectedEntryIds.size < 2}
+                  onClick={() =>
+                    modals.open({
+                      padding: 0,
+                      size: "xl",
+                      withCloseButton: false,
+                      children: (
+                        <MergeModalContent
+                          initialEntries={entries.filter((entry) => selectedEntryIds.has(entry.id))}
+                        />
+                      ),
+                    })
                   }
                 >
                   <IconFold size="1rem" />
-                </ActionIcon>
+                </CommonActionIcon>
               </Tooltip>
             )}
           </Group>
