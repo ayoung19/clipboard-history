@@ -4,14 +4,17 @@ export const commonActionIconSx = ({
   theme,
   disabled,
   color,
+  backgroundColor,
   hoverColor,
 }: {
   theme: MantineTheme;
   disabled?: boolean;
   color?: string;
+  backgroundColor?: string;
   hoverColor?: string;
 }) => ({
   color: disabled ? defaultBorderColor(theme) : color || theme.colors.gray[5],
+  backgroundColor: backgroundColor,
   cursor: disabled ? "not-allowed" : undefined,
   ":hover": {
     color: disabled
