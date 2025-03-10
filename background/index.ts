@@ -129,7 +129,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       .otherwise(async () => {
         const entries = await getEntries();
 
-        return entries.find((entry) => entry.id === simplePathBasename(info.menuItemId.toString()));
+        return entries.find((entry) => entry.id === entryId);
       });
 
     if (entry?.content) {
@@ -146,12 +146,35 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
   if (tab?.id) {
-    const [entries, entryCommands] = await Promise.all([getEntries(), getEntryCommands()]);
+    const entryCommands = await getEntryCommands();
 
     const entryId = entryCommands.find(
       (entryCommand) => entryCommand.commandName === command,
     )?.entryId;
-    const entry = entries.find((entry) => entry.id === entryId);
+
+    if (!entryId) {
+      return;
+    }
+
+    const entry = await match(entryId.length)
+      .with(36, async () => {
+        const cloudEntriesQuery = await db.queryOnce({
+          entries: {
+            $: {
+              where: {
+                id: entryId,
+              },
+            },
+          },
+        });
+
+        return cloudEntriesQuery.data.entries[0];
+      })
+      .otherwise(async () => {
+        const entries = await getEntries();
+
+        return entries.find((entry) => entry.id === entryId);
+      });
 
     if (entry?.content) {
       chrome.scripting.executeScript({
