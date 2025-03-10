@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { ActionIcon, Loader } from "@mantine/core";
+import { Loader, useMantineTheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCloud, IconCloudFilled } from "@tabler/icons-react";
 import { useAtom } from "jotai";
@@ -10,13 +10,15 @@ import { transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
 import { toggleEntryStorageLocation } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
+
+import { CommonActionIcon } from "../CommonActionIcon";
 
 interface Props {
   entry: Entry;
 }
 
 export const EntryCloudAction = ({ entry }: Props) => {
+  const theme = useMantineTheme();
   const auth = db.useAuth();
   const entries = useEntries();
   const [transitioningEntryContentHash, setTransitioningEntryContentHash] = useAtom(
@@ -33,22 +35,10 @@ export const EntryCloudAction = ({ entry }: Props) => {
   }
 
   return (
-    <ActionIcon
-      sx={(theme) =>
-        commonActionIconSx({
-          theme,
-          disabled: transitioningEntryContentHash !== undefined,
-          color: isCloudEntry ? theme.colors.cyan[5] : undefined,
-          hoverColor: isCloudEntry ? theme.colors.cyan[5] : undefined,
-        })
-      }
-      onClick={(e) => {
-        e.stopPropagation();
-
-        if (transitioningEntryContentHash !== undefined) {
-          return;
-        }
-
+    <CommonActionIcon
+      color={isCloudEntry ? theme.colors.cyan[5] : undefined}
+      hoverColor={isCloudEntry ? theme.colors.cyan[5] : undefined}
+      onClick={() => {
         if (entries.filter((e) => e.content === entry.content).length > 1) {
           notifications.show({
             color: "red",
@@ -73,6 +63,6 @@ export const EntryCloudAction = ({ entry }: Props) => {
       ) : (
         <IconCloud size="1rem" />
       )}
-    </ActionIcon>
+    </CommonActionIcon>
   );
 };

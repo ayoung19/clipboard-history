@@ -1,14 +1,14 @@
-import { ActionIcon, Group, Text } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
+import { CommonActionIcon } from "~popup/components/CommonActionIcon";
 import { EntryList } from "~popup/components/EntryList";
 import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
 import { useEntries } from "~popup/contexts/EntriesContext";
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { searchAtom } from "~popup/states/atoms";
-import { commonActionIconSx } from "~utils/sx";
 
 export const FavoritesPage = () => {
   const reversedEntries = useEntries();
@@ -25,9 +25,9 @@ export const FavoritesPage = () => {
             subtitle={
               <Group align="center" spacing={0}>
                 <Text>Mark an item as favorite by clicking on</Text>
-                <ActionIcon sx={(theme) => commonActionIconSx({ theme })}>
+                <CommonActionIcon>
                   <IconStar size="1rem" />
-                </ActionIcon>
+                </CommonActionIcon>
               </Group>
             }
             description="Favorite items are protected from deletion"

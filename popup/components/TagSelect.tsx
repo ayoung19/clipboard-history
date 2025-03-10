@@ -10,9 +10,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { IconTags } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAllTags } from "~popup/contexts/AllTagsContext";
+import { transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { TagOption } from "./TagOption";
@@ -23,6 +25,7 @@ interface Props {
 
 export const TagSelect = ({ entryId }: Props) => {
   const allTags = useAllTags();
+  const transitioningEntryContentHash = useAtomValue(transitioningEntryContentHashAtom);
   const [opened, handlers] = useDisclosure(false);
   const [tagSearch, setTagSearch] = useState("");
   const tagSearchLowercase = useMemo(() => tagSearch.toLowerCase(), [tagSearch]);
@@ -86,9 +89,10 @@ export const TagSelect = ({ entryId }: Props) => {
       shadow="md"
     >
       <Popover.Target>
+        {/* TODO: Figure out why replacing this with CommonActionIcon doesn't work with Popover. */}
         <ActionIcon
           sx={(theme) => ({
-            ...commonActionIconSx({ theme }),
+            ...commonActionIconSx({ theme, disabled: transitioningEntryContentHash !== undefined }),
             backgroundColor: opened
               ? lightOrDark(
                   theme,
@@ -99,6 +103,10 @@ export const TagSelect = ({ entryId }: Props) => {
           })}
           onClick={(e) => {
             e.stopPropagation();
+
+            if (transitioningEntryContentHash !== undefined) {
+              return;
+            }
 
             handlers.toggle();
           }}

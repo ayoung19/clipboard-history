@@ -1,10 +1,9 @@
-import { ActionIcon } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { IconTrash } from "@tabler/icons-react";
 
 import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { deleteEntries } from "~utils/storage";
-import { commonActionIconSx } from "~utils/sx";
+
+import { CommonActionIcon } from "./CommonActionIcon";
 
 interface Props {
   entryId: string;
@@ -15,18 +14,8 @@ export const EntryDeleteAction = ({ entryId }: Props) => {
   const isFavoriteEntry = favoriteEntryIdsSet.has(entryId);
 
   return (
-    <ActionIcon
-      sx={(theme) => commonActionIconSx({ theme, disabled: isFavoriteEntry })}
-      onClick={(e) => {
-        e.stopPropagation();
-
-        if (!isFavoriteEntry) {
-          deleteEntries([entryId]);
-          modals.closeAll();
-        }
-      }}
-    >
+    <CommonActionIcon disabled={isFavoriteEntry} onClick={() => deleteEntries([entryId])}>
       <IconTrash size="1rem" />
-    </ActionIcon>
+    </CommonActionIcon>
   );
 };
