@@ -1,14 +1,14 @@
-import { ActionIcon, Button, Group, Stack, Text, Title } from "@mantine/core";
+import { Button, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCloud } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
+import { CommonActionIcon } from "~popup/components/CommonActionIcon";
 import { EntryList } from "~popup/components/EntryList";
 import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
 import { useEntries } from "~popup/contexts/EntriesContext";
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import { refreshTokenAtom, searchAtom } from "~popup/states/atoms";
-import { commonActionIconSx } from "~utils/sx";
 
 export const CloudPage = () => {
   const search = useAtomValue(searchAtom);
@@ -54,9 +54,9 @@ export const CloudPage = () => {
             subtitle={
               <Group align="center" spacing={0}>
                 <Text>Store an item in the cloud by clicking on</Text>
-                <ActionIcon sx={(theme) => commonActionIconSx({ theme })}>
+                <CommonActionIcon>
                   <IconCloud size="1rem" />
-                </ActionIcon>
+                </CommonActionIcon>
               </Group>
             }
             description="Items stored in the cloud can be accessed from other devices"
