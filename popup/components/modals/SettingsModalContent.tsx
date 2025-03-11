@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Anchor,
+  Badge,
   Box,
   Button,
   CloseButton,
@@ -25,6 +26,7 @@ import { notifications } from "@mantine/notifications";
 import {
   IconAdjustmentsHorizontal,
   IconAlertTriangle,
+  IconAppWindow,
   IconDatabase,
   IconDeviceFloppy,
   IconFileExport,
@@ -38,6 +40,7 @@ import { z } from "zod";
 
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
 import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
@@ -86,6 +89,9 @@ export const SettingsModalContent = () => {
           <Tabs.Tab value="general" icon={<IconAdjustmentsHorizontal size="0.8rem" />}>
             General
           </Tabs.Tab>
+          <Tabs.Tab value="interface" icon={<IconAppWindow size="0.8rem" />}>
+            Interface
+          </Tabs.Tab>
           <Tabs.Tab
             value="storage"
             icon={
@@ -109,6 +115,54 @@ export const SettingsModalContent = () => {
         </Tabs.List>
 
         <Tabs.Panel value="general">
+          <Stack p="md">
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Blank Items</Title>
+                <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
+              </Stack>
+              <Switch
+                checked={settings.allowBlankItems}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
+
+                  await setSettings({ ...settings, allowBlankItems: checked });
+                }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Group align="center" spacing="xs">
+                  <Title order={6}>Default Storage Location</Title>
+                  <Badge size="xs">Pro</Badge>
+                </Group>
+                <Text fz="xs">
+                  Select where new items are stored. When offline or not subscribed to Pro, this
+                  setting is ignored and new items will be stored locally.
+                </Text>
+              </Stack>
+              <Select
+                value={settings.storageLocation}
+                onChange={(newStorageLocation) =>
+                  newStorageLocation &&
+                  setSettings({
+                    ...settings,
+                    storageLocation: StorageLocation.parse(newStorageLocation),
+                  })
+                }
+                data={[
+                  { value: StorageLocation.Enum.Local, label: StorageLocation.Enum.Local },
+                  { value: StorageLocation.Enum.Cloud, label: StorageLocation.Enum.Cloud },
+                ]}
+                size="xs"
+                withinPortal
+              />
+            </Group>
+          </Stack>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="interface">
           <Stack p="md">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
@@ -152,21 +206,6 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Blank Items</Title>
-                <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
-              </Stack>
-              <Switch
-                checked={settings.allowBlankItems}
-                onChange={async (e) => {
-                  const checked = e.target.checked;
-
-                  await setSettings({ ...settings, allowBlankItems: checked });
-                }}
-              />
-            </Group>
-            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-            <Group align="flex-start" spacing="md" position="apart" noWrap>
-              <Stack spacing={0}>
                 <Title order={6}>Default Tab</Title>
                 <Text fz="xs">Select the tab shown when the extension is opened.</Text>
               </Stack>
@@ -179,6 +218,7 @@ export const SettingsModalContent = () => {
                 data={[
                   { value: Tab.Enum.All, label: Tab.Enum.All },
                   { value: Tab.Enum.Favorites, label: Tab.Enum.Favorites },
+                  { value: Tab.Enum.Cloud, label: Tab.Enum.Cloud },
                 ]}
                 size="xs"
                 withinPortal
