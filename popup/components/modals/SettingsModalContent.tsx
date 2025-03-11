@@ -138,7 +138,10 @@ export const SettingsModalContent = () => {
                   <Title order={6}>Default Storage Location</Title>
                   <Badge size="xs">Pro</Badge>
                 </Group>
-                <Text fz="xs">Select where new items will be stored.</Text>
+                <Text fz="xs">
+                  Select where new items are stored. When offline or not subscribed to Pro, this
+                  setting is ignored and new items will be stored locally.
+                </Text>
               </Stack>
               <Select
                 value={settings.storageLocation}
