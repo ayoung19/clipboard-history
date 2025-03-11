@@ -47,9 +47,6 @@ dependencies:
   "@tabler/icons-react":
     specifier: ^3.14.0
     version: 3.14.0(react@18.2.0)
-  "@tanstack/react-query":
-    specifier: ^5.55.4
-    version: 5.55.4(react@18.2.0)
   date-fns:
     specifier: 3.1.0
     version: 3.1.0
@@ -4080,25 +4077,6 @@ packages:
       {
         integrity: sha512-OakKjK1kuDWKoNwdnHHVMt11kTZAC10iZpN/8o/CSYdeBH7S3v5n8IyqAYynFxLI8yBGTyBvljtvWdmWh57zSg==,
       }
-    dev: false
-
-  /@tanstack/query-core@5.55.4:
-    resolution:
-      {
-        integrity: sha512-uoRqNnRfzOH4OMIoxj8E2+Us89UIGXfau981qYJWsNMkFS1GXR4UIyzUTVGq4N7SDLHgFPpo6IOazqUV5gkMZA==,
-      }
-    dev: false
-
-  /@tanstack/react-query@5.55.4(react@18.2.0):
-    resolution:
-      {
-        integrity: sha512-e3uX5XkLD9oTV66/VsVpkYz3Ds/ps/Yk+V5d89xthAbtNIKKBEm4FdNb9yISFzGEGezUzVO68qmfmiSrtScvsg==,
-      }
-    peerDependencies:
-      react: ^18 || ^19
-    dependencies:
-      "@tanstack/query-core": 5.55.4
-      react: 18.2.0
     dev: false
 
   /@trysound/sax@0.2.0:
