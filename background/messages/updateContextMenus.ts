@@ -20,15 +20,20 @@ export type UpdateContextMenusRequestBody = undefined;
 export type UpdateContextMenusResponseBody = Record<PropertyKey, never>;
 
 export const handleUpdateContextMenusRequest = debounce(async () => {
-  const [localEntries, localFavoriteEntryIds, localEntryIdToTags, refreshToken] = await Promise.all(
-    [getEntries(), getFavoriteEntryIds(), getEntryIdToTags(), getRefreshToken()],
-  );
+  const [localEntries, localFavoriteEntryIds, localEntryIdToTags, refreshToken, user] =
+    await Promise.all([
+      getEntries(),
+      getFavoriteEntryIds(),
+      getEntryIdToTags(),
+      getRefreshToken(),
+      db.getAuth(),
+    ]);
 
   let cloudEntries: Entry[] = [];
   let cloudFavoriteEntryIds: string[] = [];
   let cloudEntryIdToTags: EntryIdToTags = {};
 
-  if (refreshToken !== null) {
+  if (refreshToken !== null && user !== null && db._reactor.status !== "closed") {
     try {
       const [cloudEntriesQuery, cloudFavoritedEntriesQuery, cloudTaggedEntriesQuery] =
         await Promise.all([
@@ -111,7 +116,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
     enabled: favoriteEntries.length > 0,
   });
 
-  if (refreshToken !== null) {
+  if (refreshToken !== null && user !== null && db._reactor.status !== "closed") {
     chrome.contextMenus.create({
       parentId: simplePathJoin("paste"),
       id: simplePathJoin("paste", "cloud"),
@@ -147,7 +152,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
     }),
   );
 
-  if (refreshToken !== null) {
+  if (refreshToken !== null && user !== null && db._reactor.status !== "closed") {
     cloudEntries
       .slice()
       .reverse()
