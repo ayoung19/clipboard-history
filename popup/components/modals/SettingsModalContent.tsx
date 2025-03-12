@@ -38,13 +38,17 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { sendToBackground } from "@plasmohq/messaging";
+
+import type {
+  UpdateTotalItemsBadgeRequestBody,
+  UpdateTotalItemsBadgeResponseBody,
+} from "~background/messages/updateTotalItemsBadge";
 import { refreshTokenAtom, settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
-import { removeActionBadgeText, setActionBadgeText } from "~utils/actionBadge";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
-import { getEntries } from "~utils/storage";
 import { capitalize } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
@@ -180,12 +184,14 @@ export const SettingsModalContent = () => {
                 onChange={async (e) => {
                   const checked = e.target.checked;
 
-                  await Promise.all([
-                    checked
-                      ? setActionBadgeText((await getEntries()).length)
-                      : removeActionBadgeText(),
-                    setSettings({ ...settings, totalItemsBadge: checked }),
-                  ]);
+                  await setSettings({ ...settings, totalItemsBadge: checked });
+
+                  await sendToBackground<
+                    UpdateTotalItemsBadgeRequestBody,
+                    UpdateTotalItemsBadgeResponseBody
+                  >({
+                    name: "updateTotalItemsBadge",
+                  });
                 }}
               />
             </Group>

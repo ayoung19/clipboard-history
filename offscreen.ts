@@ -8,7 +8,19 @@ import type {
   GetClipboardMonitorIsEnabledRequestBody,
   GetClipboardMonitorIsEnabledResponseBody,
 } from "~background/messages/getClipboardMonitorIsEnabled";
-import { watchClipboard } from "~utils/background";
+import type {
+  GetRefreshTokenRequestBody,
+  GetRefreshTokenResponseBody,
+} from "~background/messages/getRefreshToken";
+import type {
+  UpdateContextMenusRequestBody,
+  UpdateContextMenusResponseBody,
+} from "~background/messages/updateContextMenus";
+import type {
+  UpdateTotalItemsBadgeRequestBody,
+  UpdateTotalItemsBadgeResponseBody,
+} from "~background/messages/updateTotalItemsBadge";
+import { watchClipboard, watchCloudEntries } from "~utils/background";
 
 watchClipboard(
   window,
@@ -31,5 +43,23 @@ watchClipboard(
         timestamp: Date.now() - 2000,
       },
     });
+  },
+);
+
+watchCloudEntries(
+  window,
+  () =>
+    sendToBackground<GetRefreshTokenRequestBody, GetRefreshTokenResponseBody>({
+      name: "getRefreshToken",
+    }),
+  async () => {
+    await Promise.all([
+      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+        name: "updateContextMenus",
+      }),
+      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+        name: "updateTotalItemsBadge",
+      }),
+    ]);
   },
 );

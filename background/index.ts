@@ -1,3 +1,4 @@
+import { match } from "ts-pattern";
 import OFFSCREEN_DOCUMENT_PATH from "url:~offscreen.html";
 
 import { handleCreateEntryRequest } from "~background/messages/createEntry";
@@ -6,17 +7,16 @@ import {
   setClipboardMonitorIsEnabled,
 } from "~storage/clipboardMonitorIsEnabled";
 import { getEntryCommands } from "~storage/entryCommands";
+import { getRefreshToken } from "~storage/refreshToken";
 import { getSettings } from "~storage/settings";
-import {
-  removeActionBadgeText,
-  setActionBadgeText,
-  setActionIconAndBadgeBackgroundColor,
-} from "~utils/actionBadge";
-import { watchClipboard } from "~utils/background";
+import { setActionIconAndBadgeBackgroundColor } from "~utils/actionBadge";
+import { watchClipboard, watchCloudEntries } from "~utils/background";
+import db from "~utils/db/core";
 import { simplePathBasename } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
 
 import { handleUpdateContextMenusRequest } from "./messages/updateContextMenus";
+import { handleUpdateTotalItemsBadgeRequest } from "./messages/updateTotalItemsBadge";
 
 // Firefox MV2 creates a persistent background page that we can use to watch the clipboard.
 if (process.env.PLASMO_TARGET === "firefox-mv2") {
@@ -29,6 +29,17 @@ if (process.env.PLASMO_TARGET === "firefox-mv2") {
       timestamp: Date.now() - 2000,
     }),
   );
+
+  watchCloudEntries(window, getRefreshToken, async () => {
+    await Promise.all([
+      handleUpdateContextMenusRequest(),
+      (async () => {
+        const entries = await getEntries();
+
+        await handleUpdateTotalItemsBadgeRequest(entries.length);
+      })(),
+    ]);
+  });
 }
 
 // A global promise to avoid concurrency issues.
@@ -57,14 +68,14 @@ const setupOffscreenDocument = async () => {
 };
 
 const setupAction = async () => {
-  const [entries, clipboardMonitorIsEnabled, settings] = await Promise.all([
+  const [entries, clipboardMonitorIsEnabled] = await Promise.all([
     getEntries(),
     getClipboardMonitorIsEnabled(),
     getSettings(),
   ]);
 
   await Promise.all([
-    settings.totalItemsBadge ? setActionBadgeText(entries.length) : removeActionBadgeText(),
+    handleUpdateTotalItemsBadgeRequest(entries.length),
     setActionIconAndBadgeBackgroundColor(clipboardMonitorIsEnabled),
   ]);
 };
@@ -99,10 +110,27 @@ function paste(content: string) {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (tab?.id) {
-    const entries = await getEntries();
-    const entry = entries.find(
-      (entry) => entry.id === simplePathBasename(info.menuItemId.toString()),
-    );
+    const entryId = simplePathBasename(info.menuItemId.toString());
+
+    const entry = await match(entryId.length)
+      .with(36, async () => {
+        const cloudEntriesQuery = await db.queryOnce({
+          entries: {
+            $: {
+              where: {
+                id: entryId,
+              },
+            },
+          },
+        });
+
+        return cloudEntriesQuery.data.entries[0];
+      })
+      .otherwise(async () => {
+        const entries = await getEntries();
+
+        return entries.find((entry) => entry.id === entryId);
+      });
 
     if (entry?.content) {
       chrome.scripting.executeScript({
@@ -118,12 +146,35 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
   if (tab?.id) {
-    const [entries, entryCommands] = await Promise.all([getEntries(), getEntryCommands()]);
+    const entryCommands = await getEntryCommands();
 
     const entryId = entryCommands.find(
       (entryCommand) => entryCommand.commandName === command,
     )?.entryId;
-    const entry = entries.find((entry) => entry.id === entryId);
+
+    if (!entryId) {
+      return;
+    }
+
+    const entry = await match(entryId.length)
+      .with(36, async () => {
+        const cloudEntriesQuery = await db.queryOnce({
+          entries: {
+            $: {
+              where: {
+                id: entryId,
+              },
+            },
+          },
+        });
+
+        return cloudEntriesQuery.data.entries[0];
+      })
+      .otherwise(async () => {
+        const entries = await getEntries();
+
+        return entries.find((entry) => entry.id === entryId);
+      });
 
     if (entry?.content) {
       chrome.scripting.executeScript({

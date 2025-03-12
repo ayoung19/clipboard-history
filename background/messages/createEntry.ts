@@ -29,7 +29,7 @@ export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => 
           createEntry(body.content),
       ]);
 
-      await handleUpdateContextMenusRequest();
+      handleUpdateContextMenusRequest();
     }
   }
 };
