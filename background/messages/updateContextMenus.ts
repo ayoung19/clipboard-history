@@ -1,7 +1,15 @@
+import { debounce } from "ts-debounce";
+import { z } from "zod";
+
 import type { PlasmoMessaging } from "@plasmohq/messaging";
 
 import { getEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
+import { getRefreshToken } from "~storage/refreshToken";
+import type { Entry } from "~types/entry";
+import type { EntryIdToTags } from "~types/entryIdToTags";
+import db from "~utils/db/core";
+import { reverseMergeSortedEntries } from "~utils/entries";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 import { simplePathJoin } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
@@ -11,15 +19,72 @@ export type UpdateContextMenusRequestBody = undefined;
 // https://www.totaltypescript.com/the-empty-object-type-in-typescript#representing-an-empty-object
 export type UpdateContextMenusResponseBody = Record<PropertyKey, never>;
 
-export const handleUpdateContextMenusRequest = async () => {
-  const [entries, favoriteEntryIds, entryIdToTags] = await Promise.all([
-    getEntries(),
-    getFavoriteEntryIds(),
-    getEntryIdToTags(),
-  ]);
-  const reversedEntries = entries.slice().reverse();
-  const favoriteEntryIdsSet = new Set(favoriteEntryIds);
+export const handleUpdateContextMenusRequest = debounce(async () => {
+  const [localEntries, localFavoriteEntryIds, localEntryIdToTags, refreshToken] = await Promise.all(
+    [getEntries(), getFavoriteEntryIds(), getEntryIdToTags(), getRefreshToken()],
+  );
+
+  let cloudEntries: Entry[] = [];
+  let cloudFavoriteEntryIds: string[] = [];
+  let cloudEntryIdToTags: EntryIdToTags = {};
+
+  if (refreshToken !== null) {
+    try {
+      const [cloudEntriesQuery, cloudFavoritedEntriesQuery, cloudTaggedEntriesQuery] =
+        await Promise.all([
+          db.queryOnce({
+            entries: {
+              $: {
+                order: {
+                  createdAt: "asc",
+                },
+              },
+            },
+          }),
+          db.queryOnce({
+            entries: {
+              $: {
+                where: {
+                  isFavorited: true,
+                },
+              },
+            },
+          }),
+          db.queryOnce({
+            entries: {
+              $: {
+                where: {
+                  tags: {
+                    $isNull: false,
+                  },
+                },
+              },
+            },
+          }),
+        ]);
+
+      cloudEntries = cloudEntriesQuery.data.entries;
+      cloudFavoriteEntryIds = cloudFavoritedEntriesQuery.data.entries.map(({ id }) => id);
+      cloudEntryIdToTags = cloudTaggedEntriesQuery.data.entries.reduce<EntryIdToTags>(
+        (acc, curr) => {
+          acc[curr.id] = z
+            .array(z.string())
+            .catch([])
+            .parse(JSON.parse(curr.tags || "[]"));
+
+          return acc;
+        },
+        {},
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const reversedEntries = reverseMergeSortedEntries(localEntries, cloudEntries);
+  const favoriteEntryIdsSet = new Set([...localFavoriteEntryIds, ...cloudFavoriteEntryIds]);
   const favoriteEntries = reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id));
+  const entryIdToTags = { ...localEntryIdToTags, ...cloudEntryIdToTags };
   const allTags = entryIdToTagsToAllTags(entryIdToTags).sort();
 
   chrome.contextMenus.removeAll();
@@ -45,6 +110,16 @@ export const handleUpdateContextMenusRequest = async () => {
     contexts: ["editable"],
     enabled: favoriteEntries.length > 0,
   });
+
+  if (refreshToken !== null) {
+    chrome.contextMenus.create({
+      parentId: simplePathJoin("paste"),
+      id: simplePathJoin("paste", "cloud"),
+      title: "☁️ Cloud",
+      contexts: ["editable"],
+      enabled: cloudEntries.length > 0,
+    });
+  }
 
   chrome.contextMenus.create({
     parentId: simplePathJoin("paste"),
@@ -72,6 +147,21 @@ export const handleUpdateContextMenusRequest = async () => {
     }),
   );
 
+  if (refreshToken !== null) {
+    cloudEntries
+      .slice()
+      .reverse()
+      .slice(0, 40)
+      .forEach((entry) =>
+        chrome.contextMenus.create({
+          parentId: simplePathJoin("paste", "cloud"),
+          id: simplePathJoin("paste", "cloud", entry.id),
+          title: entry.content || " ",
+          contexts: ["editable"],
+        }),
+      );
+  }
+
   allTags.forEach((tag) =>
     chrome.contextMenus.create({
       parentId: simplePathJoin("paste", "tags"),
@@ -93,7 +183,7 @@ export const handleUpdateContextMenusRequest = async () => {
         }),
       ),
     );
-};
+}, 400);
 
 const handler: PlasmoMessaging.MessageHandler<
   UpdateContextMenusRequestBody,

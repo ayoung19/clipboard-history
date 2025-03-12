@@ -13,6 +13,10 @@ import type {
   GetRefreshTokenResponseBody,
 } from "~background/messages/getRefreshToken";
 import type {
+  UpdateContextMenusRequestBody,
+  UpdateContextMenusResponseBody,
+} from "~background/messages/updateContextMenus";
+import type {
   UpdateTotalItemsBadgeRequestBody,
   UpdateTotalItemsBadgeResponseBody,
 } from "~background/messages/updateTotalItemsBadge";
@@ -49,8 +53,13 @@ watchCloudEntries(
       name: "getRefreshToken",
     }),
   async () => {
-    await sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
-      name: "updateTotalItemsBadge",
-    });
+    await Promise.all([
+      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+        name: "updateContextMenus",
+      }),
+      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+        name: "updateTotalItemsBadge",
+      }),
+    ]);
   },
 );

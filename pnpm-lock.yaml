@@ -80,6 +80,9 @@ dependencies:
   short-time-ago:
     specifier: ^2.0.0
     version: 2.0.0
+  ts-debounce:
+    specifier: ^4.0.0
+    version: 4.0.0
   ts-pattern:
     specifier: ^5.6.2
     version: 5.6.2
@@ -9230,6 +9233,13 @@ packages:
     dependencies:
       typescript: 5.3.3
     dev: true
+
+  /ts-debounce@4.0.0:
+    resolution:
+      {
+        integrity: sha512-+1iDGY6NmOGidq7i7xZGA4cm8DAa6fqdYcvO5Z6yBevH++Bdo9Qt/mN0TzHUgcCcKv1gmh9+W5dHqz8pMWbCbg==,
+      }
+    dev: false
 
   /ts-interface-checker@0.1.13:
     resolution:
