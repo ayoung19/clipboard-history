@@ -18,6 +18,7 @@ import {
   deleteFavoriteEntryIds,
   getFavoriteEntryIds,
 } from "~storage/favoriteEntryIds";
+import { getRefreshToken } from "~storage/refreshToken";
 import { getSettings } from "~storage/settings";
 import { Entry } from "~types/entry";
 import { StorageLocation } from "~types/storageLocation";
@@ -71,27 +72,37 @@ export const _setEntries = async (entries: Entry[]) => {
 // Creates an entry in the user's configured storage location. If storage location is configured to
 // be cloud but the user isn't signed in or isn't subscribed then it should be created locally.
 export const createEntry = async (content: string) => {
-  const settings = await getSettings();
+  const [settings, refreshToken, user] = await Promise.all([
+    getSettings(),
+    getRefreshToken(),
+    db.getAuth(),
+  ]);
 
-  if (settings.storageLocation === StorageLocation.Enum.Cloud) {
-    const [user, subscriptionsQuery] = await Promise.all([
-      db.getAuth(),
-      db.queryOnce({
+  if (
+    settings.storageLocation === StorageLocation.Enum.Cloud &&
+    refreshToken !== null &&
+    user !== null &&
+    db._reactor.status !== "closed"
+  ) {
+    try {
+      const subscriptionsQuery = await db.queryOnce({
         subscriptions: {},
-      }),
-    ]);
+      });
 
-    if (user !== null && subscriptionsQuery.data.subscriptions.length > 0) {
-      const contentHash = createHash("sha256").update(content).digest("hex");
+      if (subscriptionsQuery.data.subscriptions.length > 0) {
+        const contentHash = createHash("sha256").update(content).digest("hex");
 
-      await db.transact(
-        db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
-          createdAt: Date.now(),
-          content: content,
-        }).link({ $user: lookup("email", user.email) }),
-      );
+        await db.transact(
+          db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
+            createdAt: Date.now(),
+            content: content,
+          }).link({ $user: lookup("email", user.email) }),
+        );
 
-      return;
+        return;
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 

@@ -44,10 +44,11 @@ import type {
   UpdateTotalItemsBadgeRequestBody,
   UpdateTotalItemsBadgeResponseBody,
 } from "~background/messages/updateTotalItemsBadge";
-import { refreshTokenAtom, settingsAtom } from "~popup/states/atoms";
+import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
+import db from "~utils/db/react";
 import { getClipboardHistoryIOExport, importFile } from "~utils/importExport";
 import { capitalize } from "~utils/string";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
@@ -60,8 +61,8 @@ type FormValues = z.infer<typeof schema>;
 
 export const SettingsModalContent = () => {
   const theme = useMantineTheme();
+  const auth = db.useAuth();
   const settings = useAtomValue(settingsAtom);
-  const refreshToken = useAtomValue(refreshTokenAtom);
   const systemColorScheme = useColorScheme();
 
   const [file, setFile] = useState<File | null>(null);
@@ -164,7 +165,7 @@ export const SettingsModalContent = () => {
                 ]}
                 size="xs"
                 withinPortal
-                disabled={!refreshToken}
+                disabled={!auth.user}
               />
             </Group>
           </Stack>

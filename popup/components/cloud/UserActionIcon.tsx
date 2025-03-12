@@ -7,9 +7,10 @@ import env from "~utils/env";
 
 export const UserActionIcon = () => {
   const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
   const [opened, setOpened] = useState(false);
 
-  if (!auth.user) {
+  if (!auth.user || connectionStatus === "closed") {
     return null;
   }
 

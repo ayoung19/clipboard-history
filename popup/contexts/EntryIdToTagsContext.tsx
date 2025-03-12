@@ -5,13 +5,16 @@ import { z } from "zod";
 import { useCloudTaggedEntriesQuery } from "~popup/hooks/useCloudTaggedEntriesQuery";
 import { entryIdToTagsAtom } from "~popup/states/atoms";
 import type { EntryIdToTags } from "~types/entryIdToTags";
+import db from "~utils/db/react";
 
 const EntryIdToTagsContext = createContext<EntryIdToTags>({});
 
 export const EntryIdToTagsProvider = ({ children }: PropsWithChildren) => {
+  const connectionStatus = db.useConnectionStatus();
   const entryIdToTags = useAtomValue(entryIdToTagsAtom);
   const cloudTaggedEntriesQuery = useCloudTaggedEntriesQuery();
-  const cloudTaggedEntries = cloudTaggedEntriesQuery.data?.entries || [];
+  const cloudTaggedEntries =
+    connectionStatus === "closed" ? [] : cloudTaggedEntriesQuery.data?.entries || [];
 
   return (
     <EntryIdToTagsContext.Provider

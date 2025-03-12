@@ -1,9 +1,15 @@
+import { match } from "ts-pattern";
+
 import { sendToBackground } from "@plasmohq/messaging";
 
 import type {
   CreateEntryRequestBody,
   CreateEntryResponseBody,
 } from "~background/messages/createEntry";
+import type {
+  DispatchEventRequestBody,
+  DispatchEventResponseBody,
+} from "~background/messages/dispatchEvent";
 import type {
   GetClipboardMonitorIsEnabledRequestBody,
   GetClipboardMonitorIsEnabledResponseBody,
@@ -21,6 +27,7 @@ import type {
   UpdateTotalItemsBadgeResponseBody,
 } from "~background/messages/updateTotalItemsBadge";
 import { watchClipboard, watchCloudEntries } from "~utils/background";
+import db from "~utils/db/core";
 
 watchClipboard(
   window,
@@ -63,3 +70,38 @@ watchCloudEntries(
     ]);
   },
 );
+
+db.subscribeConnectionStatus(async (connectionStatus) => {
+  if (connectionStatus === "opened" || connectionStatus === "closed") {
+    await sendToBackground<DispatchEventRequestBody, DispatchEventResponseBody>({
+      name: "dispatchEvent",
+      body: {
+        eventType: match(connectionStatus)
+          .with("opened", () => "online")
+          .with("closed", () => "offline")
+          .exhaustive(),
+      },
+    });
+
+    await Promise.all([
+      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+        name: "updateContextMenus",
+      }),
+      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+        name: "updateTotalItemsBadge",
+      }),
+    ]);
+
+    // Retry just in case updating the service worker's reactor status takes some time.
+    await new Promise((r) => setTimeout(r, 800));
+
+    await Promise.all([
+      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+        name: "updateContextMenus",
+      }),
+      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+        name: "updateTotalItemsBadge",
+      }),
+    ]);
+  }
+});

@@ -1,27 +1,35 @@
-import { Badge } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import { Badge, useMantineTheme } from "@mantine/core";
 
-import { refreshTokenAtom } from "~popup/states/atoms";
+import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import db from "~utils/db/react";
+import { lightOrDark } from "~utils/sx";
 
 export const ProBadge = () => {
-  const refreshToken = useAtomValue(refreshTokenAtom);
+  const theme = useMantineTheme();
 
-  const subscriptionsQuery = db.useQuery(
-    refreshToken
-      ? {
-          subscriptions: {},
-        }
-      : null,
-  );
+  const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
+  const subscriptionsQuery = useSubscriptionsQuery();
 
-  if (!subscriptionsQuery.data?.subscriptions.length) {
-    return null;
+  if (subscriptionsQuery.data?.subscriptions.length && connectionStatus !== "closed") {
+    return (
+      <Badge size="xs" color="cyan">
+        Pro
+      </Badge>
+    );
   }
 
-  return (
-    <Badge size="xs" color="cyan">
-      Pro
-    </Badge>
-  );
+  if (auth.user && connectionStatus === "closed") {
+    return (
+      <Badge
+        size="xs"
+        color={lightOrDark(theme, "dark", "gray")}
+        variant={lightOrDark(theme, "light", "filled")}
+      >
+        Offline
+      </Badge>
+    );
+  }
+
+  return null;
 };

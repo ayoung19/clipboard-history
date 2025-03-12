@@ -8,19 +8,46 @@ import { NoEntriesOverlay } from "~popup/components/NoEntriesOverlay";
 import { useEntries } from "~popup/contexts/EntriesContext";
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
-import { refreshTokenAtom, searchAtom } from "~popup/states/atoms";
+import { searchAtom } from "~popup/states/atoms";
+import db from "~utils/db/react";
 
 export const CloudPage = () => {
   const search = useAtomValue(searchAtom);
-  const refreshToken = useAtomValue(refreshTokenAtom);
 
+  const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
   const entries = useEntries();
   const entryIdToTags = useEntryIdToTags();
-
   const subscriptionsQuery = useSubscriptionsQuery();
 
+  // TODO: Offline.
+  if (auth.user && connectionStatus === "closed") {
+    return (
+      <EntryList
+        noEntriesOverlay={
+          <Stack align="center" spacing="xs" p="xl">
+            <Title order={4}>Optionally Sync Your Clipboard History Everywhere</Title>
+            <Text size="sm" w={500} align="center">
+              Privately and securely sync your clipboard history across all your devices!
+            </Text>
+            <Button
+              size="xs"
+              mt="xs"
+              component="a"
+              href={chrome.runtime.getURL("/tabs/sign-in.html")}
+              target="_blank"
+            >
+              Get Started
+            </Button>
+          </Stack>
+        }
+        entries={[]}
+      />
+    );
+  }
+
   // TODO: Highlight mobile app.
-  if (!refreshToken || !subscriptionsQuery.data?.subscriptions.length) {
+  if (!subscriptionsQuery.data?.subscriptions.length) {
     return (
       <EntryList
         noEntriesOverlay={

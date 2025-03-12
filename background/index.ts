@@ -40,6 +40,31 @@ if (process.env.PLASMO_TARGET === "firefox-mv2") {
       })(),
     ]);
   });
+
+  db.subscribeConnectionStatus(async (connectionStatus) => {
+    if (connectionStatus === "opened" || connectionStatus === "closed") {
+      await Promise.all([
+        handleUpdateContextMenusRequest(),
+        (async () => {
+          const entries = await getEntries();
+
+          await handleUpdateTotalItemsBadgeRequest(entries.length);
+        })(),
+      ]);
+
+      // Retry just in case updating the service worker's reactor status takes some time.
+      await new Promise((r) => setTimeout(r, 800));
+
+      await Promise.all([
+        handleUpdateContextMenusRequest(),
+        (async () => {
+          const entries = await getEntries();
+
+          await handleUpdateTotalItemsBadgeRequest(entries.length);
+        })(),
+      ]);
+    }
+  });
 }
 
 // A global promise to avoid concurrency issues.
