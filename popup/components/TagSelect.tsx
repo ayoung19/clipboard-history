@@ -88,7 +88,6 @@ export const TagSelect = ({ entryId }: Props) => {
       shadow="md"
     >
       <Popover.Target>
-        {/* TODO: Figure out why replacing this with CommonActionIcon doesn't work with Popover. */}
         <CommonActionIcon
           backgroundColor={
             opened
