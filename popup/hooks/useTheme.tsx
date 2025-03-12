@@ -25,6 +25,7 @@ export const useTheme = () => {
         "#141517",
         "#101113",
       ],
+      // Change each red to one shade darker, red.9 remains the same.
       red: [
         "#ffe3e3",
         "#ffc9c9",

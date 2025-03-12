@@ -98,28 +98,25 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             <Tooltip label={<Text fz="xs">Delete</Text>} disabled={selectedEntryIds.size === 0}>
               <CommonActionIcon
                 disabled={selectedEntryIds.size === 0}
-                onClick={
-                  selectedEntryIds.size === 0
-                    ? undefined
-                    : () =>
-                        modals.openConfirmModal({
-                          title: <Title order={5}>Delete Items</Title>,
-                          children: (
-                            <Text fz="xs" mb="xs">
-                              Are you sure you want to delete all selected items? Favorited items
-                              will not be deleted.
-                            </Text>
-                          ),
-                          labels: { confirm: "Delete All", cancel: "Cancel" },
-                          confirmProps: { color: "red", size: "xs" },
-                          cancelProps: { size: "xs" },
-                          onConfirm: () =>
-                            deleteEntries(
-                              Array.from(selectedEntryIds).filter(
-                                (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
-                              ),
-                            ),
-                        })
+                onClick={() =>
+                  modals.openConfirmModal({
+                    title: <Title order={5}>Delete Items</Title>,
+                    children: (
+                      <Text fz="xs" mb="xs">
+                        Are you sure you want to delete all selected items? Favorited items will not
+                        be deleted.
+                      </Text>
+                    ),
+                    labels: { confirm: "Delete", cancel: "Cancel" },
+                    confirmProps: { color: "red", size: "xs" },
+                    cancelProps: { size: "xs" },
+                    onConfirm: () =>
+                      deleteEntries(
+                        Array.from(selectedEntryIds).filter(
+                          (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
+                        ),
+                      ),
+                  })
                 }
               >
                 <IconTrash size="1rem" />
