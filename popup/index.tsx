@@ -22,7 +22,7 @@ export default function IndexPopup() {
           <EntryIdToTagsProvider>
             <AllTagsProvider>
               <ModalsProvider>
-                <Notifications />
+                <Notifications position="top-right" />
                 <App />
               </ModalsProvider>
             </AllTagsProvider>

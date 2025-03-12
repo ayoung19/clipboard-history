@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Divider,
   Popover,
   rem,
@@ -7,14 +6,16 @@ import {
   Stack,
   Text,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { IconTags } from "@tabler/icons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAllTags } from "~popup/contexts/AllTagsContext";
-import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
+import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
+import { CommonActionIcon } from "./CommonActionIcon";
 import { TagOption } from "./TagOption";
 
 interface Props {
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export const TagSelect = ({ entryId }: Props) => {
+  const theme = useMantineTheme();
   const allTags = useAllTags();
   const [opened, handlers] = useDisclosure(false);
   const [tagSearch, setTagSearch] = useState("");
@@ -86,25 +88,20 @@ export const TagSelect = ({ entryId }: Props) => {
       shadow="md"
     >
       <Popover.Target>
-        <ActionIcon
-          sx={(theme) => ({
-            ...commonActionIconSx({ theme }),
-            backgroundColor: opened
+        <CommonActionIcon
+          backgroundColor={
+            opened
               ? lightOrDark(
                   theme,
                   theme.colors.indigo[1],
                   theme.fn.darken(theme.colors.indigo[9], 0.3),
                 )
-              : undefined,
-          })}
-          onClick={(e) => {
-            e.stopPropagation();
-
-            handlers.toggle();
-          }}
+              : undefined
+          }
+          onClick={() => handlers.toggle()}
         >
           <IconTags size="1rem" />
-        </ActionIcon>
+        </CommonActionIcon>
       </Popover.Target>
       <Popover.Dropdown p={0} onClick={(e) => e.stopPropagation()} sx={{ cursor: "default" }}>
         <TextInput

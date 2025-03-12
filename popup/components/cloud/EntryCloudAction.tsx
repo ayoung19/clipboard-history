@@ -1,43 +1,68 @@
-import { ActionIcon } from "@mantine/core";
+import { createHash } from "crypto";
+import { Loader, useMantineTheme } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { IconCloud, IconCloudFilled } from "@tabler/icons-react";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
 
+import { useEntries } from "~popup/contexts/EntriesContext";
+import { transitioningEntryContentHashAtom } from "~popup/states/atoms";
+import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
-import { lightOrDark } from "~utils/sx";
+import { toggleEntryStorageLocation } from "~utils/storage";
+
+import { CommonActionIcon } from "../CommonActionIcon";
 
 interface Props {
-  entryId: string;
+  entry: Entry;
 }
 
-export const EntryCloudAction = ({ entryId }: Props) => {
+export const EntryCloudAction = ({ entry }: Props) => {
+  const theme = useMantineTheme();
   const auth = db.useAuth();
-  const isCloudEntry = entryId.length === 36;
+  const entries = useEntries();
+  const [transitioningEntryContentHash, setTransitioningEntryContentHash] = useAtom(
+    transitioningEntryContentHashAtom,
+  );
+  const contentHash = useMemo(
+    () => createHash("sha256").update(entry.content).digest("hex"),
+    [entry.content],
+  );
+  const isCloudEntry = entry.id.length === 36;
 
   if (!auth.user) {
     return null;
   }
 
   return (
-    <ActionIcon
-      sx={(theme) => ({
-        color: isCloudEntry ? theme.colors.cyan[5] : theme.colors.gray[5],
-        ":hover": {
-          color: isCloudEntry
-            ? theme.colors.cyan[5]
-            : lightOrDark(theme, theme.colors.gray[7], theme.colors.gray[3]),
-          backgroundColor: lightOrDark(
-            theme,
-            theme.colors.indigo[1],
-            theme.fn.darken(theme.colors.indigo[9], 0.3),
-          ),
-        },
-      })}
-      onClick={(e) => {
-        e.stopPropagation();
+    <CommonActionIcon
+      color={isCloudEntry ? theme.colors.cyan[5] : undefined}
+      hoverColor={isCloudEntry ? theme.colors.cyan[5] : undefined}
+      onClick={() => {
+        if (entries.filter((e) => e.content === entry.content).length > 1) {
+          notifications.show({
+            color: "red",
+            title: "Error",
+            message: isCloudEntry
+              ? "A copy of this item is already stored locally."
+              : "A copy of this item is already stored in the cloud.",
+          });
 
-        // TODO: Toggle between local and cloud.
+          return;
+        }
+
+        setTransitioningEntryContentHash(contentHash);
+
+        toggleEntryStorageLocation(entry.id);
       }}
     >
-      {isCloudEntry ? <IconCloudFilled size="1rem" /> : <IconCloud size="1rem" />}
-    </ActionIcon>
+      {transitioningEntryContentHash === contentHash ? (
+        <Loader size="xs" variant="dots" />
+      ) : isCloudEntry ? (
+        <IconCloudFilled size="1rem" />
+      ) : (
+        <IconCloud size="1rem" />
+      )}
+    </CommonActionIcon>
   );
 };

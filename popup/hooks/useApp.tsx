@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "@mantine/hooks";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
 import { sendToBackground } from "@plasmohq/messaging";
@@ -33,9 +33,21 @@ import {
   refreshTokenAtom,
   settingsAtom,
   tabAtom,
+  transitioningEntryContentHashAtom,
 } from "../states/atoms";
 
 export const useApp = () => {
+  const [transitioningEntryContentHash, setTransitioningEntryContentHash] = useAtom(
+    transitioningEntryContentHashAtom,
+  );
+  useEffect(() => {
+    if (transitioningEntryContentHash === undefined) {
+      return;
+    }
+
+    setTimeout(() => setTransitioningEntryContentHash(undefined), 1200);
+  }, [transitioningEntryContentHash]);
+
   // TODO: For actions that take a while to render (e.g. deleting an entry), the user could close
   // the popup before the mutation is rendered causing the context menus to be stale until the user
   // switches tabs. I decided on this approach as opposed to directly calling the sync function in
