@@ -36,6 +36,7 @@ import { match } from "ts-pattern";
 import { updateChangelogViewedAt } from "~storage/changelogViewedAt";
 import { toggleClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
 import { Tab } from "~types/tab";
+import db from "~utils/db/react";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
@@ -43,6 +44,10 @@ import { ProBadge } from "./components/cloud/ProBadge";
 import { UserActionIcon } from "./components/cloud/UserActionIcon";
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { useApp } from "./hooks/useApp";
+import { useCloudEntriesQuery } from "./hooks/useCloudEntriesQuery";
+import { useCloudFavoritedEntriesQuery } from "./hooks/useCloudFavoritedEntriesQuery";
+import { useCloudTaggedEntriesQuery } from "./hooks/useCloudTaggedEntriesQuery";
+import { useSubscriptionsQuery } from "./hooks/useSubscriptionsQuery";
 import { AllPage } from "./pages/AllPage";
 import { CloudPage } from "./pages/CloudPage";
 import { FavoritesPage } from "./pages/FavoritesPage";
@@ -72,8 +77,27 @@ export const App = () => {
   const changelogViewedAt = useAtomValue(changelogViewedAtAtom);
   const refreshToken = useAtomValue(refreshTokenAtom);
 
-  if (clipboardMonitorIsEnabled === undefined) {
+  // Preload queries.
+  const cloudEntriesQuery = useCloudEntriesQuery();
+  const cloudFavoritedEntriesQuery = useCloudFavoritedEntriesQuery();
+  const cloudTaggedEntriesQuery = useCloudTaggedEntriesQuery();
+  const subscriptionsQuery = useSubscriptionsQuery();
+  const auth = db.useAuth();
+
+  if (clipboardMonitorIsEnabled === undefined || refreshToken === undefined) {
     return null;
+  }
+
+  if (refreshToken) {
+    if (
+      cloudEntriesQuery.isLoading ||
+      cloudFavoritedEntriesQuery.isLoading ||
+      cloudTaggedEntriesQuery.isLoading ||
+      subscriptionsQuery.isLoading ||
+      auth.isLoading
+    ) {
+      return null;
+    }
   }
 
   return (

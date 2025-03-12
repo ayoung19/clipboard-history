@@ -1,33 +1,16 @@
 import { useAtomValue } from "jotai";
 import { createContext, useContext, type PropsWithChildren } from "react";
 
-import {
-  entriesAtom,
-  refreshTokenAtom,
-  transitioningEntryContentHashAtom,
-} from "~popup/states/atoms";
+import { useCloudEntriesQuery } from "~popup/hooks/useCloudEntriesQuery";
+import { entriesAtom, transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
-import db from "~utils/db/react";
 
 const EntriesContext = createContext<Entry[]>([]);
 
 export const EntriesProvider = ({ children }: PropsWithChildren) => {
   const transitioningEntryContentHash = useAtomValue(transitioningEntryContentHashAtom);
-  const refreshToken = useAtomValue(refreshTokenAtom);
   const entries = useAtomValue(entriesAtom);
-  const cloudEntriesQuery = db.useQuery(
-    refreshToken
-      ? {
-          entries: {
-            $: {
-              order: {
-                createdAt: "asc",
-              },
-            },
-          },
-        }
-      : null,
-  );
+  const cloudEntriesQuery = useCloudEntriesQuery();
   const cloudEntries = cloudEntriesQuery.data?.entries || [];
 
   let i = entries.length - 1;
