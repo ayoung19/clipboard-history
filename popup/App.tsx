@@ -31,6 +31,7 @@ import {
 import iconSrc from "data-base64:~assets/icon.png";
 import { useAtom, useAtomValue } from "jotai";
 import { useState } from "react";
+import { match } from "ts-pattern";
 
 import { updateChangelogViewedAt } from "~storage/changelogViewedAt";
 import { toggleClipboardMonitorIsEnabled } from "~storage/clipboardMonitorIsEnabled";
@@ -38,6 +39,7 @@ import { Tab } from "~types/tab";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 import { VERSION } from "~utils/version";
 
+import { ProBadge } from "./components/cloud/ProBadge";
 import { UserActionIcon } from "./components/cloud/UserActionIcon";
 import { SettingsModalContent } from "./components/modals/SettingsModalContent";
 import { useApp } from "./hooks/useApp";
@@ -81,6 +83,7 @@ export const App = () => {
           <Group align="center" spacing="xs">
             <Image src={iconSrc} maw={28} />
             <Title order={6}>Clipboard History IO</Title>
+            {refreshToken && <ProBadge />}
           </Group>
           <Group align="center" spacing="xs" grow={false}>
             <Tooltip
@@ -219,9 +222,11 @@ export const App = () => {
             value={tab}
             onChange={(newTab) => setTab(Tab.parse(newTab))}
             size="xs"
-            color={
-              tab === Tab.Enum.All ? "indigo.5" : tab === Tab.Enum.Favorites ? "yellow.5" : "cyan.5"
-            }
+            color={match(tab)
+              .with(Tab.Enum.All, () => "indigo.5")
+              .with(Tab.Enum.Favorites, () => "yellow.5")
+              .with(Tab.Enum.Cloud, () => "cyan.5")
+              .exhaustive()}
             data={[
               {
                 label: (
@@ -253,13 +258,11 @@ export const App = () => {
             ]}
           />
         </Group>
-        {tab === Tab.Enum.All ? (
-          <AllPage />
-        ) : tab === Tab.Enum.Favorites ? (
-          <FavoritesPage />
-        ) : (
-          <CloudPage />
-        )}
+        {match(tab)
+          .with(Tab.Enum.All, () => <AllPage />)
+          .with(Tab.Enum.Favorites, () => <FavoritesPage />)
+          .with(Tab.Enum.Cloud, () => <CloudPage />)
+          .exhaustive()}
       </Stack>
     </Card>
   );

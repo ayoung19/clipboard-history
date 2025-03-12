@@ -13,18 +13,20 @@ import { modals } from "@mantine/modals";
 import { IconEdit, IconKeyboard } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
 
+import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { useNow } from "~popup/hooks/useNow";
 import {
   clipboardSnapshotAtom,
   commandsAtom,
   entryCommandsAtom,
-  entryIdToTagsAtom,
-  nowAtom,
+  refreshTokenAtom,
 } from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
 import { badgeDateFormatter } from "~utils/date";
 import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 
+import { EntryCloudAction } from "./cloud/EntryCloudAction";
 import { EntryDeleteAction } from "./EntryDeleteAction";
 import { EntryFavoriteAction } from "./EntryFavoriteAction";
 import { EditEntryModalContent } from "./modals/EditEntryModalContent";
@@ -40,8 +42,9 @@ interface Props {
 
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
-  const now = useAtomValue(nowAtom);
-  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const now = useNow();
+  const entryIdToTags = useEntryIdToTags();
+  const refreshToken = useAtomValue(refreshTokenAtom);
   const entryCommands = useAtomValue(entryCommandsAtom);
   const commands = useAtomValue(commandsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
@@ -165,6 +168,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           >
             <IconEdit size="1rem" />
           </ActionIcon>
+          {refreshToken && <EntryCloudAction entryId={entry.id} />}
           <EntryFavoriteAction entryId={entry.id} />
           <EntryDeleteAction entryId={entry.id} />
         </Group>

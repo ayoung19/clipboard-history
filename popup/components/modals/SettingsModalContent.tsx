@@ -136,7 +136,9 @@ export const SettingsModalContent = () => {
               <Stack spacing={0}>
                 <Group align="center" spacing="xs">
                   <Title order={6}>Default Storage Location</Title>
-                  <Badge size="xs">Pro</Badge>
+                  <Badge size="xs" color="cyan">
+                    Pro
+                  </Badge>
                 </Group>
                 <Text fz="xs">
                   Select where new items are stored. When offline or not subscribed to Pro, this

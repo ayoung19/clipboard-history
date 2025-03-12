@@ -1,9 +1,8 @@
 import { Checkbox, Group, rem } from "@mantine/core";
 import { useFocusWithin, useHotkeys, useMouse } from "@mantine/hooks";
-import { useAtomValue } from "jotai";
 import { useEffect } from "react";
 
-import { entryIdToTagsAtom } from "~popup/states/atoms";
+import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { setEntryIdToTags } from "~storage/entryIdToTags";
 import { lightOrDark } from "~utils/sx";
 
@@ -20,7 +19,7 @@ interface Props {
 export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) => {
   const { ref: groupRef, x, y } = useMouse({ resetOnExit: true });
   const { ref: checkboxRef, focused: checkboxFocused } = useFocusWithin<HTMLInputElement>();
-  const entryIdToTags = useAtomValue(entryIdToTagsAtom);
+  const entryIdToTags = useEntryIdToTags();
   const currentTags = entryIdToTags[entryId] || [];
   const checked = currentTags.includes(tag);
 

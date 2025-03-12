@@ -6,6 +6,10 @@ import { App } from "./App";
 
 import "./index.css";
 
+import { AllTagsProvider } from "./contexts/AllTagsContext";
+import { EntriesProvider } from "./contexts/EntriesContext";
+import { EntryIdToTagsProvider } from "./contexts/EntryIdToTagsContext";
+import { FavoriteEntryIdsProvider } from "./contexts/FavoriteEntryIdsContext";
 import { useTheme } from "./hooks/useTheme";
 
 export default function IndexPopup() {
@@ -13,10 +17,18 @@ export default function IndexPopup() {
 
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
-      <ModalsProvider>
-        <Notifications />
-        <App />
-      </ModalsProvider>
+      <EntriesProvider>
+        <FavoriteEntryIdsProvider>
+          <EntryIdToTagsProvider>
+            <AllTagsProvider>
+              <ModalsProvider>
+                <Notifications />
+                <App />
+              </ModalsProvider>
+            </AllTagsProvider>
+          </EntryIdToTagsProvider>
+        </FavoriteEntryIdsProvider>
+      </EntriesProvider>
     </MantineProvider>
   );
 }
