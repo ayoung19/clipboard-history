@@ -33,11 +33,11 @@ if (process.env.PLASMO_TARGET === "firefox-mv2") {
   watchCloudEntries(window, getRefreshToken, async () => {
     await Promise.all([
       handleUpdateContextMenusRequest(),
-      async () => {
+      (async () => {
         const entries = await getEntries();
 
         await handleUpdateTotalItemsBadgeRequest(entries.length);
-      },
+      })(),
     ]);
   });
 }
