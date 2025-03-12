@@ -120,7 +120,7 @@ export const App = () => {
               }
             >
               <Indicator
-                color={lightOrDark(theme, "red.5", "red.7")}
+                color={lightOrDark(theme, "red.4", "red.6")}
                 size={8}
                 disabled={!settings.changelogIndicator || changelogViewedAt === VERSION}
               >
