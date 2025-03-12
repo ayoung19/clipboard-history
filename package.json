@@ -21,6 +21,8 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.13.3",
     "@hookform/resolvers": "^3.9.0",
+    "@instantdb/core": "^0.17.24",
+    "@instantdb/react": "^0.17.24",
     "@mantine/core": "6.0.21",
     "@mantine/hooks": "^7.12.2",
     "@mantine/modals": "6.0.21",
