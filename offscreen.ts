@@ -1,5 +1,3 @@
-import { match } from "ts-pattern";
-
 import { sendToBackground } from "@plasmohq/messaging";
 
 import type {
@@ -27,7 +25,6 @@ import type {
   UpdateTotalItemsBadgeResponseBody,
 } from "~background/messages/updateTotalItemsBadge";
 import { watchClipboard, watchCloudEntries } from "~utils/background";
-import db from "~utils/db/core";
 
 watchClipboard(
   window,
@@ -71,37 +68,36 @@ watchCloudEntries(
   },
 );
 
-db.subscribeConnectionStatus(async (connectionStatus) => {
-  if (connectionStatus === "opened" || connectionStatus === "closed") {
-    await sendToBackground<DispatchEventRequestBody, DispatchEventResponseBody>({
-      name: "dispatchEvent",
-      body: {
-        eventType: match(connectionStatus)
-          .with("opened", () => "online")
-          .with("closed", () => "offline")
-          .exhaustive(),
-      },
-    });
+const sendToBackgroundDispatchEvent = async (eventType: string) => {
+  await sendToBackground<DispatchEventRequestBody, DispatchEventResponseBody>({
+    name: "dispatchEvent",
+    body: {
+      eventType,
+    },
+  });
 
-    await Promise.all([
-      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
-        name: "updateContextMenus",
-      }),
-      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
-        name: "updateTotalItemsBadge",
-      }),
-    ]);
+  await Promise.all([
+    sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+      name: "updateContextMenus",
+    }),
+    sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+      name: "updateTotalItemsBadge",
+    }),
+  ]);
 
-    // Retry just in case updating the service worker's reactor status takes some time.
-    await new Promise((r) => setTimeout(r, 800));
+  // Retry just in case updating the service worker's reactor status takes some time.
+  await new Promise((r) => setTimeout(r, 800));
 
-    await Promise.all([
-      sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
-        name: "updateContextMenus",
-      }),
-      sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
-        name: "updateTotalItemsBadge",
-      }),
-    ]);
-  }
-});
+  await Promise.all([
+    sendToBackground<UpdateContextMenusRequestBody, UpdateContextMenusResponseBody>({
+      name: "updateContextMenus",
+    }),
+    sendToBackground<UpdateTotalItemsBadgeRequestBody, UpdateTotalItemsBadgeResponseBody>({
+      name: "updateTotalItemsBadge",
+    }),
+  ]);
+};
+
+window.addEventListener("online", () => sendToBackgroundDispatchEvent("online"));
+
+window.addEventListener("offline", () => sendToBackgroundDispatchEvent("offline"));
