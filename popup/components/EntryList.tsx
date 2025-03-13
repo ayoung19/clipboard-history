@@ -1,6 +1,4 @@
 import { Box, Checkbox, Divider, Group, Stack, Text, Title, Tooltip } from "@mantine/core";
-
-import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
