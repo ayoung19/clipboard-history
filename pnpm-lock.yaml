@@ -24,23 +24,23 @@ dependencies:
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.53.0)
   "@instantdb/core":
-    specifier: ^0.17.24
-    version: 0.17.24
+    specifier: ^0.17.31
+    version: 0.17.31
   "@instantdb/react":
-    specifier: ^0.17.24
-    version: 0.17.24(react@18.2.0)
+    specifier: ^0.17.31
+    version: 0.17.31(react@18.2.0)
   "@mantine/core":
     specifier: 6.0.21
-    version: 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+    version: 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@6.0.21)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
   "@mantine/hooks":
-    specifier: ^7.12.2
-    version: 7.12.2(react@18.2.0)
+    specifier: 6.0.21
+    version: 6.0.21(react@18.2.0)
   "@mantine/modals":
     specifier: 6.0.21
-    version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0)
+    version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@6.0.21)(react-dom@18.2.0)(react@18.2.0)
   "@mantine/notifications":
     specifier: 6.0.21
-    version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0)
+    version: 6.0.21(@mantine/core@6.0.21)(@mantine/hooks@6.0.21)(react-dom@18.2.0)(react@18.2.0)
   "@marko19907/string-to-color":
     specifier: ^1.0.0
     version: 1.0.0
@@ -1071,25 +1071,25 @@ packages:
       - supports-color
     dev: true
 
-  /@instantdb/core@0.17.24:
+  /@instantdb/core@0.17.31:
     resolution:
       {
-        integrity: sha512-6APzuLoPuFNHAHrshbR1HWJrRxHCv4r8RKAtkRHYGr4kqZhr9Tdk2UthC0On9U6H6rOWysRfCOgpNe1Aos/r/w==,
+        integrity: sha512-Y7XS5dJn/Y3qB5YAtNE2mNXozSmIaAZ7XWWyhKLKjGvQBRwsle4MCoe3KXVJvn+EqmdT15zr5LIowIj6dlx2MA==,
       }
     dependencies:
       mutative: 1.1.0
       uuid: 9.0.1
     dev: false
 
-  /@instantdb/react@0.17.24(react@18.2.0):
+  /@instantdb/react@0.17.31(react@18.2.0):
     resolution:
       {
-        integrity: sha512-IK0wf49d8v7e6GruYO4PEXDDAPur+4oLXu8YZX9aminz2AyM/bIil8BfadRg1Aw3am4SnH8N7LlJIAI238TPlw==,
+        integrity: sha512-GNBiwGbJ9ETf3wTsuSjCOaHpEwhMg3rWhrOyzXDXlkWc1TBku2BtRH9gMiLvbCJBqBF0xRouwSnTJ/X74ja79g==,
       }
     peerDependencies:
       react: ">=16"
     dependencies:
-      "@instantdb/core": 0.17.24
+      "@instantdb/core": 0.17.31
       react: 18.2.0
     dev: false
 
@@ -1331,7 +1331,7 @@ packages:
     dev: false
     optional: true
 
-  /@mantine/core@6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@mantine/core@6.0.21(@emotion/react@11.13.3)(@mantine/hooks@6.0.21)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
         integrity: sha512-Kx4RrRfv0I+cOCIcsq/UA2aWcYLyXgW3aluAuW870OdXnbII6qg7RW28D+r9D76SHPxWFKwIKwmcucAG08Divg==,
@@ -1342,7 +1342,7 @@ packages:
       react-dom: ">=16.8.0"
     dependencies:
       "@floating-ui/react": 0.19.2(react-dom@18.2.0)(react@18.2.0)
-      "@mantine/hooks": 7.12.2(react@18.2.0)
+      "@mantine/hooks": 6.0.21(react@18.2.0)
       "@mantine/styles": 6.0.21(@emotion/react@11.13.3)(react-dom@18.2.0)(react@18.2.0)
       "@mantine/utils": 6.0.21(react@18.2.0)
       "@radix-ui/react-scroll-area": 1.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -1355,18 +1355,18 @@ packages:
       - "@types/react"
     dev: false
 
-  /@mantine/hooks@7.12.2(react@18.2.0):
+  /@mantine/hooks@6.0.21(react@18.2.0):
     resolution:
       {
-        integrity: sha512-dVMw8jpM0hAzc8e7/GNvzkk9N0RN/m+PKycETB3H6lJGuXJJSRR4wzzgQKpEhHwPccktDpvb4rkukKDq2jA8Fg==,
+        integrity: sha512-sYwt5wai25W6VnqHbS5eamey30/HD5dNXaZuaVEAJ2i2bBv8C0cCiczygMDpAFiSYdXoSMRr/SZ2CrrPTzeNew==,
       }
     peerDependencies:
-      react: ^18.2.0
+      react: ">=16.8.0"
     dependencies:
       react: 18.2.0
     dev: false
 
-  /@mantine/modals@6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0):
+  /@mantine/modals@6.0.21(@mantine/core@6.0.21)(@mantine/hooks@6.0.21)(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
         integrity: sha512-Gx2D/ZHMUuYF197JKMWey4K9FeGP9rxYp4lmAEXUrjXiST2fEhLZOdiD75KuOHXd1/sYAU9NcNRo9wXrlF/gUA==,
@@ -1377,14 +1377,14 @@ packages:
       react: ">=16.8.0"
       react-dom: ">=16.8.0"
     dependencies:
-      "@mantine/core": 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      "@mantine/hooks": 7.12.2(react@18.2.0)
+      "@mantine/core": 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@6.0.21)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      "@mantine/hooks": 6.0.21(react@18.2.0)
       "@mantine/utils": 6.0.21(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@mantine/notifications@6.0.21(@mantine/core@6.0.21)(@mantine/hooks@7.12.2)(react-dom@18.2.0)(react@18.2.0):
+  /@mantine/notifications@6.0.21(@mantine/core@6.0.21)(@mantine/hooks@6.0.21)(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
         integrity: sha512-qsrqxuJHK8b67sf9Pfk+xyhvpf9jMsivW8vchfnJfjv7yz1lLvezjytMFp4fMDoYhjHnDPOEc/YFockK4muhOw==,
@@ -1395,8 +1395,8 @@ packages:
       react: ">=16.8.0"
       react-dom: ">=16.8.0"
     dependencies:
-      "@mantine/core": 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@7.12.2)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      "@mantine/hooks": 7.12.2(react@18.2.0)
+      "@mantine/core": 6.0.21(@emotion/react@11.13.3)(@mantine/hooks@6.0.21)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      "@mantine/hooks": 6.0.21(react@18.2.0)
       "@mantine/utils": 6.0.21(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
