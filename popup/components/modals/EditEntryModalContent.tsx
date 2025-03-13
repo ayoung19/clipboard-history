@@ -14,10 +14,12 @@ import {
 import { modals } from "@mantine/modals";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import type { Entry } from "~types/entry";
+import db from "~utils/db/react";
 import { updateEntryContent } from "~utils/storage";
 import { lightOrDark } from "~utils/sx";
 
@@ -49,6 +51,15 @@ export const EditEntryModalContent = ({ entry }: Props) => {
     mode: "all",
     resolver: zodResolver(schema),
   });
+
+  const auth = db.useAuth();
+  const connectionStatus = db.useConnectionStatus();
+
+  useEffect(() => {
+    if (entry.id.length === 36 && auth.user && connectionStatus === "closed") {
+      modals.closeAll();
+    }
+  }, [entry.id.length && auth.user && connectionStatus]);
 
   return (
     <Paper p="md">
