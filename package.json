@@ -24,7 +24,7 @@
     "@instantdb/core": "^0.17.31",
     "@instantdb/react": "^0.17.31",
     "@mantine/core": "6.0.21",
-    "@mantine/hooks": "^7.12.2",
+    "@mantine/hooks": "6.0.21",
     "@mantine/modals": "6.0.21",
     "@mantine/notifications": "6.0.21",
     "@marko19907/string-to-color": "^1.0.0",

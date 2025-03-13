@@ -1,5 +1,4 @@
 import { Box, Checkbox, Divider, Group, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
@@ -7,6 +6,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList } from "react-window";
 
 import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
+import { useSet } from "~popup/hooks/useSet";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
