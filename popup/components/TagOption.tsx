@@ -3,6 +3,7 @@ import { useFocusWithin, useHotkeys, useMouse } from "@mantine/hooks";
 import { useEffect } from "react";
 
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
+import { handleMutation } from "~popup/utils/mutation";
 import { toggleEntryTag } from "~storage/entryIdToTags";
 import { lightOrDark } from "~utils/sx";
 
@@ -43,7 +44,7 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
         "Enter",
         () => {
           if (focused) {
-            toggleEntryTag(entryId, tag);
+            handleMutation(() => toggleEntryTag(entryId, tag))();
             onClose();
           }
         },
@@ -69,7 +70,7 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
       })}
       noWrap
       onClick={() => {
-        toggleEntryTag(entryId, tag);
+        handleMutation(() => toggleEntryTag(entryId, tag))();
         onClose();
       }}
     >
@@ -78,7 +79,7 @@ export const TagOption = ({ entryId, tag, focused, onHover, onClose }: Props) =>
         checked={!!entryIdToTags[entryId]?.includes(tag)}
         size="xs"
         onChange={() => {
-          toggleEntryTag(entryId, tag);
+          handleMutation(() => toggleEntryTag(entryId, tag))();
         }}
         onClick={(e) => {
           e.stopPropagation();

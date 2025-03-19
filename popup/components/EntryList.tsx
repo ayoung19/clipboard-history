@@ -7,6 +7,7 @@ import { FixedSizeList } from "react-window";
 
 import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
 import { useSet } from "~popup/hooks/useSet";
+import { handleMutation } from "~popup/utils/mutation";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
@@ -84,13 +85,13 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             <Tooltip label={<Text fz="xs">Favorite</Text>} disabled={selectedEntryIds.size === 0}>
               <CommonActionIcon
                 disabled={selectedEntryIds.size === 0}
-                onClick={() =>
+                onClick={handleMutation(() =>
                   Array.from(selectedEntryIds).every((selectedEntryId) =>
                     favoriteEntryIdsSet.has(selectedEntryId),
                   )
                     ? deleteFavoriteEntryIds(Array.from(selectedEntryIds))
-                    : addFavoriteEntryIds(Array.from(selectedEntryIds))
-                }
+                    : addFavoriteEntryIds(Array.from(selectedEntryIds)),
+                )}
               >
                 <IconStar size="1rem" />
               </CommonActionIcon>
@@ -110,12 +111,13 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                     labels: { confirm: "Delete", cancel: "Cancel" },
                     confirmProps: { color: "red", size: "xs" },
                     cancelProps: { size: "xs" },
-                    onConfirm: () =>
+                    onConfirm: handleMutation(() =>
                       deleteEntries(
                         Array.from(selectedEntryIds).filter(
                           (selectedEntryId) => !favoriteEntryIdsSet.has(selectedEntryId),
                         ),
                       ),
+                    ),
                   })
                 }
               >

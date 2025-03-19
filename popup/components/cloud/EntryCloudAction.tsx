@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { useEntries } from "~popup/contexts/EntriesContext";
 import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import { transitioningEntryContentHashAtom } from "~popup/states/atoms";
+import { handleMutation } from "~popup/utils/mutation";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
 import { toggleEntryStorageLocation } from "~utils/storage";
@@ -55,7 +56,7 @@ export const EntryCloudAction = ({ entry }: Props) => {
 
         setTransitioningEntryContentHash(contentHash);
 
-        toggleEntryStorageLocation(entry.id);
+        handleMutation(() => toggleEntryStorageLocation(entry.id))();
       }}
     >
       {transitioningEntryContentHash === contentHash ? (

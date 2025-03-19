@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { handleMutation } from "~popup/utils/mutation";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
 import { updateEntryContent } from "~utils/storage";
@@ -83,7 +84,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
         <Grid.Col span={12}>
           <form
             onSubmit={handleSubmit(async ({ content }) => {
-              const { ok } = await updateEntryContent(entry.id, content);
+              const { ok } = await handleMutation(() => updateEntryContent(entry.id, content))();
 
               if (ok) {
                 modals.closeAll();

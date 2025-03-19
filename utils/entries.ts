@@ -52,10 +52,10 @@ export const handleEntryIds = async ({
     cloudEntryIds.length > 0 && handleCloudEntryIds(cloudEntryIds),
   ]);
 
-  for (const result of results) {
-    if (result.status === "rejected") {
-      console.log(result.reason);
-    }
+  const errors = results.flatMap((result) => (result.status === "rejected" ? result.reason : []));
+
+  if (errors.length > 0) {
+    throw new AggregateError(errors);
   }
 };
 
