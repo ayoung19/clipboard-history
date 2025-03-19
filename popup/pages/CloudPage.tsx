@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text, Title } from "@mantine/core";
-import { IconCloud } from "@tabler/icons-react";
+import { IconCloud, IconWifiOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { CommonActionIcon } from "~popup/components/CommonActionIcon";
@@ -20,25 +20,16 @@ export const CloudPage = () => {
   const entryIdToTags = useEntryIdToTags();
   const subscriptionsQuery = useSubscriptionsQuery();
 
-  // TODO: Offline.
   if (auth.user && connectionStatus === "closed") {
     return (
       <EntryList
         noEntriesOverlay={
           <Stack align="center" spacing="xs" p="xl">
-            <Title order={4}>Optionally Sync Your Clipboard History Everywhere</Title>
+            <IconWifiOff size="1.125rem" />
+            <Title order={4}>You're Offline</Title>
             <Text size="sm" w={500} align="center">
-              Privately and securely sync your clipboard history across all your devices!
+              Connect to the internet to access Clipboard History IO Pro.
             </Text>
-            <Button
-              size="xs"
-              mt="xs"
-              component="a"
-              href={chrome.runtime.getURL("/tabs/sign-in.html")}
-              target="_blank"
-            >
-              Get Started
-            </Button>
           </Stack>
         }
         entries={[]}

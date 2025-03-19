@@ -1,5 +1,11 @@
 import { ActionIcon, Menu, Text, Tooltip } from "@mantine/core";
-import { IconCreditCard, IconLogout, IconUserCircle } from "@tabler/icons-react";
+import {
+  IconCreditCard,
+  IconDeviceMobile,
+  IconLogout,
+  IconUserCircle,
+  IconWorld,
+} from "@tabler/icons-react";
 import { useState } from "react";
 
 import db from "~utils/db/react";
@@ -36,6 +42,20 @@ export const UserActionIcon = () => {
         </Menu.Item>
         <Menu.Item icon={<IconLogout size="0.8rem" />} onClick={() => db.auth.signOut()}>
           <Text fz="xs">Sign Out</Text>
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item
+          icon={<IconWorld size="0.8rem" />}
+          component="a"
+          href="https://app.clipboardhistory.io"
+          target="_blank"
+        >
+          <Text fz="xs">Open Web App</Text>
+        </Menu.Item>
+        <Menu.Item icon={<IconDeviceMobile size="0.8rem" />} disabled>
+          <Text fz="xs">Get Mobile App (Coming Soon)</Text>
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
