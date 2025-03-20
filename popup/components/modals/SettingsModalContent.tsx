@@ -46,7 +46,7 @@ import type {
 } from "~background/messages/updateTotalItemsBadge";
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
-import { EntryTimeUnit } from "~types/entryTime";
+import { EntryLifetimeUnit } from "~types/entryLifetime";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
 import db from "~utils/db/react";
@@ -56,8 +56,8 @@ import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 const schema = z.object({
   localItemLimit: z.number().min(1).nullable(),
-  localItemLifetimeQuantity: z.number().min(1).nullable(),
-  localItemLifetimeUnit: EntryTimeUnit.nullable(),
+  localItemLifetimeValue: z.number().min(1).nullable(),
+  localItemLifetimeUnit: EntryLifetimeUnit.nullable(),
   localItemCharacterLimit: z.number().min(1).nullable(),
 });
 type FormValues = z.infer<typeof schema>;
@@ -81,8 +81,8 @@ export const SettingsModalContent = () => {
   } = useForm<FormValues>({
     defaultValues: {
       localItemLimit: settings.localItemLimit,
-      localItemLifetimeQuantity: settings.localItemLifetime?.quantity ?? null,
-      localItemLifetimeUnit: settings.localItemLifetime?.unit ?? null,
+      localItemLifetimeValue: settings.localItemLifetime && settings.localItemLifetime.value,
+      localItemLifetimeUnit: settings.localItemLifetime && settings.localItemLifetime.unit,
       localItemCharacterLimit: settings.localItemCharacterLimit,
     },
     mode: "all",
@@ -266,7 +266,7 @@ export const SettingsModalContent = () => {
             onSubmit={handleSubmit(
               async ({
                 localItemLimit,
-                localItemLifetimeQuantity,
+                localItemLifetimeValue,
                 localItemLifetimeUnit,
                 localItemCharacterLimit,
               }) => {
@@ -274,8 +274,8 @@ export const SettingsModalContent = () => {
                   ...settings,
                   localItemLimit,
                   localItemLifetime:
-                    localItemLifetimeQuantity && localItemLifetimeUnit
-                      ? { quantity: localItemLifetimeQuantity, unit: localItemLifetimeUnit }
+                    localItemLifetimeValue && localItemLifetimeUnit
+                      ? { value: localItemLifetimeValue, unit: localItemLifetimeUnit }
                       : null,
                   localItemCharacterLimit,
                 });
@@ -286,7 +286,7 @@ export const SettingsModalContent = () => {
                 });
                 reset({
                   localItemLimit,
-                  localItemLifetimeQuantity,
+                  localItemLifetimeValue,
                   localItemLifetimeUnit,
                   localItemCharacterLimit,
                 });
@@ -344,13 +344,13 @@ export const SettingsModalContent = () => {
                   </Stack>
                   <Switch
                     checked={
-                      watch("localItemLifetimeQuantity") !== null &&
+                      watch("localItemLifetimeValue") !== null &&
                       watch("localItemLifetimeUnit") !== null
                     }
                     onChange={(e) => {
                       setValue(
-                        "localItemLifetimeQuantity",
-                        e.target.checked ? settings.localItemLifetime?.quantity || 1 : null,
+                        "localItemLifetimeValue",
+                        e.target.checked ? settings.localItemLifetime?.value || 1 : null,
                         {
                           shouldDirty: true,
                         },
@@ -368,19 +368,17 @@ export const SettingsModalContent = () => {
                 </Group>
                 <Group align="flex-start" grow noWrap>
                   <Controller
-                    name="localItemLifetimeQuantity"
+                    name="localItemLifetimeValue"
                     control={control}
                     render={({ field }) => (
-                      <>
-                        <NumberInput
-                          {...field}
-                          value={field.value === null ? "" : field.value}
-                          onChange={(value) => field.onChange(value === "" ? 0 : value)}
-                          error={errors.localItemLifetimeQuantity?.message}
-                          disabled={field.value === null}
-                          size="xs"
-                        />
-                      </>
+                      <NumberInput
+                        {...field}
+                        value={field.value === null ? "" : field.value}
+                        onChange={(value) => field.onChange(value === "" ? 0 : value)}
+                        error={errors.localItemLifetimeValue?.message}
+                        disabled={field.value === null}
+                        size="xs"
+                      />
                     )}
                   />
                   <Controller
@@ -393,8 +391,8 @@ export const SettingsModalContent = () => {
                         error={errors.localItemLifetimeUnit?.message}
                         disabled={field.value === null}
                         size="xs"
-                        data={EntryTimeUnit.options}
-                      ></Select>
+                        data={EntryLifetimeUnit.options}
+                      />
                     )}
                   />
                 </Group>

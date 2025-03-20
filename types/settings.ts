@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { EntryTime } from "./entryTime";
+import { EntryLifetime } from "./entryLifetime";
 import { StorageLocation } from "./storageLocation";
 import { Tab } from "./tab";
 
@@ -28,7 +28,7 @@ export const Settings = z
     // theme: z.string().default(defaultSettings.theme),
     themeV2: z.string().default(defaultSettings.themeV2),
     localItemLimit: z.number().nullable().default(defaultSettings.localItemLimit),
-    localItemLifetime: EntryTime.nullable().default(defaultSettings.localItemLifetime),
+    localItemLifetime: EntryLifetime.nullable().default(defaultSettings.localItemLifetime),
     localItemCharacterLimit: z.number().nullable().default(defaultSettings.localItemCharacterLimit),
   })
   .default(defaultSettings);
