@@ -77,6 +77,7 @@ export const toggleEntryTag = async (entryId: string, tag: string) => {
 
     await db.transact(
       db.tx.entries[entryId]!.update({
+        // TODO: Figure out if this is needed.
         ...cloudEntry,
         tags: s.size > 0 ? JSON.stringify(Array.from(s)) : null,
       }),

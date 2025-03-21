@@ -87,6 +87,7 @@ export const watchCloudEntries = async (
             },
           },
           async (cloudEntriesQuery) => {
+            // TODO: Potentially just call the callback with an empty array?
             if (!cloudEntriesQuery.data) {
               return;
             }

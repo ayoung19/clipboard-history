@@ -60,7 +60,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
     if (entry.id.length === 36 && auth.user && connectionStatus === "closed") {
       modals.closeAll();
     }
-  }, [entry.id.length && auth.user && connectionStatus]);
+  }, [entry.id.length === 36 && auth.user && connectionStatus === "closed"]);
 
   return (
     <Paper p="md">
