@@ -2,7 +2,7 @@
 
 # Clipboard History
 
-![pika-1735695657123-1x](https://github.com/user-attachments/assets/234f30d6-6340-40f9-afb0-31b699369ad3)
+![pika-1742612638736-1x](https://github.com/user-attachments/assets/b99fad41-5d85-4497-b90e-de6d51d9200a)
 
 The first open source clipboard manager Chrome extension. Get all of the productivity benefits of a clipboard history with none of the security risks.
 
