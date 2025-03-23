@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Seznam sprememb" },
+  "commonSupportDevelopment": { "message": "Razvoj podpore" },
+  "commonHelpAndFeedback": { "message": "Pomoč in povratne informacije" },
+  "commonFloatingMode": { "message": "Plavajoči način" },
+  "commonSettings": { "message": "Nastavitve" },
+  "commonProfile": { "message": "Profil" }
+}

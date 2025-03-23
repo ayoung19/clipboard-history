@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Changelog" },
+  "commonSupportDevelopment": { "message": "Tukikehitys" },
+  "commonHelpAndFeedback": { "message": "Ohje ja palaute" },
+  "commonFloatingMode": { "message": "Kelluva tila" },
+  "commonSettings": { "message": "Asetukset" },
+  "commonProfile": { "message": "Profiili" }
+}

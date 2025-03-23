@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Izmaiņu žurnāls" },
+  "commonSupportDevelopment": { "message": "Atbalsta izstrāde" },
+  "commonHelpAndFeedback": { "message": "Palīdzība un atsauksmes" },
+  "commonFloatingMode": { "message": "Peldošais režīms" },
+  "commonSettings": { "message": "Iestatījumi" },
+  "commonProfile": { "message": "Profils" }
+}

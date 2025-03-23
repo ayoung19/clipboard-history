@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "변경 로그" },
+  "commonSupportDevelopment": { "message": "개발 지원" },
+  "commonHelpAndFeedback": { "message": "도움말 및 피드백" },
+  "commonFloatingMode": { "message": "플로팅 모드" },
+  "commonSettings": { "message": "설정" },
+  "commonProfile": { "message": "프로필" }
+}

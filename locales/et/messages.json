@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Changelog" },
+  "commonSupportDevelopment": { "message": "Toetuse arendus" },
+  "commonHelpAndFeedback": { "message": "Abi ja tagasiside" },
+  "commonFloatingMode": { "message": "Ujuv režiim" },
+  "commonSettings": { "message": "Seaded" },
+  "commonProfile": { "message": "Profiil" }
+}

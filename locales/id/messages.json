@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Catatan perubahan" },
+  "commonSupportDevelopment": { "message": "Mendukung Pengembangan" },
+  "commonHelpAndFeedback": { "message": "Bantuan & Umpan Balik" },
+  "commonFloatingMode": { "message": "Mode Mengambang" },
+  "commonSettings": { "message": "Pengaturan" },
+  "commonProfile": { "message": "Profil" }
+}

@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "変更履歴" },
+  "commonSupportDevelopment": { "message": "サポート開発" },
+  "commonHelpAndFeedback": { "message": "ヘルプ＆フィードバック" },
+  "commonFloatingMode": { "message": "フローティングモード" },
+  "commonSettings": { "message": "設定" },
+  "commonProfile": { "message": "プロフィール" }
+}

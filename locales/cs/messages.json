@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Seznam změn" },
+  "commonSupportDevelopment": { "message": "Vývoj podpory" },
+  "commonHelpAndFeedback": { "message": "Nápověda a zpětná vazba" },
+  "commonFloatingMode": { "message": "Plovoucí režim" },
+  "commonSettings": { "message": "Nastavení" },
+  "commonProfile": { "message": "Profil" }
+}

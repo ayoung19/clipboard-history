@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Журнал змін" },
+  "commonSupportDevelopment": { "message": "Підтримати розробку" },
+  "commonHelpAndFeedback": { "message": "Допомога та відгуки" },
+  "commonFloatingMode": { "message": "Плаваючий режим" },
+  "commonSettings": { "message": "Налаштування" },
+  "commonProfile": { "message": "Профіль" }
+}
