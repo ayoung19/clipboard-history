@@ -6,6 +6,7 @@ import type { PlasmoMessaging } from "@plasmohq/messaging";
 import { getEntryIdToTags } from "~storage/entryIdToTags";
 import { getFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import { getRefreshToken } from "~storage/refreshToken";
+import { getSettings } from "~storage/settings";
 import type { Entry } from "~types/entry";
 import type { EntryIdToTags } from "~types/entryIdToTags";
 import db from "~utils/db/core";
@@ -20,14 +21,20 @@ export type UpdateContextMenusRequestBody = undefined;
 export type UpdateContextMenusResponseBody = Record<PropertyKey, never>;
 
 export const handleUpdateContextMenusRequest = debounce(async () => {
-  const [localEntries, localFavoriteEntryIds, localEntryIdToTags, refreshToken, user] =
+  const [localEntries, localFavoriteEntryIds, localEntryIdToTags, settings, refreshToken, user] =
     await Promise.all([
       getEntries(),
       getFavoriteEntryIds(),
       getEntryIdToTags(),
+      getSettings(),
       getRefreshToken(),
       db.getAuth(),
     ]);
+
+  if (!settings.pasteFromContextMenu) {
+    chrome.contextMenus.removeAll();
+    return;
+  }
 
   let cloudEntries: Entry[] = [];
   let cloudFavoriteEntryIds: string[] = [];

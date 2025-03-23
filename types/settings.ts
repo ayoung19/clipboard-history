@@ -7,6 +7,7 @@ import { Tab } from "./tab";
 export const defaultSettings = {
   storageLocation: StorageLocation.Enum.Local,
   totalItemsBadge: true,
+  pasteFromContextMenu: true,
   changelogIndicator: true,
   allowBlankItems: true,
   defaultTab: Tab.Enum.All,
@@ -20,6 +21,7 @@ export const Settings = z
   .object({
     storageLocation: StorageLocation.default(defaultSettings.storageLocation),
     totalItemsBadge: z.boolean().default(defaultSettings.totalItemsBadge),
+    pasteFromContextMenu: z.boolean().default(defaultSettings.pasteFromContextMenu),
     changelogIndicator: z.boolean().default(defaultSettings.changelogIndicator),
     allowBlankItems: z.boolean().default(defaultSettings.allowBlankItems),
     defaultTab: Tab.default(defaultSettings.defaultTab),

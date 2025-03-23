@@ -41,6 +41,10 @@ import { z } from "zod";
 import { sendToBackground } from "@plasmohq/messaging";
 
 import type {
+  UpdateContextMenusRequestBody,
+  UpdateContextMenusResponseBody,
+} from "~background/messages/updateContextMenus";
+import type {
   UpdateTotalItemsBadgeRequestBody,
   UpdateTotalItemsBadgeResponseBody,
 } from "~background/messages/updateTotalItemsBadge";
@@ -192,6 +196,28 @@ export const SettingsModalContent = () => {
                     UpdateTotalItemsBadgeResponseBody
                   >({
                     name: "updateTotalItemsBadge",
+                  });
+                }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Paste From Context Menu</Title>
+                <Text fz="xs">Enable pasting clipboard history items from the context menu.</Text>
+              </Stack>
+              <Switch
+                checked={settings.pasteFromContextMenu}
+                onChange={async (e) => {
+                  const checked = e.target.checked;
+
+                  await setSettings({ ...settings, pasteFromContextMenu: checked });
+
+                  await sendToBackground<
+                    UpdateContextMenusRequestBody,
+                    UpdateContextMenusResponseBody
+                  >({
+                    name: "updateContextMenus",
                   });
                 }}
               />
