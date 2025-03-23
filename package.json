@@ -12,7 +12,8 @@
     "package": "plasmo package",
     "package:firefox": "plasmo package --target=firefox-mv2",
     "lint": "eslint .",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "generate:translations": "ts-node scripts/generate-translations.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -30,8 +31,10 @@
     "@marko19907/string-to-color": "^1.0.0",
     "@plasmohq/messaging": "^0.6.2",
     "@plasmohq/storage": "^1.12.0",
+    "@ricokahler/pool": "^1.2.0",
     "@tabler/icons-react": "^3.14.0",
     "date-fns": "3.1.0",
+    "deepl-node": "^1.17.3",
     "jotai": "^2.9.3",
     "plasmo": "0.89.1",
     "react": "18.2.0",
@@ -61,6 +64,7 @@
     "typescript-eslint": "^8.16.0"
   },
   "manifest": {
+    "default_locale": "en",
     "permissions": [
       "offscreen",
       "clipboardRead",

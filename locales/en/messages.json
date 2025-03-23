@@ -1,0 +1,26 @@
+{
+  "commonChangelog": {
+    "message": "Changelog",
+    "description": "Title for tooltip for button that redirects user to the Chrome extension's version history and changelog."
+  },
+  "commonSupportDevelopment": {
+    "message": "Support Development",
+    "description": "Title for tooltip for button that redirects user to the Chrome extension's donation page."
+  },
+  "commonHelpAndFeedback": {
+    "message": "Help & Feedback",
+    "description": "Title for tooltip for button that redirects user to the Chrome extension's support hub."
+  },
+  "commonFloatingMode": {
+    "message": "Floating Mode",
+    "description": "Title for tooltip for button that opens the Chrome extension in a separate window."
+  },
+  "commonSettings": {
+    "message": "Settings",
+    "description": "Title for tooltip for button that opens the Chrome extension's settings."
+  },
+  "commonProfile": {
+    "message": "Profile",
+    "description": "Title for tooltip for button that opens a menu with various actions relating to the user's profile."
+  }
+}
