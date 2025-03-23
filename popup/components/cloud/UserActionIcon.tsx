@@ -23,7 +23,10 @@ export const UserActionIcon = () => {
   return (
     <Menu position="bottom-end" shadow="md" opened={opened} onChange={setOpened}>
       <Menu.Target>
-        <Tooltip label={<Text fz="xs">Profile</Text>} disabled={opened}>
+        <Tooltip
+          label={<Text fz="xs">{chrome.i18n.getMessage("commonProfile")}</Text>}
+          disabled={opened}
+        >
           <ActionIcon variant="light" color="indigo.5">
             <IconUserCircle size="1.125rem" />
           </ActionIcon>

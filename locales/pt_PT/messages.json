@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Registo de alterações" },
+  "commonSupportDevelopment": { "message": "Desenvolvimento de suporte" },
+  "commonHelpAndFeedback": { "message": "Ajuda e comentários" },
+  "commonFloatingMode": { "message": "Modo flutuante" },
+  "commonSettings": { "message": "Definições" },
+  "commonProfile": { "message": "Perfil do utilizador" }
+}

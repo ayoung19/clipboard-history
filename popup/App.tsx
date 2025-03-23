@@ -114,7 +114,7 @@ export const App = () => {
             <Tooltip
               label={
                 <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz="xs">Changelog</Text>
+                  <Text fz="xs">{chrome.i18n.getMessage("commonChangelog")}</Text>
                   <IconExternalLink size="0.8rem" />
                 </Group>
               }
@@ -146,7 +146,7 @@ export const App = () => {
             <Tooltip
               label={
                 <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz="xs">Support Development</Text>
+                  <Text fz="xs">{chrome.i18n.getMessage("commonSupportDevelopment")}</Text>
                   <IconExternalLink size="0.8rem" />
                 </Group>
               }
@@ -164,7 +164,7 @@ export const App = () => {
             <Tooltip
               label={
                 <Group align="center" spacing={rem(4)} noWrap>
-                  <Text fz="xs">Help & Feedback</Text>
+                  <Text fz="xs">{chrome.i18n.getMessage("commonHelpAndFeedback")}</Text>
                   <IconExternalLink size="0.8rem" />
                 </Group>
               }
@@ -180,7 +180,10 @@ export const App = () => {
               </ActionIcon>
             </Tooltip>
             <Divider orientation="vertical" h={16} sx={{ alignSelf: "inherit" }} />
-            <Tooltip label={<Text fz="xs">Floating Mode</Text>} disabled={isFloatingPopup}>
+            <Tooltip
+              label={<Text fz="xs">{chrome.i18n.getMessage("commonFloatingMode")}</Text>}
+              disabled={isFloatingPopup}
+            >
               <ActionIcon
                 variant="light"
                 color="indigo.5"
@@ -199,7 +202,7 @@ export const App = () => {
                 <IconPictureInPicture size="1.125rem" />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label={<Text fz="xs">Settings</Text>}>
+            <Tooltip label={<Text fz="xs">{chrome.i18n.getMessage("commonSettings")}</Text>}>
               <ActionIcon
                 variant="light"
                 color="indigo.5"

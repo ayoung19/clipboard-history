@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Changelog" },
+  "commonSupportDevelopment": { "message": "Ανάπτυξη υποστήριξης" },
+  "commonHelpAndFeedback": { "message": "Βοήθεια και σχόλια" },
+  "commonFloatingMode": { "message": "Κυμαινόμενη λειτουργία" },
+  "commonSettings": { "message": "Ρυθμίσεις" },
+  "commonProfile": { "message": "Προφίλ" }
+}

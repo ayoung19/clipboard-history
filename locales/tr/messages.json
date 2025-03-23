@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Değişiklik Günlüğü" },
+  "commonSupportDevelopment": { "message": "Destek Geliştirme" },
+  "commonHelpAndFeedback": { "message": "Yardım ve Geri Bildirim" },
+  "commonFloatingMode": { "message": "Kayan Mod" },
+  "commonSettings": { "message": "Ayarlar" },
+  "commonProfile": { "message": "Profil" }
+}

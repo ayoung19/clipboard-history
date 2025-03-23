@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "سجل التغييرات" },
+  "commonSupportDevelopment": { "message": "دعم التطوير" },
+  "commonHelpAndFeedback": { "message": "المساعدة والملاحظات" },
+  "commonFloatingMode": { "message": "الوضع العائم" },
+  "commonSettings": { "message": "الإعدادات" },
+  "commonProfile": { "message": "الملف الشخصي" }
+}

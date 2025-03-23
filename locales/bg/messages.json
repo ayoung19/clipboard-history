@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Списък с промените" },
+  "commonSupportDevelopment": { "message": "Разработване на поддръжка" },
+  "commonHelpAndFeedback": { "message": "Помощ и обратна връзка" },
+  "commonFloatingMode": { "message": "Плаващ режим" },
+  "commonSettings": { "message": "Настройки" },
+  "commonProfile": { "message": "Профил" }
+}

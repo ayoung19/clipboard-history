@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Pakeitimų žurnalas" },
+  "commonSupportDevelopment": { "message": "Paramos kūrimas" },
+  "commonHelpAndFeedback": { "message": "Pagalba ir atsiliepimai" },
+  "commonFloatingMode": { "message": "Plaukiojantis režimas" },
+  "commonSettings": { "message": "Nustatymai" },
+  "commonProfile": { "message": "Profilis" }
+}

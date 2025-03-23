@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Changelog" },
+  "commonSupportDevelopment": { "message": "Stöd för utveckling" },
+  "commonHelpAndFeedback": { "message": "Hjälp och feedback" },
+  "commonFloatingMode": { "message": "Flytande läge" },
+  "commonSettings": { "message": "Inställningar" },
+  "commonProfile": { "message": "Profil" }
+}

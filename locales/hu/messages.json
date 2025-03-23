@@ -1,0 +1,8 @@
+{
+  "commonChangelog": { "message": "Changelog" },
+  "commonSupportDevelopment": { "message": "Támogatás fejlesztése" },
+  "commonHelpAndFeedback": { "message": "Súgó és visszajelzés" },
+  "commonFloatingMode": { "message": "Lebegő mód" },
+  "commonSettings": { "message": "Beállítások" },
+  "commonProfile": { "message": "Profil" }
+}
