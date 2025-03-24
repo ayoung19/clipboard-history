@@ -50,6 +50,7 @@ import type {
 } from "~background/messages/updateTotalItemsBadge";
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { EntryLifetimeUnit } from "~types/entryLifetime";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
 import db from "~utils/db/react";
@@ -59,6 +60,8 @@ import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 const schema = z.object({
   localItemLimit: z.number().min(1).nullable(),
+  localItemLifetimeValue: z.number().min(1).nullable(),
+  localItemLifetimeUnit: EntryLifetimeUnit.nullable(),
   localItemCharacterLimit: z.number().min(1).nullable(),
 });
 type FormValues = z.infer<typeof schema>;
@@ -82,6 +85,8 @@ export const SettingsModalContent = () => {
   } = useForm<FormValues>({
     defaultValues: {
       localItemLimit: settings.localItemLimit,
+      localItemLifetimeValue: settings.localItemLifetime && settings.localItemLifetime.value,
+      localItemLifetimeUnit: settings.localItemLifetime && settings.localItemLifetime.unit,
       localItemCharacterLimit: settings.localItemCharacterLimit,
     },
     mode: "all",
@@ -284,10 +289,35 @@ export const SettingsModalContent = () => {
 
         <Tabs.Panel value="storage">
           <form
-            onSubmit={handleSubmit(async ({ localItemLimit, localItemCharacterLimit }) => {
-              await setSettings({ ...settings, localItemLimit, localItemCharacterLimit });
-              reset({ localItemLimit, localItemCharacterLimit });
-            })}
+            onSubmit={handleSubmit(
+              async ({
+                localItemLimit,
+                localItemLifetimeValue,
+                localItemLifetimeUnit,
+                localItemCharacterLimit,
+              }) => {
+                await setSettings({
+                  ...settings,
+                  localItemLimit,
+                  localItemLifetime:
+                    localItemLifetimeValue && localItemLifetimeUnit
+                      ? { value: localItemLifetimeValue, unit: localItemLifetimeUnit }
+                      : null,
+                  localItemCharacterLimit,
+                });
+                notifications.show({
+                  color: "green",
+                  title: "Success",
+                  message: "Changes were succesfully saved.",
+                });
+                reset({
+                  localItemLimit,
+                  localItemLifetimeValue,
+                  localItemLifetimeUnit,
+                  localItemCharacterLimit,
+                });
+              },
+            )}
           >
             <Stack p="md">
               <Stack spacing="xs">
@@ -327,6 +357,71 @@ export const SettingsModalContent = () => {
                     />
                   )}
                 />
+              </Stack>
+              <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+              <Stack spacing="xs">
+                <Group align="flex-start" position="apart" noWrap>
+                  <Stack spacing={0}>
+                    <Title order={6}>Item Lifetime</Title>
+                    <Text fz="xs">
+                      Set the maximum lifetime of a non-favorited item, beginning when the item is
+                      last copied. After this interval, the item will be permanently deleted.
+                    </Text>
+                  </Stack>
+                  <Switch
+                    checked={
+                      watch("localItemLifetimeValue") !== null &&
+                      watch("localItemLifetimeUnit") !== null
+                    }
+                    onChange={(e) => {
+                      setValue(
+                        "localItemLifetimeValue",
+                        e.target.checked ? settings.localItemLifetime?.value || 1 : null,
+                        {
+                          shouldDirty: true,
+                        },
+                      );
+                      setValue(
+                        "localItemLifetimeUnit",
+                        e.target.checked ? settings.localItemLifetime?.unit || "Months" : null,
+                        {
+                          shouldDirty: true,
+                        },
+                      );
+                      trigger();
+                    }}
+                  />
+                </Group>
+                <Group align="flex-start" grow noWrap>
+                  <Controller
+                    name="localItemLifetimeValue"
+                    control={control}
+                    render={({ field }) => (
+                      <NumberInput
+                        {...field}
+                        value={field.value === null ? "" : field.value}
+                        onChange={(value) => field.onChange(value === "" ? 0 : value)}
+                        error={errors.localItemLifetimeValue?.message}
+                        disabled={field.value === null}
+                        size="xs"
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="localItemLifetimeUnit"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        value={field.value === null ? "" : field.value}
+                        error={errors.localItemLifetimeUnit?.message}
+                        disabled={field.value === null}
+                        size="xs"
+                        data={EntryLifetimeUnit.options}
+                      />
+                    )}
+                  />
+                </Group>
               </Stack>
               <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
               <Stack spacing="xs">
