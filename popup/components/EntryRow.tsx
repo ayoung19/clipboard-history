@@ -22,137 +22,154 @@ import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";
 
 interface Props {
-  entry: Entry;
-  selectedEntryIds: Set<string>;
+    entry: Entry;
+    selectedEntryIds: Set<string>;
 }
 
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
-  const theme = useMantineTheme();
-  const now = useNow();
-  const entryIdToTags = useEntryIdToTags();
-  const entryCommands = useAtomValue(entryCommandsAtom);
-  const commands = useAtomValue(commandsAtom);
-  const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
+    const theme = useMantineTheme();
+    const now = useNow();
+    const entryIdToTags = useEntryIdToTags();
+    const entryCommands = useAtomValue(entryCommandsAtom);
+    const commands = useAtomValue(commandsAtom);
+    const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
 
-  const commandName = entryCommands.find(
-    (entryCommand) => entryCommand.entryId === entry.id,
-  )?.commandName;
-  const shortcut = commands.find((command) => command.name === commandName)?.shortcut;
+    const commandName = entryCommands.find(
+        (entryCommand) => entryCommand.entryId === entry.id,
+    )?.commandName;
+    const shortcut = commands.find((command) => command.name === commandName)?.shortcut;
 
-  return (
-    <Stack
-      key={entry.id}
-      spacing={0}
-      sx={(theme) => ({
-        backgroundColor: selectedEntryIds.has(entry.id)
-          ? lightOrDark(theme, theme.colors.indigo[0], theme.fn.darken(theme.colors.indigo[9], 0.5))
-          : undefined,
-        cursor: "pointer",
-        ":hover": {
-          backgroundColor: selectedEntryIds.has(entry.id)
-            ? lightOrDark(
-                theme,
-                theme.colors.indigo[0],
-                theme.fn.darken(theme.colors.indigo[9], 0.5),
-              )
-            : lightOrDark(theme, theme.colors.gray[0], theme.colors.dark[5]),
-        },
-      })}
-      onClick={async () => {
-        // Optimistically update local state with arbitrary updatedAt.
-        setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
+    return (
+        <Stack
+            key={entry.id}
+            spacing={0}
+            sx={(theme) => ({
+                backgroundColor: selectedEntryIds.has(entry.id)
+                    ? lightOrDark(theme, theme.colors.indigo[0], theme.fn.darken(theme.colors.indigo[9], 0.5))
+                    : undefined,
+                cursor: "pointer",
+                ":hover": {
+                    backgroundColor: selectedEntryIds.has(entry.id)
+                        ? lightOrDark(
+                            theme,
+                            theme.colors.indigo[0],
+                            theme.fn.darken(theme.colors.indigo[9], 0.5),
+                        )
+                        : lightOrDark(theme, theme.colors.gray[0], theme.colors.dark[5]),
+                },
+            })}
+            onClick={async () => {
+                // Optimistically update local state with arbitrary updatedAt.
+                setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
 
-        await updateClipboardSnapshot(entry.content);
-        navigator.clipboard.writeText(entry.content);
-      }}
-    >
-      <Group align="center" spacing={0} noWrap px="sm" h={32}>
-        <Checkbox
-          size="xs"
-          sx={(theme) => ({
-            ".mantine-Checkbox-input:hover": {
-              borderColor: theme.fn.primaryColor(),
-            },
-          })}
-          checked={selectedEntryIds.has(entry.id)}
-          onChange={() =>
-            selectedEntryIds.has(entry.id)
-              ? selectedEntryIds.delete(entry.id)
-              : selectedEntryIds.add(entry.id)
-          }
-          onClick={(e) => e.stopPropagation()}
-        />
-        <Badge
-          color={
-            entry.content === clipboardSnapshot?.content
-              ? undefined
-              : lightOrDark(theme, "gray.5", "dark.4")
-          }
-          variant="filled"
-          w={100}
-          sx={{ flexShrink: 0 }}
-          size="sm"
-          mx="sm"
+                await updateClipboardSnapshot(entry.content);
+                navigator.clipboard.writeText(entry.content);
+            }}
         >
-          {entry.content === clipboardSnapshot?.content
-            ? "Copied"
-            : badgeDateFormatter(now, new Date(entry.createdAt))}
-        </Badge>
-        <Text
-          fz="xs"
-          sx={{
-            width: "100%",
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            userSelect: "none",
-          }}
-        >
-          {/* Don't fully render large content. */}
-          {entry.content.slice(0, 1000)}
-        </Text>
-        <Group align="center" spacing={rem(4)} noWrap>
-          {entryIdToTags[entry.id]
-            ?.slice()
-            .sort()
-            .map((tag) => <TagBadge key={tag} tag={tag} />)}
-          {shortcut !== undefined && <ShortcutBadge shortcut={shortcut || "Not set"} />}
-        </Group>
-        <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
-          {entry.content.length}
-        </Text>
-        <Group align="center" spacing={0} noWrap ml={rem(4)}>
-          <TagSelect entryId={entry.id} />
-          <CommonActionIcon
-            onClick={() =>
-              modals.open({
-                padding: 0,
-                size: "xl",
-                withCloseButton: false,
-                children: <ShortcutsModalContent entry={entry} />,
-              })
-            }
-          >
-            <IconKeyboard size="1rem" />
-          </CommonActionIcon>
-          <CommonActionIcon
-            onClick={() =>
-              modals.open({
-                padding: 0,
-                size: "xl",
-                withCloseButton: false,
-                children: <EditEntryModalContent entry={entry} />,
-              })
-            }
-          >
-            <IconEdit size="1rem" />
-          </CommonActionIcon>
-          <EntryCloudAction entry={entry} />
-          <EntryFavoriteAction entryId={entry.id} />
-          <EntryDeleteAction entryId={entry.id} />
-        </Group>
-      </Group>
-      <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
-    </Stack>
-  );
+            <Group align="center" spacing={0} noWrap px="sm" h={32}>
+                <Checkbox
+                    size="xs"
+                    sx={(theme) => ({
+                        ".mantine-Checkbox-input:hover": {
+                            borderColor: theme.fn.primaryColor(),
+                        },
+                    })}
+                    checked={selectedEntryIds.has(entry.id)}
+                    onChange={() =>
+                        selectedEntryIds.has(entry.id)
+                            ? selectedEntryIds.delete(entry.id)
+                            : selectedEntryIds.add(entry.id)
+                    }
+                    onClick={(e) => e.stopPropagation()}
+                />
+                <Badge
+                    color={
+                        entry.content === clipboardSnapshot?.content
+                            ? undefined
+                            : lightOrDark(theme, "gray.5", "dark.4")
+                    }
+                    variant="filled"
+                    w={100}
+                    sx={{ flexShrink: 0 }}
+                    size="sm"
+                    mx="sm"
+                >
+                    {entry.content === clipboardSnapshot?.content
+                        ? "Copied"
+                        : badgeDateFormatter(now, new Date(entry.createdAt))}
+                </Badge>
+                <Text
+                    fz="xs"
+                    sx={{
+                        width: "100%",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        userSelect: "none",
+                    }}
+                >
+                    {/* Don't fully render large content. */}
+                    {entry.content.slice(0, 1000)}
+                </Text>
+                <Group
+                    align="center"
+                    spacing={rem(4)}
+                    noWrap
+                    sx={{
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        flexShrink: 0,
+                        maxWidth: '200px',
+                        '&::-webkit-scrollbar': {
+                            height: '4px',
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: theme.colors.gray[5],
+                            borderRadius: '2px',
+                        },
+                        paddingLeft: '8px',
+                        paddingRight: '8px',
+                        marginLeft: '-8px', // Offset padding for alignment
+                    }}
+                >
+                    {entryIdToTags[entry.id]?.slice().sort().map((tag) => <TagBadge key={tag} tag={tag} />)}
+                    {shortcut !== undefined && <ShortcutBadge shortcut={shortcut || "Not set"} />}
+                </Group>
+                <Text ff="monospace" color="dimmed" fz={10} ml="xs" sx={{ userSelect: "none" }}>
+                    {entry.content.length}
+                </Text>
+                <Group align="center" spacing={0} noWrap ml={rem(4)}>
+                    <TagSelect entryId={entry.id} />
+                    <CommonActionIcon
+                        onClick={() =>
+                            modals.open({
+                                padding: 0,
+                                size: "xl",
+                                withCloseButton: false,
+                                children: <ShortcutsModalContent entry={entry} />,
+                            })
+                        }
+                    >
+                        <IconKeyboard size="1rem" />
+                    </CommonActionIcon>
+                    <CommonActionIcon
+                        onClick={() =>
+                            modals.open({
+                                padding: 0,
+                                size: "xl",
+                                withCloseButton: false,
+                                children: <EditEntryModalContent entry={entry} />,
+                            })
+                        }
+                    >
+                        <IconEdit size="1rem" />
+                    </CommonActionIcon>
+                    <EntryCloudAction entry={entry} />
+                    <EntryFavoriteAction entryId={entry.id} />
+                    <EntryDeleteAction entryId={entry.id} />
+                </Group>
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+        </Stack>
+    );
 };
