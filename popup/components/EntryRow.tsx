@@ -111,7 +111,27 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
           {/* Don't fully render large content. */}
           {entry.content.slice(0, 1000)}
         </Text>
-        <Group align="center" spacing={rem(4)} noWrap>
+        <Group
+          align="center"
+          spacing={rem(4)}
+          noWrap
+          sx={{
+            overflowX: "auto",
+            overflowY: "hidden",
+            flexShrink: 0,
+            maxWidth: "200px",
+            "&::-webkit-scrollbar": {
+              height: "4px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: theme.colors.gray[5],
+              borderRadius: "2px",
+            },
+            paddingLeft: "8px",
+            paddingRight: "8px",
+            marginLeft: "-8px", // Offset padding for alignment
+          }}
+        >
           {entryIdToTags[entry.id]
             ?.slice()
             .sort()
