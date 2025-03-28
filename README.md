@@ -14,7 +14,9 @@ Unrestricted access to your clipboard can raise serious privacy concerns. In an 
 
 # Contributing
 
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+Contributions are always welcome and appreciated! Feel free to pick up any issue with tags that aren’t already assigned—just leave a comment if you’d like to work on something.
+
+Need faster responses? Join our [discord](https://discord.gg/4dY6MYa9wV), introduce yourself, and ping away!
 
 ## Architecture Diagram
 
@@ -23,6 +25,8 @@ Below is a rudimentary architecture diagram showing the general flow of clipboar
 ![Untitled-2024-10-02-0046](https://github.com/user-attachments/assets/98cc2c69-245f-4225-a188-39175cc03502)
 
 ## Project Structure
+
+This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
 
 ```
 clipboard-history
@@ -33,6 +37,7 @@ clipboard-history
 ├── popup
 ├── scripts
 ├── storage
+├── tabs
 ├── types
 ├── utils
 ├── offscreen.html
@@ -46,6 +51,7 @@ clipboard-history
 | `background/index.ts` | https://docs.plasmo.com/framework/background-service-worker                 |
 | `popup`               | https://docs.plasmo.com/framework/ext-pages#adding-a-popup-page             |
 | `scripts`             | Contains scripts used in the build system and CI/CD.                        |
+| `tabs`                | https://docs.plasmo.com/framework/tab-pages                                 |
 | `types`               | Contains definitions and schemas of common types used in application logic. |
 | `utils`               | Contains utility functions used in application logic.                       |
 | `offscreen.html`      | https://developer.chrome.com/docs/extensions/reference/api/offscreen        |
