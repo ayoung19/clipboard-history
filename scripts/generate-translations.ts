@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import pool from "@ricokahler/pool";
 import { Translator, type TargetLanguageCode } from "deepl-node";
+import { z } from "zod";
 
 import enMessagesJson from "../locales/en/messages.json";
 
@@ -116,6 +117,21 @@ const languageCodeChromeToDeepL = (
   return langChrome;
 };
 
+const getLocaleOverride = (lang: ChromeI18nLanguageCode) => {
+  if (!existsSync(path.join("locale-overrides", lang, "messages.json"))) {
+    return {};
+  }
+
+  return z
+    .record(
+      z.string(),
+      z.object({
+        message: z.string(),
+      }),
+    )
+    .parse(JSON.parse(readFileSync(path.join("locale-overrides", lang, "messages.json"), "utf8")));
+};
+
 const writeMessagesJson = (lang: ChromeI18nLanguageCode, data: string) => {
   if (!existsSync(path.join("locales", lang))) {
     mkdirSync(path.join("locales", lang));
@@ -164,10 +180,27 @@ const main = async () => {
 
   ALL_CHROME_I18N_LANGUAGE_CODES.filter((lang) => lang !== "en").forEach((lang) => {
     const l = languageCodeChromeToDeepL(lang);
-
-    if (l !== null && languageCodeDeepLToMessagesJson[l]) {
-      writeMessagesJson(lang, JSON.stringify(languageCodeDeepLToMessagesJson[l]));
+    if (l === null) {
+      return;
     }
+
+    const messagesJson = languageCodeDeepLToMessagesJson[l];
+    if (messagesJson === undefined) {
+      return;
+    }
+
+    const localeOverride = getLocaleOverride(lang);
+
+    for (const key in enMessagesJson) {
+      const message = localeOverride[key];
+      if (message === undefined) {
+        continue;
+      }
+
+      messagesJson[key] = message;
+    }
+
+    writeMessagesJson(lang, JSON.stringify(messagesJson));
   });
 };
 
