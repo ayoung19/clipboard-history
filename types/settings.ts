@@ -6,7 +6,7 @@ import { Tab } from "./tab";
 
 // DO NOT REUSE DEPRECATED FIELDS.
 export const defaultSettings = {
-  sortItemsBy: ItemSortOption.Enum.DateCreated,
+  sortItemsBy: ItemSortOption.Enum.DateLastCopied,
   storageLocation: StorageLocation.Enum.Local,
   totalItemsBadge: true,
   pasteFromContextMenu: true,
