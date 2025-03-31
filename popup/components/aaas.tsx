@@ -151,16 +151,30 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
                 </Badge>
               </Popover.Target>
 
-              <Popover.Dropdown
-                p={4}
-                sx={{ maxHeight: 200, overflowY: "auto", minWidth: "fit-content" }}
-              >
-                <Stack spacing={3} align="start">
+              <Popover.Dropdown p={4} sx={{ maxHeight: 200, overflowY: "auto" }}>
+                <Stack spacing={3}>
                   {entryIdToTags[entry.id]
                     ?.slice()
                     .sort()
                     .slice(3)
-                    .map((tag) => <TagBadge key={tag} tag={tag} />)}
+                    .map((tag) => (
+                      <Badge
+                        key={tag}
+                        size="xs"
+                        sx={{
+                          cursor: "pointer",
+                          ":hover": {
+                            backgroundColor: lightOrDark(
+                              theme,
+                              theme.colors.gray[1],
+                              theme.colors.dark[5],
+                            ),
+                          },
+                        }}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
                 </Stack>
               </Popover.Dropdown>
             </Popover>
