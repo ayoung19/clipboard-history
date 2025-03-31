@@ -26,6 +26,7 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconArrowsSort } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { forwardRef, useMemo, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -33,6 +34,7 @@ import { FixedSizeList } from "react-window";
 import { z } from "zod";
 
 import { useFavoriteEntryIds } from "~popup/contexts/FavoriteEntryIdsContext";
+import { settingsAtom } from "~popup/states/atoms";
 import { handleMutation } from "~popup/utils/mutation";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
@@ -85,6 +87,7 @@ const DraggableMergeItemRenderer = ({
 
 export const MergeModalContent = ({ initialEntries }: Props) => {
   const favoriteEntryIdsSet = useFavoriteEntryIds();
+  const settings = useAtomValue(settingsAtom);
 
   const {
     control,
@@ -120,7 +123,11 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
           const selectedDelimiter = delimiter === "custom" ? customDelimiter : delimiter;
           const content = entries.map(({ content }) => content).join(selectedDelimiter);
 
-          await createEntry(content);
+          // Same as clicking on a row.
+          await updateClipboardSnapshot(content);
+          await createEntry(content, settings.storageLocation);
+          await navigator.clipboard.writeText(content);
+
           if (deleteSourceItems) {
             await handleMutation(() =>
               deleteEntries(
@@ -129,10 +136,6 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               ),
             )();
           }
-
-          // Same action as clicking a row.
-          await updateClipboardSnapshot(content);
-          await navigator.clipboard.writeText(content);
 
           modals.closeAll();
         })}
