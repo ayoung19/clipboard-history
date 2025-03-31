@@ -158,7 +158,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
   if (refreshToken !== null && user !== null && db._reactor.status !== "closed") {
     cloudEntries
       .slice()
-      .reverse()
+      .sort((a, b) => getEntryTimestamp(b, settings) - getEntryTimestamp(a, settings))
       .slice(0, 40)
       .forEach((entry) =>
         chrome.contextMenus.create({
