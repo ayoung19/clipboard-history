@@ -21,6 +21,7 @@ import { z } from "zod";
 import { handleMutation } from "~popup/utils/mutation";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
+import { getEntryCopiedAt } from "~utils/entries";
 import { updateEntryContent } from "~utils/storage";
 import { lightOrDark } from "~utils/sx";
 
@@ -69,17 +70,23 @@ export const EditEntryModalContent = ({ entry }: Props) => {
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Grid gutter={0}>
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Text size="xs" color="dimmed">
             Character Count
           </Text>
           <Text size="xs">{entry.content.length}</Text>
         </Grid.Col>
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Text size="xs" color="dimmed">
-            Last Copied
+            Date Created
           </Text>
           <Text size="xs">{format(entry.createdAt, "Pp")}</Text>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Text size="xs" color="dimmed">
+            Date Last Copied
+          </Text>
+          <Text size="xs">{format(getEntryCopiedAt(entry), "Pp")}</Text>
         </Grid.Col>
         <Grid.Col span={12}>
           <form

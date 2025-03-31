@@ -44,7 +44,7 @@ export const useApp = () => {
       return;
     }
 
-    setTimeout(() => setTransitioningEntryContentHash(undefined), 1200);
+    setTimeout(() => setTransitioningEntryContentHash(undefined), 2000);
   }, [transitioningEntryContentHash]);
 
   // I decided on this approach as opposed to directly calling the sync function in the respective

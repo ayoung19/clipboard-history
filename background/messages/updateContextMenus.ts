@@ -10,7 +10,7 @@ import { getSettings } from "~storage/settings";
 import type { Entry } from "~types/entry";
 import type { EntryIdToTags } from "~types/entryIdToTags";
 import db from "~utils/db/core";
-import { reverseMergeSortedEntries } from "~utils/entries";
+import { getEntryTimestamp } from "~utils/entries";
 import { entryIdToTagsToAllTags } from "~utils/entryIdToTags";
 import { simplePathJoin } from "~utils/simplePath";
 import { getEntries } from "~utils/storage";
@@ -45,13 +45,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
       const [cloudEntriesQuery, cloudFavoritedEntriesQuery, cloudTaggedEntriesQuery] =
         await Promise.all([
           db.queryOnce({
-            entries: {
-              $: {
-                order: {
-                  createdAt: "asc",
-                },
-              },
-            },
+            entries: {},
           }),
           db.queryOnce({
             entries: {
@@ -93,7 +87,9 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
     }
   }
 
-  const reversedEntries = reverseMergeSortedEntries(localEntries, cloudEntries);
+  const reversedEntries = localEntries
+    .concat(cloudEntries)
+    .sort((a, b) => getEntryTimestamp(b, settings) - getEntryTimestamp(a, settings));
   const favoriteEntryIdsSet = new Set([...localFavoriteEntryIds, ...cloudFavoriteEntryIds]);
   const favoriteEntries = reversedEntries.filter((entry) => favoriteEntryIdsSet.has(entry.id));
   const entryIdToTags = { ...localEntryIdToTags, ...cloudEntryIdToTags };
@@ -162,7 +158,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
   if (refreshToken !== null && user !== null && db._reactor.status !== "closed") {
     cloudEntries
       .slice()
-      .reverse()
+      .sort((a, b) => getEntryTimestamp(b, settings) - getEntryTimestamp(a, settings))
       .slice(0, 40)
       .forEach((entry) =>
         chrome.contextMenus.create({

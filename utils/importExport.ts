@@ -18,6 +18,7 @@ export const getClipboardHistoryIOExport = async (): Promise<ClipboardHistoryIOE
 
   return entries.map((entry) => ({
     createdAt: entry.createdAt,
+    copiedAt: entry.copiedAt,
     content: entry.content,
     tags: entryIdToTags[entry.id],
     isFavorite: favoriteEntryIdSet.has(entry.id) || undefined,
@@ -52,6 +53,7 @@ const importClipboardHistoryIO = async (clipboardHistoryIOEntries: ClipboardHist
     entries.push({
       id: entryId,
       createdAt: clipboardHistoryIOEntry.createdAt,
+      copiedAt: clipboardHistoryIOEntry.copiedAt,
       content: clipboardHistoryIOEntry.content,
     });
 
@@ -70,26 +72,22 @@ const importClipboardHistoryIO = async (clipboardHistoryIOEntries: ClipboardHist
   }
 
   await Promise.all([
-    // Sort merged entries by createdAt in ascending order then remove
-    // duplicate entries starting from the end of the list so that the most
-    // recent copy is kept. Since reducing from the end of the list and pushing
-    // to a new list will cause items to be in the reverse order, undo this
-    // reversal by reversing the list after reducing.
     _setEntries(
-      entries
-        .sort((a, b) => a.createdAt - b.createdAt)
-        .reduceRight<[Entry[], Set<string>]>(
-          ([newEntries, seenEntries], curr) => {
-            if (!seenEntries.has(curr.id)) {
-              newEntries.push(curr);
-              seenEntries.add(curr.id);
-            }
+      Object.values(
+        // Reduce duplicate entries. The smallest (oldest) createdAt and largest (newest) copiedAt values
+        // should be the most correct.
+        entries.reduce<Record<string, Entry>>((acc, curr) => {
+          const entry = acc[curr.id];
+          if (entry === undefined) {
+            acc[curr.id] = curr;
+          } else {
+            entry.createdAt = Math.min(entry.createdAt, curr.createdAt);
+            entry.copiedAt = Math.max(entry.copiedAt || 0, curr.copiedAt || 0) || undefined;
+          }
 
-            return [newEntries, seenEntries];
-          },
-          [[], new Set()],
-        )[0]
-        .reverse(),
+          return acc;
+        }, {}),
+      ),
     ),
     _setEntryIdToTags(entryIdToTags),
     addFavoriteEntryIds(favoriteEntryIdsToBeAdded),
@@ -99,19 +97,16 @@ const importClipboardHistoryIO = async (clipboardHistoryIOEntries: ClipboardHist
 const importClipboardHistoryPro = async (clipboardHistoryProEntries: ClipboardHistoryProExport) => {
   await importClipboardHistoryIO(
     clipboardHistoryProEntries.flatMap((clipboardHistoryProEntry) => {
-      if (clipboardHistoryProEntry.text === undefined) {
-        return [];
-      }
-
-      const dateLastCopiedOrDateAdded =
-        clipboardHistoryProEntry.dateLastCopied || clipboardHistoryProEntry.dateAdded;
-
-      if (dateLastCopiedOrDateAdded === undefined) {
+      if (
+        clipboardHistoryProEntry.text === undefined ||
+        clipboardHistoryProEntry.dateAdded === undefined
+      ) {
         return [];
       }
 
       return {
-        createdAt: dateLastCopiedOrDateAdded,
+        createdAt: clipboardHistoryProEntry.dateAdded,
+        copiedAt: clipboardHistoryProEntry.dateLastCopied,
         content: clipboardHistoryProEntry.text,
         tags: clipboardHistoryProEntry.tags,
         isFavorite: clipboardHistoryProEntry.isFavorite,

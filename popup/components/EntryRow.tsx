@@ -5,10 +5,18 @@ import { useAtom, useAtomValue } from "jotai";
 
 import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useNow } from "~popup/hooks/useNow";
-import { clipboardSnapshotAtom, commandsAtom, entryCommandsAtom } from "~popup/states/atoms";
+import {
+  clipboardSnapshotAtom,
+  commandsAtom,
+  entryCommandsAtom,
+  settingsAtom,
+} from "~popup/states/atoms";
 import { updateClipboardSnapshot } from "~storage/clipboardSnapshot";
 import type { Entry } from "~types/entry";
+import { StorageLocation } from "~types/storageLocation";
 import { badgeDateFormatter } from "~utils/date";
+import { getEntryTimestamp } from "~utils/entries";
+import { createEntry } from "~utils/storage";
 import { defaultBorderColor, lightOrDark } from "~utils/sx";
 
 import { EntryCloudAction } from "./cloud/EntryCloudAction";
@@ -29,6 +37,7 @@ interface Props {
 export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
   const theme = useMantineTheme();
   const now = useNow();
+  const settings = useAtomValue(settingsAtom);
   const entryIdToTags = useEntryIdToTags();
   const entryCommands = useAtomValue(entryCommandsAtom);
   const commands = useAtomValue(commandsAtom);
@@ -63,7 +72,11 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
 
         await updateClipboardSnapshot(entry.content);
-        navigator.clipboard.writeText(entry.content);
+        await createEntry(
+          entry.content,
+          entry.id.length === 36 ? StorageLocation.Enum.Cloud : StorageLocation.Enum.Local,
+        );
+        await navigator.clipboard.writeText(entry.content);
       }}
     >
       <Group align="center" spacing={0} noWrap px="sm" h={32}>
@@ -96,7 +109,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         >
           {entry.content === clipboardSnapshot?.content
             ? "Copied"
-            : badgeDateFormatter(now, new Date(entry.createdAt))}
+            : badgeDateFormatter(now, new Date(getEntryTimestamp(entry, settings)))}
         </Badge>
         <Text
           fz="xs"
