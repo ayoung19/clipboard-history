@@ -1,23 +1,34 @@
-import { ActionIcon, Box, Checkbox, Divider, Group, Text } from "@mantine/core";
+import { createHash } from "crypto";
+import {
+  ActionIcon,
+  Affix,
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Group,
+  rem,
+  Text,
+  Transition,
+} from "@mantine/core";
 import { useSet } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import { IconFold, IconStar, IconTrash } from "@tabler/icons-react";
+import { IconClipboard, IconFold, IconStar, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
+import { createRef, useEffect, useMemo, type CSSProperties, type ReactNode } from "react";
 import { FixedSizeList } from "react-window";
 
-import { favoriteEntryIdsSetAtom } from "~popup/states/atoms";
+import { clipboardSnapshotAtom, favoriteEntryIdsSetAtom } from "~popup/states/atoms";
 import { addFavoriteEntryIds, deleteFavoriteEntryIds } from "~storage/favoriteEntryIds";
 import type { Entry } from "~types/entry";
 import { deleteEntries } from "~utils/storage";
 import { commonActionIconSx, defaultBorderColor } from "~utils/sx";
 
-import { EntryRow } from "./EntryRow";
+import { EntryRow, type EntryRowProps } from "./EntryRow";
 import { MergeModalContent } from "./modals/MergeModalContent";
 
-interface Props {
+interface EntryRowRendererData extends Omit<EntryRowProps, "entry"> {
   entries: Entry[];
-  noEntriesOverlay: ReactNode;
 }
 
 const EntryRowRenderer = ({
@@ -25,10 +36,7 @@ const EntryRowRenderer = ({
   index,
   style,
 }: {
-  data: {
-    entries: Entry[];
-    selectedEntryIds: Set<string>;
-  };
+  data: EntryRowRendererData;
   index: number;
   style: CSSProperties;
 }) => {
@@ -36,16 +44,33 @@ const EntryRowRenderer = ({
 
   return (
     <Box style={style}>
-      <EntryRow entry={entry} selectedEntryIds={data.selectedEntryIds} />
+      <EntryRow
+        entry={entry}
+        selectedEntryIds={data.selectedEntryIds}
+        visibleEntryIds={data.visibleEntryIds}
+      />
     </Box>
   );
 };
 
+interface Props {
+  entries: Entry[];
+  noEntriesOverlay: ReactNode;
+}
+
 export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
+  const clipboardSnapshot = useAtomValue(clipboardSnapshotAtom);
+  const clipboardSnapshotContentId = useMemo(
+    () => clipboardSnapshot && createHash("sha256").update(clipboardSnapshot.content).digest("hex"),
+    [clipboardSnapshot?.content],
+  );
 
   const selectedEntryIds = useSet<string>();
+  const visibleEntryIds = useSet<string>();
   const entryIdsStringified = useMemo(() => JSON.stringify(entries.map(({ id }) => id)), [entries]);
+
+  const listRef = createRef<FixedSizeList<EntryRowRendererData>>();
 
   useEffect(() => {
     selectedEntryIds.clear();
@@ -145,16 +170,70 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
           {noEntriesOverlay}
         </Box>
       ) : (
-        <FixedSizeList
-          height={450}
-          width={700}
-          itemData={{ entries, selectedEntryIds }}
-          itemCount={entries.length}
-          itemSize={33}
-        >
-          {EntryRowRenderer}
-        </FixedSizeList>
+        // Used by IntersectionObserver in EntryRow.
+        <Box id="entry-list-wrapper">
+          <FixedSizeList
+            ref={listRef}
+            height={450}
+            width={700}
+            itemData={{ entries, selectedEntryIds, visibleEntryIds }}
+            itemCount={entries.length}
+            itemSize={33}
+          >
+            {EntryRowRenderer}
+          </FixedSizeList>
+        </Box>
       )}
+      <Affix position={{ bottom: rem(24), right: rem(24) }}>
+        <Transition
+          transition="fade"
+          mounted={
+            !!clipboardSnapshotContentId &&
+            entries.some((entry) => entry.id === clipboardSnapshotContentId) &&
+            visibleEntryIds.size > 0 &&
+            !visibleEntryIds.has(clipboardSnapshotContentId)
+          }
+        >
+          {/* {(transitionStyles) => (
+            <Button
+              variant="default"
+              style={transitionStyles}
+              px={rem(9)}
+              sx={(theme) => ({ boxShadow: theme.shadows.xl })}
+              onClick={() => {
+                const index = entries.findIndex(
+                  (entry) => entry.content === clipboardSnapshot?.content,
+                );
+
+                if (index >= 0) {
+                  listRef.current?.scrollToItem(index);
+                }
+              }}
+            >
+              <IconArrowDown size="1rem" />
+            </Button>
+          )} */}
+          {(transitionStyles) => (
+            <Button
+              variant="default"
+              leftIcon={<IconClipboard size="1rem" />}
+              style={transitionStyles}
+              sx={(theme) => ({ boxShadow: theme.shadows.xl })}
+              onClick={() => {
+                const index = entries.findIndex(
+                  (entry) => entry.content === clipboardSnapshot?.content,
+                );
+
+                if (index >= 0) {
+                  listRef.current?.scrollToItem(index);
+                }
+              }}
+            >
+              Go to copied item
+            </Button>
+          )}
+        </Transition>
+      </Affix>
     </Box>
   );
 };

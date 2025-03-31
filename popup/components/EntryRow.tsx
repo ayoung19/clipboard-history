@@ -9,8 +9,10 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
+import { useIntersection } from "@mantine/hooks";
 import { IconStar, IconStarFilled, IconTrash } from "@tabler/icons-react";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect } from "react";
 
 import {
   clipboardSnapshotAtom,
@@ -28,23 +30,45 @@ import { commonActionIconSx, defaultBorderColor, lightOrDark } from "~utils/sx";
 import { TagBadge } from "./TagBadge";
 import { TagSelect } from "./TagSelect";
 
-interface Props {
+export interface EntryRowProps {
   entry: Entry;
   selectedEntryIds: Set<string>;
+  visibleEntryIds: Set<string>;
 }
 
-export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
+export const EntryRow = ({ entry, selectedEntryIds, visibleEntryIds }: EntryRowProps) => {
   const theme = useMantineTheme();
   const now = useAtomValue(nowAtom);
   const favoriteEntryIdsSet = useAtomValue(favoriteEntryIdsSetAtom);
   const entryIdToTags = useAtomValue(entryIdToTagsAtom);
   const [clipboardSnapshot, setClipboardSnapshot] = useAtom(clipboardSnapshotAtom);
 
+  const { ref, entry: intersectionObserverEntry } = useIntersection({
+    root: document.querySelector("#entry-list-wrapper > div"),
+    threshold: 1,
+  });
+
   const isFavoriteEntry = favoriteEntryIdsSet.has(entry.id);
+
+  useEffect(() => {
+    if (intersectionObserverEntry?.isIntersecting) {
+      visibleEntryIds.add(entry.id);
+    } else {
+      visibleEntryIds.delete(entry.id);
+    }
+  }, [intersectionObserverEntry?.isIntersecting, entry.id]);
+
+  // Sometimes an entry row can be unmounted before the affix can be opened by the main side effect
+  // so delete it on unmount.
+  useEffect(() => {
+    return () => {
+      visibleEntryIds.delete(entry.id);
+    };
+  }, []);
 
   return (
     <Stack
-      key={entry.id}
+      ref={ref}
       spacing={0}
       sx={(theme) => ({
         backgroundColor: selectedEntryIds.has(entry.id)
