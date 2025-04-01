@@ -1,5 +1,23 @@
-import { Button, Group, Stack, Text, Title } from "@mantine/core";
-import { IconCloud, IconWifiOff } from "@tabler/icons-react";
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  Loader,
+  rem,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
+import {
+  IconCheck,
+  IconCloud,
+  IconDeviceDesktop,
+  IconDeviceMobile,
+  IconDeviceTablet,
+  IconWifiOff,
+} from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { CommonActionIcon } from "~popup/components/CommonActionIcon";
@@ -10,8 +28,11 @@ import { useEntryIdToTags } from "~popup/contexts/EntryIdToTagsContext";
 import { useSubscriptionsQuery } from "~popup/hooks/useSubscriptionsQuery";
 import { searchAtom } from "~popup/states/atoms";
 import db from "~utils/db/react";
+import { lightOrDark } from "~utils/sx";
 
 export const CloudPage = () => {
+  const theme = useMantineTheme();
+
   const search = useAtomValue(searchAtom);
 
   const auth = db.useAuth();
@@ -42,21 +63,71 @@ export const CloudPage = () => {
     return (
       <EntryList
         noEntriesOverlay={
-          <Stack align="center" spacing="xs" p="xl">
-            <Title order={4}>Optionally Sync Your Clipboard History Everywhere</Title>
-            <Text size="sm" w={500} align="center">
-              Privately and securely sync your clipboard history across all your devices!
-            </Text>
-            <Button
-              size="xs"
-              mt="xs"
-              component="a"
-              href={chrome.runtime.getURL("/tabs/sign-in.html")}
-              target="_blank"
-            >
-              Get Started
-            </Button>
-          </Stack>
+          <Group p="md" align="flex-start" noWrap>
+            <Stack spacing={0} align="flex-start">
+              <Group mb="xs">
+                <IconDeviceMobile />
+                <Loader variant="dots" color="dark" size="xs" />
+                <IconDeviceDesktop />
+                <Loader variant="dots" color="dark" size="xs" />
+                <IconDeviceTablet />
+              </Group>
+              <Title order={4} mb={rem(8)}>
+                Sync Your Clipboard History Everywhere
+              </Title>
+              <Text size="sm" mb={rem(8)}>
+                Securely sync and manage your clipboard history across all your devices with
+                Clipboard History IO Pro!
+              </Text>
+              <Text size="sm" mb="md">
+                Get started now with a limited-time <b>6-month</b> free trial, cancellable anytime!
+              </Text>
+              <Button
+                size="xs"
+                mb={rem(4)}
+                component="a"
+                href={chrome.runtime.getURL("/tabs/sign-in.html")}
+                target="_blank"
+              >
+                Get Started
+              </Button>
+              <Text color="dimmed" fz="xs" fs="italic">
+                Your subscription helps cover cloud provider costs and supports the continued
+                development and maintenance of CHIO!
+              </Text>
+            </Stack>
+            <Card p="md" w={260} bg={lightOrDark(theme, "gray.1", "dark.7")} sx={{ flexShrink: 0 }}>
+              <Stack spacing={rem(8)}>
+                <Title order={5}>Pro Features</Title>
+                <Group align="center" spacing={rem(8)} noWrap>
+                  <IconCheck size="1rem" color={theme.fn.primaryColor()} />
+                  <Text fz="sm">Cross-device syncing</Text>
+                </Group>
+                <Group align="center" spacing={rem(8)} noWrap>
+                  <IconCheck size="1rem" color={theme.fn.primaryColor()} />
+                  <Text fz="sm">Mobile-friendly web app</Text>
+                </Group>
+                <Group align="center" spacing={rem(8)} noWrap>
+                  <IconCheck size="1rem" color={theme.fn.primaryColor()} />
+                  <Text fz="sm">Feature request priority</Text>
+                </Group>
+                <Group align="center" spacing={rem(8)} noWrap>
+                  <IconCheck size="1rem" color={theme.fn.primaryColor()} />
+                  <Text fz="sm">Mobile app</Text>
+                  <Badge size="xs" variant="outline" mt={rem(2)}>
+                    Soon
+                  </Badge>
+                </Group>
+                <Group align="center" spacing={rem(8)} noWrap>
+                  <IconCheck size="1rem" color={theme.fn.primaryColor()} />
+                  <Text fz="sm">End-to-end encryption</Text>
+                  <Badge size="xs" variant="outline" mt={rem(2)}>
+                    Soon
+                  </Badge>
+                </Group>
+              </Stack>
+            </Card>
+          </Group>
         }
         entries={[]}
       />
