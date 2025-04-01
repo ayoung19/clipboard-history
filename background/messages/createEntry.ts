@@ -26,7 +26,7 @@ export const handleCreateEntryRequest = async (body: CreateEntryRequestBody) => 
         (settings.allowBlankItems || body.content.length > 0) &&
           (settings.localItemCharacterLimit === null ||
             body.content.length <= settings.localItemCharacterLimit) &&
-          createEntry(body.content),
+          createEntry(body.content, settings.storageLocation),
       ]);
 
       handleUpdateContextMenusRequest();

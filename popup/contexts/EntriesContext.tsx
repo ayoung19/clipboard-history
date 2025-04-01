@@ -2,31 +2,40 @@ import { useAtomValue } from "jotai";
 import { createContext, useContext, type PropsWithChildren } from "react";
 
 import { useCloudEntriesQuery } from "~popup/hooks/useCloudEntriesQuery";
-import { entriesAtom, transitioningEntryContentHashAtom } from "~popup/states/atoms";
+import { entriesAtom, settingsAtom, transitioningEntryContentHashAtom } from "~popup/states/atoms";
 import type { Entry } from "~types/entry";
 import db from "~utils/db/react";
+import { getEntryTimestamp } from "~utils/entries";
 
 const EntriesContext = createContext<Entry[]>([]);
 
 export const EntriesProvider = ({ children }: PropsWithChildren) => {
   const connectionStatus = db.useConnectionStatus();
+  const settings = useAtomValue(settingsAtom);
   const transitioningEntryContentHash = useAtomValue(transitioningEntryContentHashAtom);
   const entries = useAtomValue(entriesAtom);
   const cloudEntriesQuery = useCloudEntriesQuery();
   const cloudEntries = connectionStatus === "closed" ? [] : cloudEntriesQuery.data?.entries || [];
 
-  let i = entries.length - 1;
-  let j = cloudEntries.length - 1;
+  const sortedEntries = entries
+    .slice()
+    .sort((a, b) => getEntryTimestamp(a, settings) - getEntryTimestamp(b, settings));
+  const sortedCloudEntries = cloudEntries
+    .slice()
+    .sort((a, b) => getEntryTimestamp(a, settings) - getEntryTimestamp(b, settings));
+
+  let i = sortedEntries.length - 1;
+  let j = sortedCloudEntries.length - 1;
   const out: Entry[] = [];
 
   while (i >= 0 && j >= 0) {
-    const entry = entries[i]!;
-    const cloudEntry = cloudEntries[j]!;
+    const entry = sortedEntries[i]!;
+    const cloudEntry = sortedCloudEntries[j]!;
 
-    if (entry.createdAt > cloudEntry.createdAt) {
+    if (getEntryTimestamp(entry, settings) > getEntryTimestamp(cloudEntry, settings)) {
       out.push(entry);
       i--;
-    } else if (entry.createdAt < cloudEntry.createdAt) {
+    } else if (getEntryTimestamp(entry, settings) < getEntryTimestamp(cloudEntry, settings)) {
       out.push(cloudEntry);
       j--;
     } else if (
@@ -41,13 +50,13 @@ export const EntriesProvider = ({ children }: PropsWithChildren) => {
   }
 
   while (i >= 0) {
-    const entry = entries[i]!;
+    const entry = sortedEntries[i]!;
     out.push(entry);
     i--;
   }
 
   while (j >= 0) {
-    const cloudEntry = cloudEntries[j]!;
+    const cloudEntry = sortedCloudEntries[j]!;
     out.push(cloudEntry);
     j--;
   }

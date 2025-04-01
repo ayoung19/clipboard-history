@@ -50,6 +50,7 @@ import type {
 } from "~background/messages/updateTotalItemsBadge";
 import { settingsAtom } from "~popup/states/atoms";
 import { setSettings } from "~storage/settings";
+import { ItemSortOption } from "~types/itemSortOption";
 import { StorageLocation } from "~types/storageLocation";
 import { Tab } from "~types/tab";
 import db from "~utils/db/react";
@@ -138,6 +139,29 @@ export const SettingsModalContent = () => {
 
                   await setSettings({ ...settings, allowBlankItems: checked });
                 }}
+              />
+            </Group>
+            <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
+            <Group align="flex-start" spacing="md" position="apart" noWrap>
+              <Stack spacing={0}>
+                <Title order={6}>Sort Items By</Title>
+                <Text fz="xs">Select how items are sorted.</Text>
+              </Stack>
+              <Select
+                value={settings.sortItemsBy}
+                onChange={(newValue) =>
+                  newValue &&
+                  setSettings({
+                    ...settings,
+                    sortItemsBy: ItemSortOption.parse(newValue),
+                  })
+                }
+                data={[
+                  { value: ItemSortOption.Enum.DateCreated, label: "Date Created" },
+                  { value: ItemSortOption.Enum.DateLastCopied, label: "Date Last Copied" },
+                ]}
+                size="xs"
+                withinPortal
               />
             </Group>
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />

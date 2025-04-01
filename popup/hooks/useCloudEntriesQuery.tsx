@@ -9,13 +9,7 @@ export const useCloudEntriesQuery = () => {
   return db.useQuery(
     refreshToken
       ? {
-          entries: {
-            $: {
-              order: {
-                createdAt: "asc",
-              },
-            },
-          },
+          entries: {},
         }
       : null,
   );

@@ -1,10 +1,12 @@
 import { z } from "zod";
 
+import { ItemSortOption } from "./itemSortOption";
 import { StorageLocation } from "./storageLocation";
 import { Tab } from "./tab";
 
 // DO NOT REUSE DEPRECATED FIELDS.
 export const defaultSettings = {
+  sortItemsBy: ItemSortOption.Enum.DateLastCopied,
   storageLocation: StorageLocation.Enum.Local,
   totalItemsBadge: true,
   pasteFromContextMenu: true,
@@ -19,6 +21,7 @@ export const defaultSettings = {
 
 export const Settings = z
   .object({
+    sortItemsBy: ItemSortOption.default(defaultSettings.sortItemsBy),
     storageLocation: StorageLocation.default(defaultSettings.storageLocation),
     totalItemsBadge: z.boolean().default(defaultSettings.totalItemsBadge),
     pasteFromContextMenu: z.boolean().default(defaultSettings.pasteFromContextMenu),

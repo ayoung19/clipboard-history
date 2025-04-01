@@ -69,17 +69,13 @@ export const _setEntries = async (entries: Entry[]) => {
   ]);
 };
 
-// Creates an entry in the user's configured storage location. If storage location is configured to
-// be cloud but the user isn't signed in or isn't subscribed then it should be created locally.
-export const createEntry = async (content: string) => {
-  const [settings, refreshToken, user] = await Promise.all([
-    getSettings(),
-    getRefreshToken(),
-    db.getAuth(),
-  ]);
+// Creates an entry in the provided storage location. If the provided storage location is cloud but
+// the user isn't signed in or isn't subscribed then it should be created locally.
+export const createEntry = async (content: string, storageLocation: StorageLocation) => {
+  const [refreshToken, user] = await Promise.all([getRefreshToken(), db.getAuth()]);
 
   if (
-    settings.storageLocation === StorageLocation.Enum.Cloud &&
+    storageLocation === StorageLocation.Enum.Cloud &&
     refreshToken !== null &&
     user !== null &&
     db._reactor.status !== "closed"
@@ -92,9 +88,24 @@ export const createEntry = async (content: string) => {
       if (subscriptionsQuery.data.subscriptions.length > 0) {
         const contentHash = createHash("sha256").update(content).digest("hex");
 
+        const emailContentHash = `${user.email}+${contentHash}`;
+
+        const entriesQuery = await db.queryOnce({
+          entries: {
+            $: {
+              where: {
+                emailContentHash,
+              },
+            },
+          },
+        });
+
+        const now = Date.now();
+
         await db.transact(
-          db.tx.entries[lookup("emailContentHash", `${user.email}+${contentHash}`)]!.update({
-            createdAt: Date.now(),
+          db.tx.entries[lookup("emailContentHash", emailContentHash)]!.update({
+            ...(entriesQuery.data.entries ? {} : { createdAt: now }),
+            copiedAt: now,
             content: content,
           }).link({ $user: lookup("email", user.email) }),
         );
@@ -106,26 +117,29 @@ export const createEntry = async (content: string) => {
     }
   }
 
-  const [entries, favoriteEntryIds] = await Promise.all([
+  const [entries, favoriteEntryIds, settings] = await Promise.all([
     getEntries(),
     getFavoriteEntryIds(),
-    getEntryIdToTags(),
+    getSettings(),
   ]);
 
   const entryId = createHash("sha256").update(content).digest("hex");
 
-  const [newEntries, skippedEntryIds] = applyLocalItemLimit(
-    [
-      ...entries.filter(({ id }) => id !== entryId),
-      {
-        id: entryId,
-        createdAt: Date.now(),
-        content,
-      },
-    ],
-    settings,
-    favoriteEntryIds,
-  );
+  const entry = entries.find((entry) => entry.id === entryId);
+  if (entry === undefined) {
+    const now = Date.now();
+
+    entries.push({
+      id: entryId,
+      createdAt: now,
+      copiedAt: now,
+      content,
+    });
+  } else {
+    entry.copiedAt = Date.now();
+  }
+
+  const [newEntries, skippedEntryIds] = applyLocalItemLimit(entries, settings, favoriteEntryIds);
 
   await Promise.all([
     _setEntries(newEntries),
@@ -267,9 +281,9 @@ export const toggleEntryStorageLocation = async (entryId: string) => {
     entries.push({
       id: contentHash,
       createdAt: cloudEntry.createdAt,
+      copiedAt: cloudEntry.copiedAt,
       content: cloudEntry.content,
     });
-    entries.sort((a, b) => a.createdAt - b.createdAt);
 
     // Copy cloud entry tags to local.
     entryIdToTags[contentHash] = z
@@ -284,8 +298,6 @@ export const toggleEntryStorageLocation = async (entryId: string) => {
         : deleteFavoriteEntryIds([contentHash]),
       _setEntryIdToTags(entryIdToTags),
     ]);
-
-    await new Promise((r) => setTimeout(r, 400));
 
     await db.transact(db.tx.entries[entryId]!.delete());
 
@@ -329,6 +341,7 @@ export const toggleEntryStorageLocation = async (entryId: string) => {
   await db.transact(
     db.tx.entries[lookup("emailContentHash", `${user.email}+${localEntry.id}`)]!.update({
       createdAt: localEntry.createdAt,
+      copiedAt: localEntry.copiedAt || null,
       content: localEntry.content,
       isFavorited: favoriteEntryIds.includes(localEntry.id),
       tags: tags?.length ? JSON.stringify(tags) : null,

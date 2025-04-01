@@ -78,13 +78,7 @@ export const watchCloudEntries = async (
 
         db.subscribeQuery(
           {
-            entries: {
-              $: {
-                order: {
-                  createdAt: "asc",
-                },
-              },
-            },
+            entries: {},
           },
           async (cloudEntriesQuery) => {
             // TODO: Potentially just call the callback with an empty array?
