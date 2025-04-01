@@ -3,11 +3,13 @@ import { generateColor } from "@marko19907/string-to-color";
 
 interface Props {
   tag: string;
+  fullTag?: string;
 }
 
-export const TagBadge = ({ tag }: Props) => {
+export const TagBadge = ({ tag, fullTag }: Props) => {
   return (
     <Badge
+      title={fullTag}
       variant="dot"
       size="xs"
       sx={{

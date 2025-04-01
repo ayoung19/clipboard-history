@@ -78,6 +78,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
         },
       })}
       onClick={async () => {
+        // Optimistically update local state with arbitrary updatedAt.
         setClipboardSnapshot({ content: entry.content, updatedAt: 0 });
         await updateClipboardSnapshot(entry.content);
         await createEntry(
@@ -131,6 +132,7 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
             userSelect: "none",
           }}
         >
+          {/* Don't fully render large content. */}
           {entry.content.slice(0, 1000)}
         </Text>
         <Group
