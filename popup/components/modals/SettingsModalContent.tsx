@@ -310,6 +310,11 @@ export const SettingsModalContent = () => {
           <form
             onSubmit={handleSubmit(async ({ localItemLimit, localItemCharacterLimit }) => {
               await setSettings({ ...settings, localItemLimit, localItemCharacterLimit });
+              notifications.show({
+                color: "green",
+                title: "Success",
+                message: "Changes were succesfully saved.",
+              });
               reset({ localItemLimit, localItemCharacterLimit });
             })}
           >
