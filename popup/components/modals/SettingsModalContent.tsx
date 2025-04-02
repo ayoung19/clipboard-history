@@ -313,7 +313,7 @@ export const SettingsModalContent = () => {
               notifications.show({
                 color: "green",
                 title: "Success",
-                message: "Changes were succesfully saved.",
+                message: "Changes were successfully saved.",
               });
               reset({ localItemLimit, localItemCharacterLimit });
             })}
