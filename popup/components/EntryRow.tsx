@@ -145,34 +145,39 @@ export const EntryRow = ({ entry, selectedEntryIds }: Props) => {
             paddingLeft: rem(8),
           }}
         >
-          {entryIdToTags[entry.id]?.slice().sort().slice(0, 3).map((tag) => {
-            const MAX_TAG_LENGTH = 7;
-            const shouldTruncate = tag.length > MAX_TAG_LENGTH;
+          {entryIdToTags[entry.id]
+            ?.slice()
+            .sort()
+            .slice(0, 3)
+            .map((tag) => {
+              const MAX_TAG_LENGTH = 7;
+              const shouldTruncate = tag.length > MAX_TAG_LENGTH;
 
-            return (
-              <Popover key={tag} position="bottom" withArrow withinPortal>
-                <Popover.Target>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <TagBadge
-                      tag={shouldTruncate ? `${tag.slice(0, MAX_TAG_LENGTH)}...` : tag}
-                      sx={{
-                        maxWidth: shouldTruncate ? rem(80) : 'auto',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    />
-                  </div>
-                </Popover.Target>
-                
-                {shouldTruncate && (
-                  <Popover.Dropdown p={4}>
-                    <div style={{ display: "flex", alignItems: "center" }}><TagBadge sx={{ wordBreak: 'break-all' }} tag={tag}/></div>
-                    
-                  </Popover.Dropdown>
-                )}
-              </Popover>
-            );
-          })}
+              return (
+                <Popover key={tag} position="bottom" withArrow withinPortal>
+                  <Popover.Target>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <TagBadge
+                        tag={shouldTruncate ? `${tag.slice(0, MAX_TAG_LENGTH)}...` : tag}
+                        sx={{
+                          maxWidth: shouldTruncate ? rem(80) : "auto",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      />
+                    </div>
+                  </Popover.Target>
+
+                  {shouldTruncate && (
+                    <Popover.Dropdown p={4}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <TagBadge sx={{ wordBreak: "break-all" }} tag={tag} />
+                      </div>
+                    </Popover.Dropdown>
+                  )}
+                </Popover>
+              );
+            })}
 
           {(entryIdToTags[entry.id]?.length || 0) > 3 && (
             <Popover position="bottom" withArrow withinPortal>
