@@ -1,8 +1,9 @@
-import { Badge, Box, rem } from "@mantine/core";
+import { Badge, Box, rem, type Sx } from "@mantine/core";
 import { generateColor } from "@marko19907/string-to-color";
 
 interface Props {
   tag: string;
+  sx?: Sx;
 }
 
 export const TagBadge = ({ tag }: Props) => {
