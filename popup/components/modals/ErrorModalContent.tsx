@@ -30,12 +30,11 @@ export const ErrorModalContent = ({ err }: Props) => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Error</Title>
+        <Title order={5}>{chrome.i18n.getMessage("commonError")}</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Text fz="xs" mb="xs">
-        An unexpected error occurred. Please try again. If the issue persists, consider submitting a
-        bug report to help us resolve it.
+        {chrome.i18n.getMessage("errorModalMessage")}
       </Text>
       <Stack spacing="xs">
         {err instanceof AggregateError ? (
@@ -60,7 +59,7 @@ export const ErrorModalContent = ({ err }: Props) => {
             }).toString()}`}
             target="_blank"
           >
-            Submit Bug Report
+            {chrome.i18n.getMessage("errorModalSubmitBug")}
           </Button>
         </Group>
       </Stack>

@@ -67,7 +67,7 @@ export default function Page() {
         } catch (e) {
           console.log(e);
 
-          setError("email", { type: "manual", message: "Invalid email" });
+          setError("email", { type: "manual", message: chrome.i18n.getMessage("signInEmailInvalid") });
 
           return;
         }
@@ -80,7 +80,7 @@ export default function Page() {
         } catch (e) {
           console.log(e);
 
-          setError("code", { type: "manual", message: "Invalid code" });
+          setError("code", { type: "manual", message: chrome.i18n.getMessage("signInCodeInvalid") });
           setValue("code", "");
 
           return;
@@ -128,7 +128,7 @@ export default function Page() {
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       {auth.user ? (
         subscriptionsQueryIsLoading ? null : (
-          <Text size="xs">Success! You may close this window.</Text>
+          <Text size="xs">{chrome.i18n.getMessage("signInSuccessText")}</Text>
         )
       ) : (
         <Center h="100%">
@@ -140,20 +140,20 @@ export default function Page() {
                     <Stack align="center" spacing={0}>
                       <Image src={iconSrc} maw={32} mb="md" />
                       <Text fw="bold" mb={2}>
-                        Sign in to Clipboard History IO Pro
+                        {chrome.i18n.getMessage("signInTitleStep0")}
                       </Text>
                       <Text color="dimmed" fz="xs">
-                        Welcome! Please enter your email to continue
+                        {chrome.i18n.getMessage("signInSubtitleStep0")}
                       </Text>
                     </Stack>
                   ))
                   .with(1, () => (
                     <Stack align="center" spacing={0}>
                       <Text fw="bold" mb={4}>
-                        Check your email
+                        {chrome.i18n.getMessage("signInTitleStep1")}
                       </Text>
                       <Text color="dimmed" fz="xs">
-                        to continue to Clipboard History IO Pro
+                        {chrome.i18n.getMessage("signInSubtitleStep1")}
                       </Text>
                       <Group align="center" spacing={0}>
                         <Text color="dimmed" fz="xs">
@@ -180,7 +180,7 @@ export default function Page() {
                     step === 0 ? (
                       <TextInput
                         {...field}
-                        label="Email address"
+                        label={chrome.i18n.getMessage("signInEmailLabel")}
                         size="xs"
                         error={errors.email?.message}
                         required
@@ -223,7 +223,7 @@ export default function Page() {
                   }
                 />
                 <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
-                  Continue
+                  {chrome.i18n.getMessage("signInContinueButton")}
                 </Button>
               </Stack>
             </form>

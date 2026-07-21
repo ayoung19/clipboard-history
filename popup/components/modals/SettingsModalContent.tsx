@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { id } from "@instantdb/react";
 import {
-  Anchor,
   Badge,
   Box,
   Button,
@@ -109,16 +108,16 @@ export const SettingsModalContent = () => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Settings</Title>
+        <Title order={5}>{chrome.i18n.getMessage("settingsModalTitle")}</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Tabs defaultValue="general">
         <Tabs.List>
           <Tabs.Tab value="general" icon={<IconAdjustmentsHorizontal size="0.8rem" />}>
-            General
+            {chrome.i18n.getMessage("settingsTabGeneral")}
           </Tabs.Tab>
           <Tabs.Tab value="interface" icon={<IconAppWindow size="0.8rem" />}>
-            Interface
+            {chrome.i18n.getMessage("settingsTabInterface")}
           </Tabs.Tab>
           <Tabs.Tab
             value="storage"
@@ -135,10 +134,10 @@ export const SettingsModalContent = () => {
               </Indicator>
             }
           >
-            Storage
+            {chrome.i18n.getMessage("settingsTabStorage")}
           </Tabs.Tab>
           <Tabs.Tab value="import-export" icon={<IconDeviceFloppy size="0.8rem" />}>
-            Import / Export
+            {chrome.i18n.getMessage("settingsTabImportExport")}
           </Tabs.Tab>
           <Tabs.Tab
             value="cloud"
@@ -155,7 +154,7 @@ export const SettingsModalContent = () => {
               </Indicator>
             }
           >
-            Cloud
+            {chrome.i18n.getMessage("settingsTabCloud")}
           </Tabs.Tab>
         </Tabs.List>
 
@@ -163,9 +162,9 @@ export const SettingsModalContent = () => {
           <Stack p="md">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Extension Activation Shortcut</Title>
+                <Title order={6}>{chrome.i18n.getMessage("settingsShortcutTitle")}</Title>
                 <Group align="center" spacing={4}>
-                  <Text fz="xs">Press</Text>
+                  <Text fz="xs">{chrome.i18n.getMessage("settingsShortcutPress")}</Text>
                   <ShortcutBadge
                     shortcut={
                       commands.find(
@@ -174,10 +173,10 @@ export const SettingsModalContent = () => {
                           (process.env.PLASMO_TARGET === "firefox-mv2"
                             ? "_execute_browser_action"
                             : "_execute_action"),
-                      )?.shortcut || "Not set"
+                      )?.shortcut || chrome.i18n.getMessage("shortcutsModalNotSet")
                     }
                   />
-                  <Text fz="xs">to quickly open the extension.</Text>
+                  <Text fz="xs">{chrome.i18n.getMessage("settingsShortcutToOpen")}</Text>
                 </Group>
               </Stack>
               <Button
@@ -197,14 +196,14 @@ export const SettingsModalContent = () => {
                   }
                 }}
               >
-                Configure
+                {chrome.i18n.getMessage("settingsShortcutConfigure")}
               </Button>
             </Group>
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Blank Items</Title>
-                <Text fz="xs">Allow blank items to be added to the clipboard history.</Text>
+                <Title order={6}>{chrome.i18n.getMessage("settingsBlankItemsTitle")}</Title>
+                <Text fz="xs">{chrome.i18n.getMessage("settingsBlankItemsDesc")}</Text>
               </Stack>
               <Switch
                 checked={settings.allowBlankItems}
@@ -218,8 +217,8 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Sort Items By</Title>
-                <Text fz="xs">Select how items are sorted.</Text>
+                <Title order={6}>{chrome.i18n.getMessage("settingsSortByTitle")}</Title>
+                <Text fz="xs">{chrome.i18n.getMessage("settingsSortByDesc")}</Text>
               </Stack>
               <Select
                 value={settings.sortItemsBy}
@@ -231,8 +230,8 @@ export const SettingsModalContent = () => {
                   })
                 }
                 data={[
-                  { value: ItemSortOption.Enum.DateCreated, label: "Date Created" },
-                  { value: ItemSortOption.Enum.DateLastCopied, label: "Date Last Copied" },
+                  { value: ItemSortOption.Enum.DateCreated, label: chrome.i18n.getMessage("settingsSortByDateCreated") },
+                  { value: ItemSortOption.Enum.DateLastCopied, label: chrome.i18n.getMessage("settingsSortByDateCopied") },
                 ]}
                 size="xs"
                 withinPortal
@@ -242,14 +241,13 @@ export const SettingsModalContent = () => {
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
                 <Group align="center" spacing="xs">
-                  <Title order={6}>Default Storage Location</Title>
+                  <Title order={6}>{chrome.i18n.getMessage("settingsStorageLocTitle")}</Title>
                   <Badge size="xs" color="cyan">
                     Pro
                   </Badge>
                 </Group>
                 <Text fz="xs">
-                  Select where new items are stored. When offline or not subscribed to Pro, this
-                  setting is ignored and new items will be stored locally.
+                  {chrome.i18n.getMessage("settingsStorageLocDesc")}
                 </Text>
               </Stack>
               <Select
@@ -262,8 +260,8 @@ export const SettingsModalContent = () => {
                   })
                 }
                 data={[
-                  { value: StorageLocation.Enum.Local, label: StorageLocation.Enum.Local },
-                  { value: StorageLocation.Enum.Cloud, label: StorageLocation.Enum.Cloud },
+                  { value: StorageLocation.Enum.Local, label: chrome.i18n.getMessage("settingsStorageLocLocal") },
+                  { value: StorageLocation.Enum.Cloud, label: chrome.i18n.getMessage("settingsStorageLocCloud") },
                 ]}
                 size="xs"
                 withinPortal
@@ -277,9 +275,9 @@ export const SettingsModalContent = () => {
           <Stack p="md">
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Total Items Badge</Title>
+                <Title order={6}>{chrome.i18n.getMessage("settingsTotalBadgeTitle")}</Title>
                 <Text fz="xs">
-                  Show number of items in the clipboard history on the extension icon.
+                  {chrome.i18n.getMessage("settingsTotalBadgeDesc")}
                 </Text>
               </Stack>
               <Switch
@@ -301,8 +299,8 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Paste From Context Menu</Title>
-                <Text fz="xs">Enable pasting clipboard history items from the context menu.</Text>
+                <Title order={6}>{chrome.i18n.getMessage("settingsContextMenuTitle")}</Title>
+                <Text fz="xs">{chrome.i18n.getMessage("settingsContextMenuDesc")}</Text>
               </Stack>
               <Switch
                 checked={settings.pasteFromContextMenu}
@@ -323,10 +321,9 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Changelog Indicator</Title>
+                <Title order={6}>{chrome.i18n.getMessage("settingsChangelogIndTitle")}</Title>
                 <Text fz="xs">
-                  Display an indicator on the changelog button if the extension was updated since
-                  the changelog was last viewed.
+                  {chrome.i18n.getMessage("settingsChangelogIndDesc")}
                 </Text>
               </Stack>
               <Switch
@@ -341,8 +338,8 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Default Tab</Title>
-                <Text fz="xs">Select the tab shown when the extension is opened.</Text>
+                <Title order={6}>{chrome.i18n.getMessage("settingsDefaultTabTitle")}</Title>
+                <Text fz="xs">{chrome.i18n.getMessage("settingsDefaultTabDesc")}</Text>
               </Stack>
               <Select
                 value={settings.defaultTab}
@@ -351,9 +348,9 @@ export const SettingsModalContent = () => {
                   setSettings({ ...settings, defaultTab: Tab.parse(newDefaultTab) })
                 }
                 data={[
-                  { value: Tab.Enum.All, label: Tab.Enum.All },
-                  { value: Tab.Enum.Favorites, label: Tab.Enum.Favorites },
-                  { value: Tab.Enum.Cloud, label: Tab.Enum.Cloud },
+                  { value: Tab.Enum.All, label: chrome.i18n.getMessage("commonAll") },
+                  { value: Tab.Enum.Favorites, label: chrome.i18n.getMessage("commonFavorites") },
+                  { value: Tab.Enum.Cloud, label: chrome.i18n.getMessage("commonCloud") },
                 ]}
                 size="xs"
                 withinPortal
@@ -364,10 +361,9 @@ export const SettingsModalContent = () => {
                 <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
                 <Group align="flex-start" spacing="md" position="apart" noWrap>
                   <Stack spacing={0}>
-                    <Title order={6}>Display Mode</Title>
+                    <Title order={6}>{chrome.i18n.getMessage("settingsDisplayModeTitle")}</Title>
                     <Text fz="xs">
-                      Select how the extension opens when clicking the icon. Changing this will
-                      close the extension.
+                      {chrome.i18n.getMessage("settingsDisplayModeDesc")}
                     </Text>
                   </Stack>
                   <Select
@@ -389,8 +385,8 @@ export const SettingsModalContent = () => {
                       }
                     }}
                     data={[
-                      { value: DisplayMode.Enum.Popup, label: "Popup" },
-                      { value: DisplayMode.Enum.SidePanel, label: "Side Panel" },
+                      { value: DisplayMode.Enum.Popup, label: chrome.i18n.getMessage("settingsDisplayModePopup") },
+                      { value: DisplayMode.Enum.SidePanel, label: chrome.i18n.getMessage("settingsDisplayModeSidePanel") },
                     ]}
                     size="xs"
                     withinPortal
@@ -401,16 +397,16 @@ export const SettingsModalContent = () => {
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Theme</Title>
-                <Text fz="xs">Select the extension's color scheme.</Text>
+                <Title order={6}>{chrome.i18n.getMessage("settingsThemeTitle")}</Title>
+                <Text fz="xs">{chrome.i18n.getMessage("settingsThemeDesc")}</Text>
               </Stack>
               <Select
                 value={settings.themeV2}
                 onChange={(theme) => theme && setSettings({ ...settings, themeV2: theme })}
                 data={[
-                  { value: "system", label: `System (${capitalize(systemColorScheme)})` },
-                  { value: "light", label: "Light" },
-                  { value: "dark", label: "Dark" },
+                  { value: "system", label: chrome.i18n.getMessage("settingsThemeSystem", [capitalize(systemColorScheme)]) },
+                  { value: "light", label: chrome.i18n.getMessage("settingsThemeLight") },
+                  { value: "dark", label: chrome.i18n.getMessage("settingsThemeDark") },
                 ]}
                 size="xs"
                 withinPortal
@@ -426,8 +422,8 @@ export const SettingsModalContent = () => {
                 await setSettings({ ...settings, localItemLimit, localItemCharacterLimit });
                 notifications.show({
                   color: "green",
-                  title: "Success",
-                  message: "Changes were successfully saved.",
+                  title: chrome.i18n.getMessage("commonSuccess"),
+                  message: chrome.i18n.getMessage("settingsSavedSuccess"),
                 });
                 storageForm.reset({ localItemLimit, localItemCharacterLimit });
               },
@@ -437,9 +433,9 @@ export const SettingsModalContent = () => {
               <Stack spacing="xs">
                 <Group align="flex-start" position="apart" noWrap>
                   <Stack spacing={0}>
-                    <Title order={6}>Item Limit</Title>
+                    <Title order={6}>{chrome.i18n.getMessage("settingsLocalLimitTitle")}</Title>
                     <Text fz="xs">
-                      Set the maximum number of non-favorited items that will be stored locally.
+                      {chrome.i18n.getMessage("settingsLocalLimitDesc")}
                     </Text>
                   </Stack>
                   <Switch
@@ -475,10 +471,9 @@ export const SettingsModalContent = () => {
               <Stack spacing="xs">
                 <Group align="flex-start" position="apart" noWrap>
                   <Stack spacing={0}>
-                    <Title order={6}>Item Character Limit</Title>
+                    <Title order={6}>{chrome.i18n.getMessage("settingsLocalCharLimitTitle")}</Title>
                     <Text fz="xs">
-                      Set the maximum number of characters an item may have before it's ignored by
-                      the clipboard monitor and not added to the clipboard history.
+                      {chrome.i18n.getMessage("settingsLocalCharLimitDesc")}
                     </Text>
                   </Stack>
                   <Switch
@@ -520,7 +515,7 @@ export const SettingsModalContent = () => {
                   {storageForm.formState.isDirty && (
                     <>
                       <IconAlertTriangle size="1.125rem" />
-                      <Text ml={4}>You have unsaved changes.</Text>
+                      <Text ml={4}>{chrome.i18n.getMessage("commonUnsavedChanges")}</Text>
                     </>
                   )}
                 </Text>
@@ -531,10 +526,10 @@ export const SettingsModalContent = () => {
                     disabled={!storageForm.formState.isDirty}
                     onClick={() => storageForm.reset()}
                   >
-                    Reset
+                    {chrome.i18n.getMessage("commonReset")}
                   </Button>
                   <Button size="xs" disabled={!storageForm.formState.isDirty} type="submit">
-                    Save
+                    {chrome.i18n.getMessage("commonSave")}
                   </Button>
                 </Group>
               </Group>
@@ -546,19 +541,9 @@ export const SettingsModalContent = () => {
           <Stack p="md">
             <Stack spacing="xs">
               <Stack spacing={0}>
-                <Title order={6}>Import</Title>
+                <Title order={6}>{chrome.i18n.getMessage("settingsImportTitle")}</Title>
                 <Text fz="xs">
-                  Select a file to import items from. Only files exported from this extension and
-                  the
-                  <> </>
-                  <Anchor
-                    href="https://chromewebstore.google.com/detail/clipboard-history-pro-bes/ajiejmhbejpdgkkigpddefnjmgcbkenk"
-                    target="_blank"
-                  >
-                    old Clipboard History Pro
-                  </Anchor>
-                  <> </>
-                  are supported.
+                  {chrome.i18n.getMessage("settingsImportDesc")}
                 </Text>
               </Stack>
               <Group align="center" spacing="xs" noWrap>
@@ -569,7 +554,7 @@ export const SettingsModalContent = () => {
                   size="xs"
                   w="100%"
                   // https://github.com/mantinedev/mantine/issues/5401#issuecomment-1858711964
-                  {...{ placeholder: "Select a file" }}
+                  {...{ placeholder: chrome.i18n.getMessage("settingsImportPlaceholder") }}
                 />
                 <Button
                   leftIcon={<IconFileImport size="1rem" />}
@@ -582,8 +567,8 @@ export const SettingsModalContent = () => {
 
                         notifications.show({
                           color: "green",
-                          title: "Success",
-                          message: "Items were successfully imported from the selected file.",
+                          title: chrome.i18n.getMessage("commonSuccess"),
+                          message: chrome.i18n.getMessage("settingsImportSuccess"),
                         });
 
                         setFile(null);
@@ -592,24 +577,23 @@ export const SettingsModalContent = () => {
 
                         notifications.show({
                           color: "red",
-                          title: "Error",
-                          message:
-                            "The selected file could not be processed. Please try again with another file.",
+                          title: chrome.i18n.getMessage("commonError"),
+                          message: chrome.i18n.getMessage("settingsImportError"),
                         });
                       }
                     }
                   }}
                 >
-                  Import
+                  {chrome.i18n.getMessage("settingsImportButton")}
                 </Button>
               </Group>
             </Stack>
             <Divider sx={(theme) => ({ borderColor: defaultBorderColor(theme) })} />
             <Group align="flex-start" spacing="md" position="apart" noWrap>
               <Stack spacing={0}>
-                <Title order={6}>Export</Title>
+                <Title order={6}>{chrome.i18n.getMessage("settingsExportTitle")}</Title>
                 <Text fz="xs">
-                  Back up or transfer your clipboard history by exporting it to a file.
+                  {chrome.i18n.getMessage("settingsExportDesc")}
                 </Text>
               </Stack>
               <Button
@@ -628,7 +612,7 @@ export const SettingsModalContent = () => {
                   document.body.removeChild(a);
                 }}
               >
-                Export
+                {chrome.i18n.getMessage("settingsExportButton")}
               </Button>
             </Group>
           </Stack>
@@ -638,17 +622,17 @@ export const SettingsModalContent = () => {
           {auth.user && connectionStatus === "closed" ? (
             <Stack align="center" spacing="xs" p="xl">
               <IconWifiOff size="1.125rem" />
-              <Title order={4}>You're Offline</Title>
+              <Title order={4}>{chrome.i18n.getMessage("commonOffline")}</Title>
               <Text size="sm" align="center">
-                Connect to the internet to access cloud settings.
+                {chrome.i18n.getMessage("settingsCloudOfflineDesc")}
               </Text>
             </Stack>
           ) : !subscriptionsQuery.data?.subscriptions.length ? (
             <Stack align="center" spacing="xs" p="xl">
               <IconCloud size="1.125rem" />
-              <Title order={4}>Get Started with Pro</Title>
+              <Title order={4}>{chrome.i18n.getMessage("settingsCloudGetStartedTitle")}</Title>
               <Text size="sm" align="center">
-                Subscribe to Clipboard History IO Pro to access cloud settings.
+                {chrome.i18n.getMessage("settingsCloudGetStartedDesc")}
               </Text>
               <Button
                 size="xs"
@@ -656,7 +640,7 @@ export const SettingsModalContent = () => {
                 href={chrome.runtime.getURL("/tabs/sign-in.html")}
                 target="_blank"
               >
-                Get Started
+                {chrome.i18n.getMessage("cloudPromoGetStarted")}
               </Button>
             </Stack>
           ) : (
@@ -669,8 +653,8 @@ export const SettingsModalContent = () => {
                 );
                 notifications.show({
                   color: "green",
-                  title: "Success",
-                  message: "Changes were successfully saved.",
+                  title: chrome.i18n.getMessage("commonSuccess"),
+                  message: chrome.i18n.getMessage("settingsSavedSuccess"),
                 });
                 cloudForm.reset({ cloudItemLimit });
               })}
@@ -679,10 +663,9 @@ export const SettingsModalContent = () => {
                 <Stack spacing="xs">
                   <Group align="flex-start" position="apart" noWrap>
                     <Stack spacing={0}>
-                      <Title order={6}>Cloud Item Limit</Title>
+                      <Title order={6}>{chrome.i18n.getMessage("settingsCloudLimitTitle")}</Title>
                       <Text fz="xs">
-                        Set the maximum number of non-favorited items that will be stored in the
-                        cloud.
+                        {chrome.i18n.getMessage("settingsCloudLimitDesc")}
                       </Text>
                     </Stack>
                     <Switch
@@ -724,7 +707,7 @@ export const SettingsModalContent = () => {
                     {cloudForm.formState.isDirty && (
                       <>
                         <IconAlertTriangle size="1.125rem" />
-                        <Text ml={4}>You have unsaved changes.</Text>
+                        <Text ml={4}>{chrome.i18n.getMessage("commonUnsavedChanges")}</Text>
                       </>
                     )}
                   </Text>
@@ -735,10 +718,10 @@ export const SettingsModalContent = () => {
                       disabled={!cloudForm.formState.isDirty}
                       onClick={() => cloudForm.reset()}
                     >
-                      Reset
+                      {chrome.i18n.getMessage("commonReset")}
                     </Button>
                     <Button size="xs" disabled={!cloudForm.formState.isDirty} type="submit">
-                      Save
+                      {chrome.i18n.getMessage("commonSave")}
                     </Button>
                   </Group>
                 </Group>

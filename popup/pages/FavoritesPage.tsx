@@ -21,19 +21,19 @@ export const FavoritesPage = () => {
       noEntriesOverlay={
         search.length === 0 ? (
           <NoEntriesOverlay
-            title="You have no favorite items"
+            title={chrome.i18n.getMessage("overlayNoFavoritesTitle")}
             subtitle={
               <Group align="center" spacing={0}>
-                <Text>Mark an item as favorite by clicking on</Text>
+                <Text>{chrome.i18n.getMessage("overlayNoFavoritesSubtitlePrefix")}</Text>
                 <CommonActionIcon>
                   <IconStar size="1rem" />
                 </CommonActionIcon>
               </Group>
             }
-            description="Favorite items are protected from deletion"
+            description={chrome.i18n.getMessage("overlayNoFavoritesDescription")}
           />
         ) : (
-          <NoEntriesOverlay title={`No items found for "${search}"`} />
+          <NoEntriesOverlay title={chrome.i18n.getMessage("overlayNoResultsTitle", [search])} />
         )
       }
       entries={reversedEntries.filter(

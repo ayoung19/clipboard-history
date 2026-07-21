@@ -45,10 +45,10 @@ export const EntryCloudAction = ({ entry }: Props) => {
         if (entries.filter((e) => e.content === entry.content).length > 1) {
           notifications.show({
             color: "red",
-            title: "Error",
+            title: chrome.i18n.getMessage("commonError"),
             message: isCloudEntry
-              ? "A copy of this item is already stored locally."
-              : "A copy of this item is already stored in the cloud.",
+              ? chrome.i18n.getMessage("cloudActionDuplicateErrorLocal")
+              : chrome.i18n.getMessage("cloudActionDuplicateErrorCloud"),
           });
 
           return;

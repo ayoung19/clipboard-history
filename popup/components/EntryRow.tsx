@@ -103,7 +103,7 @@ export const EntryRow = ({ entry, selectedEntryIds, isKeyboardSelected }: Props)
           mx="sm"
         >
           {entry.content === clipboardSnapshot?.content
-            ? "Copied"
+            ? chrome.i18n.getMessage("commonCopied")
             : badgeDateFormatter(now, new Date(getEntryTimestamp(entry, settings)))}
         </Badge>
         <Text

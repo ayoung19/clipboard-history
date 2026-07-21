@@ -55,7 +55,7 @@ export const StorageUsageModalContent = () => {
               </ThemeIcon>
               <Box>
                 <Text size="xs" color="dimmed">
-                  Storage Used
+                  {chrome.i18n.getMessage("storageUsageUsed")}
                 </Text>
                 {!usage ? (
                   <Skeleton height={26} width={120} mt={2} />
@@ -65,7 +65,7 @@ export const StorageUsageModalContent = () => {
                       {formatBytes(usage.totalSize)}
                     </Text>
                     <Text size="sm" color="dimmed">
-                      • {usage.itemCount.toLocaleString()} items
+                      • {chrome.i18n.getMessage("storageUsageItemsCount", [usage.itemCount.toLocaleString()])}
                     </Text>
                   </Group>
                 )}
@@ -101,7 +101,7 @@ export const StorageUsageModalContent = () => {
                 <IconServer size="1rem" />
               </ThemeIcon>
               <Text size="sm" weight={500}>
-                Local
+                {chrome.i18n.getMessage("storageUsageLocal")}
               </Text>
             </Group>
             {!usage ? (
@@ -115,7 +115,7 @@ export const StorageUsageModalContent = () => {
                   {formatBytes(usage.localSize)}
                 </Text>
                 <Text size="xs" color="dimmed">
-                  {usage.localItemCount.toLocaleString()} items
+                  {chrome.i18n.getMessage("storageUsageItemsCount", [usage.localItemCount.toLocaleString()])}
                 </Text>
               </>
             )}
@@ -127,7 +127,7 @@ export const StorageUsageModalContent = () => {
                 <IconCloud size="1rem" />
               </ThemeIcon>
               <Text size="sm" weight={500}>
-                Cloud
+                {chrome.i18n.getMessage("storageUsageCloud")}
               </Text>
             </Group>
             {!usage ? (
@@ -141,7 +141,7 @@ export const StorageUsageModalContent = () => {
                   {formatBytes(usage.cloudSize)}
                 </Text>
                 <Text size="xs" color="dimmed">
-                  {usage.cloudItemCount.toLocaleString()} items
+                  {chrome.i18n.getMessage("storageUsageItemsCount", [usage.cloudItemCount.toLocaleString()])}
                 </Text>
               </>
             )}
@@ -153,7 +153,7 @@ export const StorageUsageModalContent = () => {
         {/* Item Statistics */}
         <Stack spacing="xs">
           <Text size="sm" weight={600}>
-            Item Statistics
+            {chrome.i18n.getMessage("storageUsageItemStats")}
           </Text>
           <Group grow>
             <Paper p="xs" withBorder>
@@ -162,7 +162,7 @@ export const StorageUsageModalContent = () => {
                   <IconFileText size="0.8rem" />
                 </ThemeIcon>
                 <Text size="xs" color="dimmed">
-                  Average Size
+                  {chrome.i18n.getMessage("storageUsageAverageSize")}
                 </Text>
               </Group>
               {!usage ? (
@@ -179,7 +179,7 @@ export const StorageUsageModalContent = () => {
                   <IconFileText size="0.8rem" />
                 </ThemeIcon>
                 <Text size="xs" color="dimmed">
-                  Largest Item
+                  {chrome.i18n.getMessage("storageUsageLargestItem")}
                 </Text>
               </Group>
               {!usage ? (
@@ -199,7 +199,7 @@ export const StorageUsageModalContent = () => {
         <Stack spacing="xs">
           <Group position="apart">
             <Text size="sm" weight={600}>
-              Performance Impact
+              {chrome.i18n.getMessage("storageUsagePerformanceImpact")}
             </Text>
             {!usage ? (
               <Skeleton height={16} width={50} />
@@ -217,9 +217,7 @@ export const StorageUsageModalContent = () => {
             animate
           />
           <Text size="xs" color="dimmed">
-            The extension supports unlimited storage and is optimized to handle large collections
-            efficiently, but performance may degrade with excessive items. Removing old entries
-            helps maintain optimal speed.
+            {chrome.i18n.getMessage("storageUsagePerformanceDescription")}
           </Text>
         </Stack>
       </Stack>

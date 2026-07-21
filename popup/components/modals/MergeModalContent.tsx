@@ -115,7 +115,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Merge Items</Title>
+        <Title order={5}>{chrome.i18n.getMessage("mergeModalTitle")}</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <form
@@ -144,11 +144,11 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
           <Group align="center" position="apart">
             <Text size="xs">
               <Text color="dimmed" span>
-                Merging
+                {chrome.i18n.getMessage("mergeModalMerging")}
               </Text>
               <> </>
               <Text fw={700} span>
-                {entries.length} items
+                {chrome.i18n.getMessage("mergeModalItemsCount", [entries.length.toString()])}
               </Text>
             </Text>
             <UnstyledButton
@@ -160,7 +160,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
               <Group align="center" spacing={rem(4)}>
                 <IconArrowsSort size="0.8rem" />
                 <Text size="xs" fw={500} span>
-                  Inverse order
+                  {chrome.i18n.getMessage("mergeModalInverseOrder")}
                 </Text>
               </Group>
             </UnstyledButton>
@@ -236,7 +236,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
                   // Don't forward field.value.
                   {...{ ...field, value: undefined }}
                   checked={field.value}
-                  label="Delete source items"
+                  label={chrome.i18n.getMessage("mergeModalDeleteSourceItems")}
                   size="xs"
                   sx={(theme) => ({
                     ".mantine-Checkbox-input:hover": {
@@ -248,7 +248,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
             />
             <Group align="center" spacing="xs">
               <Text size="xs" color="dimmed">
-                Delimiter
+                {chrome.i18n.getMessage("mergeModalDelimiter")}
               </Text>
               <Controller
                 control={control}
@@ -257,13 +257,13 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
                   <Select
                     {...field}
                     data={[
-                      { value: "\n", label: "Newline (\\n)" },
-                      { value: ",", label: "Comma (,)" },
-                      { value: ";", label: "Semicolon (;)" },
-                      { value: " ", label: "Space ( )" },
-                      { value: "\t", label: "Tab (\\t)" },
-                      { value: "", label: "None" },
-                      { value: "custom", label: "Custom..." },
+                      { value: "\n", label: chrome.i18n.getMessage("delimiterNewline") },
+                      { value: ",", label: chrome.i18n.getMessage("delimiterComma") },
+                      { value: ";", label: chrome.i18n.getMessage("delimiterSemicolon") },
+                      { value: " ", label: chrome.i18n.getMessage("delimiterSpace") },
+                      { value: "\t", label: chrome.i18n.getMessage("delimiterTab") },
+                      { value: "", label: chrome.i18n.getMessage("delimiterNone") },
+                      { value: "custom", label: chrome.i18n.getMessage("delimiterCustom") },
                     ]}
                     size="xs"
                     withinPortal
@@ -281,7 +281,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
                   {...field}
                   label={
                     <Text size="xs" color="dimmed" fw="normal">
-                      Custom Delimiter
+                      {chrome.i18n.getMessage("mergeModalCustomDelimiter")}
                     </Text>
                   }
                   autosize
@@ -291,7 +291,7 @@ export const MergeModalContent = ({ initialEntries }: Props) => {
             />
           )}
           <Button type="submit" size="xs" loading={isSubmitting} fullWidth>
-            Merge
+            {chrome.i18n.getMessage("mergeModalMergeButton")}
           </Button>
         </Stack>
       </form>

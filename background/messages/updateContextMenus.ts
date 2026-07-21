@@ -99,14 +99,14 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
 
   chrome.contextMenus.create({
     id: simplePathJoin("paste"),
-    title: "Paste from Clipboard History IO",
+    title: chrome.i18n.getMessage("contextMenuPaste"),
     contexts: ["editable"],
   });
 
   chrome.contextMenus.create({
     parentId: simplePathJoin("paste"),
     id: simplePathJoin("paste", "all"),
-    title: "📋 All",
+    title: chrome.i18n.getMessage("contextMenuAll"),
     contexts: ["editable"],
     enabled: reversedEntries.length > 0,
   });
@@ -114,7 +114,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
   chrome.contextMenus.create({
     parentId: simplePathJoin("paste"),
     id: simplePathJoin("paste", "favorites"),
-    title: "⭐️ Favorites",
+    title: chrome.i18n.getMessage("contextMenuFavorites"),
     contexts: ["editable"],
     enabled: favoriteEntries.length > 0,
   });
@@ -123,7 +123,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
     chrome.contextMenus.create({
       parentId: simplePathJoin("paste"),
       id: simplePathJoin("paste", "cloud"),
-      title: "☁️ Cloud",
+      title: chrome.i18n.getMessage("contextMenuCloud"),
       contexts: ["editable"],
       enabled: cloudEntries.length > 0,
     });
@@ -132,7 +132,7 @@ export const handleUpdateContextMenusRequest = debounce(async () => {
   chrome.contextMenus.create({
     parentId: simplePathJoin("paste"),
     id: simplePathJoin("paste", "tags"),
-    title: "🏷 Tags",
+    title: chrome.i18n.getMessage("contextMenuTags"),
     contexts: ["editable"],
     enabled: allTags.length > 0,
   });

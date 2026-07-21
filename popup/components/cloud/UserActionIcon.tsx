@@ -63,7 +63,7 @@ export const UserActionIcon = () => {
           href="https://www.clipboardhistory.io/"
           target="_blank"
         >
-          <Text fz="xs">Get Mobile App (Now Available!)</Text>
+          <Text fz="xs">{chrome.i18n.getMessage("userMenuGetMobileApp")}</Text>
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

@@ -109,7 +109,7 @@ export const TagSelect = ({ entryId }: Props) => {
           onChange={(e) => setTagSearch(e.target.value)}
           size="xs"
           variant="unstyled"
-          placeholder="Modify tags..."
+          placeholder={chrome.i18n.getMessage("tagsModifyPlaceholder")}
           autoFocus
           px="xs"
         />
@@ -138,7 +138,7 @@ export const TagSelect = ({ entryId }: Props) => {
                   })}
                   label={
                     <Text fz="xs" color="dimmed">
-                      Create new tag:
+                      {chrome.i18n.getMessage("tagsCreateHeader")}
                     </Text>
                   }
                 />
@@ -153,7 +153,7 @@ export const TagSelect = ({ entryId }: Props) => {
             )}
             {matchedTags.length + +showCreateTagOption === 0 && (
               <Text fz="xs" color="dimmed" align="center">
-                Start typing to create a new tag
+                {chrome.i18n.getMessage("tagsEmptyHint")}
               </Text>
             )}
           </Stack>

@@ -37,13 +37,13 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Assign Shortcut to Item</Title>
+        <Title order={5}>{chrome.i18n.getMessage("shortcutsModalTitle")}</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Text fz="xs" mb="xs">
-        Assign a keyboard shortcut to this item. To customize shortcuts, visit
+        {chrome.i18n.getMessage("shortcutsModalDescription")}
         <> </>
-        <Tooltip label={<Text fz="xs">{clipboard.copied ? "Copied" : "Copy"}</Text>}>
+        <Tooltip label={<Text fz="xs">{clipboard.copied ? chrome.i18n.getMessage("commonCopied") : chrome.i18n.getMessage("shortcutsModalCopy")}</Text>}>
           <UnstyledButton onClick={() => clipboard.copy("chrome://extensions/shortcuts")}>
             <Group align="center" spacing={4}>
               <Text fz="xs">chrome://extensions/shortcuts</Text>
@@ -77,7 +77,7 @@ export const ShortcutsModalContent = ({ entry }: Props) => {
                       .with("paste-item-2", () => <IconCircleNumber2 size="1.125rem" />)
                       .with("paste-item-3", () => <IconCircleNumber3 size="1.125rem" />)
                       .otherwise(() => null)}
-                    <Text>{command.shortcut || "Not set"}</Text>
+                    <Text>{command.shortcut || chrome.i18n.getMessage("shortcutsModalNotSet")}</Text>
                   </Group>
                 ),
                 value: command.name,

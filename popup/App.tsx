@@ -293,7 +293,7 @@ export const App = () => {
           <TextInput
             ref={inputRef}
             id={SEARCH_INPUT_ID}
-            placeholder="Search items or tags"
+            placeholder={chrome.i18n.getMessage("commonSearchPlaceholder")}
             icon={<IconSearch size="1rem" />}
             size="xs"
             value={search}

@@ -93,7 +93,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
         />
         <Group align="center" w="100%" position="apart">
           <Group align="center" spacing={0}>
-            <Tooltip label={<Text fz="xs">Favorite</Text>} disabled={selectedEntryIds.size === 0}>
+            <Tooltip label={<Text fz="xs">{chrome.i18n.getMessage("listTooltipFavorite")}</Text>} disabled={selectedEntryIds.size === 0}>
               <CommonActionIcon
                 disabled={selectedEntryIds.size === 0}
                 onClick={handleMutation(() =>
@@ -107,19 +107,21 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
                 <IconStar size="1rem" />
               </CommonActionIcon>
             </Tooltip>
-            <Tooltip label={<Text fz="xs">Delete</Text>} disabled={selectedEntryIds.size === 0}>
+            <Tooltip label={<Text fz="xs">{chrome.i18n.getMessage("listTooltipDelete")}</Text>} disabled={selectedEntryIds.size === 0}>
               <CommonActionIcon
                 disabled={selectedEntryIds.size === 0}
                 onClick={() =>
                   modals.openConfirmModal({
-                    title: <Title order={5}>Delete Items</Title>,
+                    title: <Title order={5}>{chrome.i18n.getMessage("listDeleteConfirmTitle")}</Title>,
                     children: (
                       <Text fz="xs" mb="xs">
-                        Are you sure you want to delete all selected items? Favorited items will not
-                        be deleted.
+                        {chrome.i18n.getMessage("listDeleteConfirmMessage")}
                       </Text>
                     ),
-                    labels: { confirm: "Delete", cancel: "Cancel" },
+                    labels: {
+                      confirm: chrome.i18n.getMessage("commonDelete"),
+                      cancel: chrome.i18n.getMessage("commonCancel"),
+                    },
                     confirmProps: { color: "red", size: "xs" },
                     cancelProps: { size: "xs" },
                     onConfirm: handleMutation(() =>
@@ -137,7 +139,7 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             </Tooltip>
             {/* https://github.com/clauderic/dnd-kit/issues/1043 */}
             {process.env.PLASMO_TARGET !== "firefox-mv2" && (
-              <Tooltip label={<Text fz="xs">Merge</Text>} disabled={selectedEntryIds.size < 2}>
+              <Tooltip label={<Text fz="xs">{chrome.i18n.getMessage("listTooltipMerge")}</Text>} disabled={selectedEntryIds.size < 2}>
                 <CommonActionIcon
                   disabled={selectedEntryIds.size < 2}
                   onClick={() =>
@@ -159,7 +161,10 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
             )}
           </Group>
           <Text fz="xs">
-            {selectedEntryIds.size} of {entries.length} selected
+            {chrome.i18n.getMessage("listSelectedCount", [
+              selectedEntryIds.size.toString(),
+              entries.length.toString(),
+            ])}
           </Text>
         </Group>
       </Group>
@@ -192,11 +197,11 @@ export const EntryList = ({ entries, noEntriesOverlay }: Props) => {
           <Group align="center" spacing="md" noWrap px="sm" py={rem(6)}>
             {entries.length > 0 && (
               <>
-                <KeyboardHint keys={["↑", "↓"]} label="Navigate" />
-                <KeyboardHint keys={["↵"]} label="Copy" />
+                <KeyboardHint keys={["↑", "↓"]} label={chrome.i18n.getMessage("navNavigate")} />
+                <KeyboardHint keys={["↵"]} label={chrome.i18n.getMessage("navCopy")} />
               </>
             )}
-            {search.length > 0 && <KeyboardHint keys={["Esc"]} label="Clear search" />}
+            {search.length > 0 && <KeyboardHint keys={["Esc"]} label={chrome.i18n.getMessage("navClearSearch")} />}
           </Group>
         </>
       )}

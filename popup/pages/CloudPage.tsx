@@ -47,9 +47,9 @@ export const CloudPage = () => {
         noEntriesOverlay={
           <Stack align="center" spacing="xs" p="xl">
             <IconWifiOff size="1.125rem" />
-            <Title order={4}>You're Offline</Title>
+            <Title order={4}>{chrome.i18n.getMessage("commonOffline")}</Title>
             <Text size="sm" w={500} align="center">
-              Connect to the internet to access Clipboard History IO Pro.
+              {chrome.i18n.getMessage("overlayOfflineSubtitle")}
             </Text>
           </Stack>
         }
@@ -73,14 +73,13 @@ export const CloudPage = () => {
                 <IconDeviceTablet />
               </Group>
               <Title order={4} mb={rem(8)}>
-                Sync Your Clipboard History Everywhere
+                {chrome.i18n.getMessage("cloudPromoTitle")}
               </Title>
               <Text size="sm" mb={rem(8)}>
-                Securely sync and manage your clipboard history across all your devices with
-                Clipboard History IO Pro!
+                {chrome.i18n.getMessage("cloudPromoSubtitle")}
               </Text>
               <Text size="sm" mb="md">
-                Get started now with a limited-time <b>1-month</b> free trial, cancellable anytime!
+                {chrome.i18n.getMessage("cloudPromoTrial")}
               </Text>
               <Button
                 size="xs"
@@ -89,40 +88,39 @@ export const CloudPage = () => {
                 href={chrome.runtime.getURL("/tabs/sign-in.html")}
                 target="_blank"
               >
-                Get Started
+                {chrome.i18n.getMessage("cloudPromoGetStarted")}
               </Button>
               <Text color="dimmed" fz="xs" fs="italic">
-                Your subscription helps cover cloud provider costs and supports the continued
-                development and maintenance of CHIO!
+                {chrome.i18n.getMessage("cloudPromoSupportText")}
               </Text>
             </Stack>
             <Card p="md" w={260} bg={lightOrDark(theme, "gray.1", "dark.7")} sx={{ flexShrink: 0 }}>
               <Stack spacing={rem(8)}>
-                <Title order={5}>Pro Features</Title>
+                <Title order={5}>{chrome.i18n.getMessage("cloudPromoProFeatures")}</Title>
                 <Group align="center" spacing={rem(8)} noWrap>
                   <IconCheck size="1rem" color={theme.fn.primaryColor()} />
-                  <Text fz="sm">Cross-device syncing</Text>
+                  <Text fz="sm">{chrome.i18n.getMessage("cloudPromoFeatureCrossDevice")}</Text>
                 </Group>
                 <Group align="center" spacing={rem(8)} noWrap>
                   <IconCheck size="1rem" color={theme.fn.primaryColor()} />
-                  <Text fz="sm">Mobile-friendly web app</Text>
+                  <Text fz="sm">{chrome.i18n.getMessage("cloudPromoFeatureWebApp")}</Text>
                 </Group>
                 <Group align="center" spacing={rem(8)} noWrap>
                   <IconCheck size="1rem" color={theme.fn.primaryColor()} />
-                  <Text fz="sm">Feature request priority</Text>
+                  <Text fz="sm">{chrome.i18n.getMessage("cloudPromoFeaturePriority")}</Text>
                 </Group>
                 <Group align="center" spacing={rem(8)} noWrap>
                   <IconCheck size="1rem" color={theme.fn.primaryColor()} />
-                  <Text fz="sm">Mobile app</Text>
+                  <Text fz="sm">{chrome.i18n.getMessage("cloudPromoFeatureMobileApp")}</Text>
                   <Badge size="xs" variant="outline" mt={rem(2)} color="teal">
-                    New!
+                    {chrome.i18n.getMessage("cloudPromoBadgeNew")}
                   </Badge>
                 </Group>
                 <Group align="center" spacing={rem(8)} noWrap>
                   <IconCheck size="1rem" color={theme.fn.primaryColor()} />
-                  <Text fz="sm">End-to-end encryption</Text>
+                  <Text fz="sm">{chrome.i18n.getMessage("cloudPromoFeatureE2E")}</Text>
                   <Badge size="xs" variant="outline" mt={rem(2)}>
-                    Soon
+                    {chrome.i18n.getMessage("cloudPromoBadgeSoon")}
                   </Badge>
                 </Group>
               </Stack>
@@ -139,19 +137,19 @@ export const CloudPage = () => {
       noEntriesOverlay={
         search.length === 0 ? (
           <NoEntriesOverlay
-            title="You have no items stored in the cloud"
+            title={chrome.i18n.getMessage("overlayNoCloudTitle")}
             subtitle={
               <Group align="center" spacing={0}>
-                <Text>Store an item in the cloud by clicking on</Text>
+                <Text>{chrome.i18n.getMessage("overlayNoCloudSubtitlePrefix")}</Text>
                 <CommonActionIcon>
                   <IconCloud size="1rem" />
                 </CommonActionIcon>
               </Group>
             }
-            description="Items stored in the cloud can be accessed from other devices"
+            description={chrome.i18n.getMessage("overlayNoCloudDescription")}
           />
         ) : (
-          <NoEntriesOverlay title={`No items found for "${search}"`} />
+          <NoEntriesOverlay title={chrome.i18n.getMessage("overlayNoResultsTitle", [search])} />
         )
       }
       entries={entries.filter(

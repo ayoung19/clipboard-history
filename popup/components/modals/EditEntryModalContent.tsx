@@ -66,25 +66,25 @@ export const EditEntryModalContent = ({ entry }: Props) => {
   return (
     <Paper p="md">
       <Group align="center" position="apart" mb="xs">
-        <Title order={5}>Edit Item</Title>
+        <Title order={5}>{chrome.i18n.getMessage("editModalTitle")}</Title>
         <CloseButton onClick={() => modals.closeAll()} />
       </Group>
       <Grid gutter={0}>
         <Grid.Col span={4}>
           <Text size="xs" color="dimmed">
-            Character Count
+            {chrome.i18n.getMessage("editModalCharCount")}
           </Text>
           <Text size="xs">{entry.content.length}</Text>
         </Grid.Col>
         <Grid.Col span={4}>
           <Text size="xs" color="dimmed">
-            Date Created
+            {chrome.i18n.getMessage("editModalDateCreated")}
           </Text>
           <Text size="xs">{format(entry.createdAt, "Pp")}</Text>
         </Grid.Col>
         <Grid.Col span={4}>
           <Text size="xs" color="dimmed">
-            Date Last Copied
+            {chrome.i18n.getMessage("editModalDateCopied")}
           </Text>
           <Text size="xs">{format(getEntryCopiedAt(entry), "Pp")}</Text>
         </Grid.Col>
@@ -96,7 +96,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
               if (ok) {
                 modals.closeAll();
               } else {
-                setError("content", { type: "manual", message: "Content must be unique" });
+                setError("content", { type: "manual", message: chrome.i18n.getMessage("editModalUniqueError") });
               }
             })}
           >
@@ -109,7 +109,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
                     {...field}
                     label={
                       <Text size="xs" color="dimmed" fw="normal">
-                        Content
+                        {chrome.i18n.getMessage("editModalContentLabel")}
                       </Text>
                     }
                     autosize
@@ -129,7 +129,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
                   {isDirty && (
                     <>
                       <IconAlertTriangle size="1.125rem" />
-                      <Text ml={4}>You have unsaved changes.</Text>
+                      <Text ml={4}>{chrome.i18n.getMessage("commonUnsavedChanges")}</Text>
                     </>
                   )}
                 </Text>
@@ -137,7 +137,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
                   <EntryFavoriteAction entryId={entry.id} />
                   <EntryDeleteAction entryId={entry.id} />
                   <Button size="xs" variant="subtle" disabled={!isDirty} onClick={() => reset()}>
-                    Reset
+                    {chrome.i18n.getMessage("commonReset")}
                   </Button>
                   <Button
                     size="xs"
@@ -145,7 +145,7 @@ export const EditEntryModalContent = ({ entry }: Props) => {
                     type="submit"
                     loading={isSubmitting}
                   >
-                    Save
+                    {chrome.i18n.getMessage("commonSave")}
                   </Button>
                 </Group>
               </Group>

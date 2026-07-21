@@ -16,11 +16,11 @@ export const AllPage = () => {
       noEntriesOverlay={
         search.length === 0 ? (
           <NoEntriesOverlay
-            title="Your clipboard history is empty"
-            subtitle="Copy any text to see it here"
+            title={chrome.i18n.getMessage("overlayEmptyTitle")}
+            subtitle={chrome.i18n.getMessage("overlayEmptySubtitle")}
           />
         ) : (
-          <NoEntriesOverlay title={`No items found for "${search}"`} />
+          <NoEntriesOverlay title={chrome.i18n.getMessage("overlayNoResultsTitle", [search])} />
         )
       }
       entries={reversedEntries.filter(

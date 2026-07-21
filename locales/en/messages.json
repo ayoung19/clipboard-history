@@ -1,4 +1,12 @@
 {
+  "extensionName": {
+    "message": "Clipboard History Manager - Secure, Fast, and Open Source",
+    "description": "Extension title shown in extension management and Web Store."
+  },
+  "extensionDescription": {
+    "message": "Powerful clipboard history manager. Save, search & organize everything you copy. Tags, shortcuts & unlimited storage.",
+    "description": "Extension description shown in extension management and Web Store."
+  },
   "commonChangelog": {
     "message": "Changelog",
     "description": "Title for tooltip for button that redirects user to the Chrome extension's version history and changelog."
@@ -50,5 +58,625 @@
   "commonCloud": {
     "message": "Cloud",
     "description": "Label for the tab that lists clipboard history items synced to the cloud."
+  },
+  "commonSearchPlaceholder": {
+    "message": "Search items or tags",
+    "description": "Placeholder text for the search input in the main popup."
+  },
+  "commonCopied": {
+    "message": "Copied",
+    "description": "Badge or notification indicating text was copied."
+  },
+  "commonSuccess": {
+    "message": "Success",
+    "description": "Generic success title."
+  },
+  "commonError": {
+    "message": "Error",
+    "description": "Generic error title."
+  },
+  "commonReset": {
+    "message": "Reset",
+    "description": "Reset button label."
+  },
+  "commonSave": {
+    "message": "Save",
+    "description": "Save button label."
+  },
+  "commonCancel": {
+    "message": "Cancel",
+    "description": "Cancel button label."
+  },
+  "commonDelete": {
+    "message": "Delete",
+    "description": "Delete action label."
+  },
+  "commonConfigure": {
+    "message": "Configure",
+    "description": "Configure button label."
+  },
+  "commonOffline": {
+    "message": "You're Offline",
+    "description": "Offline state heading."
+  },
+  "contextMenuPaste": {
+    "message": "Paste from Clipboard History IO",
+    "description": "Title for the top-level context menu."
+  },
+  "contextMenuAll": {
+    "message": "📋 All",
+    "description": "Title for the 'All' items context submenu."
+  },
+  "contextMenuFavorites": {
+    "message": "⭐️ Favorites",
+    "description": "Title for the 'Favorites' context submenu."
+  },
+  "contextMenuCloud": {
+    "message": "☁️ Cloud",
+    "description": "Title for the 'Cloud' context submenu."
+  },
+  "contextMenuTags": {
+    "message": "🏷 Tags",
+    "description": "Title for the 'Tags' context submenu."
+  },
+  "listSelectedCount": {
+    "message": "$COUNT$ of $TOTAL$ selected",
+    "description": "Status text displaying how many items are selected out of the total.",
+    "placeholders": {
+      "count": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "listTooltipFavorite": {
+    "message": "Favorite",
+    "description": "Tooltip for favoriting selected items."
+  },
+  "listTooltipDelete": {
+    "message": "Delete",
+    "description": "Tooltip for deleting selected items."
+  },
+  "listTooltipMerge": {
+    "message": "Merge",
+    "description": "Tooltip for merging selected items."
+  },
+  "listDeleteConfirmTitle": {
+    "message": "Delete Items",
+    "description": "Title for the confirm deletion modal."
+  },
+  "listDeleteConfirmMessage": {
+    "message": "Are you sure you want to delete all selected items? Favorited items will not be deleted.",
+    "description": "Confirmation message when deleting items."
+  },
+  "navNavigate": {
+    "message": "Navigate",
+    "description": "Keyboard hint label for navigating entries."
+  },
+  "navCopy": {
+    "message": "Copy",
+    "description": "Keyboard hint label for copying an entry."
+  },
+  "navClearSearch": {
+    "message": "Clear search",
+    "description": "Keyboard hint label for clearing search."
+  },
+  "tagsModifyPlaceholder": {
+    "message": "Modify tags...",
+    "description": "Placeholder for tag search/create input."
+  },
+  "tagsCreateHeader": {
+    "message": "Create new tag:",
+    "description": "Header for creating a new tag."
+  },
+  "tagsEmptyHint": {
+    "message": "Start typing to create a new tag",
+    "description": "Hint text when no matching tags are found."
+  },
+  "overlayEmptyTitle": {
+    "message": "Your clipboard history is empty",
+    "description": "Title when history has no entries."
+  },
+  "overlayEmptySubtitle": {
+    "message": "Copy any text to see it here",
+    "description": "Subtitle when history has no entries."
+  },
+  "overlayNoResultsTitle": {
+    "message": "No items found for \"$SEARCH$\"",
+    "description": "Title when search returns no results.",
+    "placeholders": {
+      "search": { "content": "$1" }
+    }
+  },
+  "overlayNoFavoritesTitle": {
+    "message": "You have no favorite items",
+    "description": "Title when favorites tab is empty."
+  },
+  "overlayNoFavoritesSubtitlePrefix": {
+    "message": "Mark an item as favorite by clicking on",
+    "description": "Subtitle instructions for marking favorites."
+  },
+  "overlayNoFavoritesDescription": {
+    "message": "Favorite items are protected from deletion",
+    "description": "Footer explanation about favorite protection."
+  },
+  "overlayNoCloudTitle": {
+    "message": "You have no items stored in the cloud",
+    "description": "Title when cloud tab is empty."
+  },
+  "overlayNoCloudSubtitlePrefix": {
+    "message": "Store an item in the cloud by clicking on",
+    "description": "Subtitle instructions for storing items in cloud."
+  },
+  "overlayNoCloudDescription": {
+    "message": "Items stored in the cloud can be accessed from other devices",
+    "description": "Footer explanation about cloud sync benefit."
+  },
+  "overlayOfflineSubtitle": {
+    "message": "Connect to the internet to access Clipboard History IO Pro.",
+    "description": "Subtitle for offline notice in Cloud page."
+  },
+  "cloudPromoTitle": {
+    "message": "Sync Your Clipboard History Everywhere",
+    "description": "Heading for Cloud Pro promotion page."
+  },
+  "cloudPromoSubtitle": {
+    "message": "Securely sync and manage your clipboard history across all your devices with Clipboard History IO Pro!",
+    "description": "Subtitle for Cloud Pro promotion page."
+  },
+  "cloudPromoTrial": {
+    "message": "Get started now with a limited-time 1-month free trial, cancellable anytime!",
+    "description": "Trial offer text."
+  },
+  "cloudPromoGetStarted": {
+    "message": "Get Started",
+    "description": "Button to start Pro subscription/sign in."
+  },
+  "cloudPromoSupportText": {
+    "message": "Your subscription helps cover cloud provider costs and supports the continued development and maintenance of CHIO!",
+    "description": "Supporting message for subscriptions."
+  },
+  "cloudPromoProFeatures": {
+    "message": "Pro Features",
+    "description": "Title for features card."
+  },
+  "cloudPromoFeatureCrossDevice": {
+    "message": "Cross-device syncing",
+    "description": "Feature item."
+  },
+  "cloudPromoFeatureWebApp": {
+    "message": "Mobile-friendly web app",
+    "description": "Feature item."
+  },
+  "cloudPromoFeaturePriority": {
+    "message": "Feature request priority",
+    "description": "Feature item."
+  },
+  "cloudPromoFeatureMobileApp": {
+    "message": "Mobile app",
+    "description": "Feature item."
+  },
+  "cloudPromoFeatureE2E": {
+    "message": "End-to-end encryption",
+    "description": "Feature item."
+  },
+  "cloudPromoBadgeNew": {
+    "message": "New!",
+    "description": "Badge text for new feature."
+  },
+  "cloudPromoBadgeSoon": {
+    "message": "Soon",
+    "description": "Badge text for upcoming feature."
+  },
+  "cloudActionDuplicateErrorLocal": {
+    "message": "A copy of this item is already stored locally.",
+    "description": "Notification when item already exists in local storage."
+  },
+  "cloudActionDuplicateErrorCloud": {
+    "message": "A copy of this item is already stored in the cloud.",
+    "description": "Notification when item already exists in cloud storage."
+  },
+  "userMenuGetMobileApp": {
+    "message": "Get Mobile App (Now Available!)",
+    "description": "Menu item link to mobile app."
+  },
+  "signInSuccessText": {
+    "message": "Success! You may close this window.",
+    "description": "Text shown after successful authentication."
+  },
+  "signInTitleStep0": {
+    "message": "Sign in to Clipboard History IO Pro",
+    "description": "Title for sign-in step 0."
+  },
+  "signInSubtitleStep0": {
+    "message": "Welcome! Please enter your email to continue",
+    "description": "Subtitle for sign-in step 0."
+  },
+  "signInTitleStep1": {
+    "message": "Check your email",
+    "description": "Title for sign-in step 1."
+  },
+  "signInSubtitleStep1": {
+    "message": "to continue to Clipboard History IO Pro",
+    "description": "Subtitle for sign-in step 1."
+  },
+  "signInEmailLabel": {
+    "message": "Email address",
+    "description": "Label for email input."
+  },
+  "signInEmailInvalid": {
+    "message": "Invalid email",
+    "description": "Validation error for email."
+  },
+  "signInCodeInvalid": {
+    "message": "Invalid code",
+    "description": "Validation error for magic code."
+  },
+  "signInContinueButton": {
+    "message": "Continue",
+    "description": "Button to submit email or code."
+  },
+  "editModalTitle": {
+    "message": "Edit Item",
+    "description": "Title of edit entry modal."
+  },
+  "editModalCharCount": {
+    "message": "Character Count",
+    "description": "Header for character count statistic."
+  },
+  "editModalDateCreated": {
+    "message": "Date Created",
+    "description": "Header for creation date statistic."
+  },
+  "editModalDateCopied": {
+    "message": "Date Last Copied",
+    "description": "Header for last copied date statistic."
+  },
+  "editModalContentLabel": {
+    "message": "Content",
+    "description": "Label for content textarea."
+  },
+  "editModalUniqueError": {
+    "message": "Content must be unique",
+    "description": "Error when entry content conflicts."
+  },
+  "commonUnsavedChanges": {
+    "message": "You have unsaved changes.",
+    "description": "Warning message when form is dirty."
+  },
+  "shortcutsModalTitle": {
+    "message": "Assign Shortcut to Item",
+    "description": "Title of assign shortcut modal."
+  },
+  "shortcutsModalDescription": {
+    "message": "Assign a keyboard shortcut to this item. To customize shortcuts, visit",
+    "description": "Instructions for shortcut assignment."
+  },
+  "shortcutsModalNotSet": {
+    "message": "Not set",
+    "description": "Fallback text when no key shortcut is bound."
+  },
+  "mergeModalTitle": {
+    "message": "Merge Items",
+    "description": "Title of merge items modal."
+  },
+  "mergeModalMerging": {
+    "message": "Merging",
+    "description": "Label before item count in merge modal."
+  },
+  "mergeModalItemsCount": {
+    "message": "$COUNT$ items",
+    "description": "Number of items being merged.",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "mergeModalInverseOrder": {
+    "message": "Inverse order",
+    "description": "Button label to invert merge list order."
+  },
+  "mergeModalDeleteSourceItems": {
+    "message": "Delete source items",
+    "description": "Checkbox to delete original items after merge."
+  },
+  "mergeModalDelimiter": {
+    "message": "Delimiter",
+    "description": "Label for merge delimiter dropdown."
+  },
+  "mergeModalCustomDelimiter": {
+    "message": "Custom Delimiter",
+    "description": "Label for custom delimiter textarea."
+  },
+  "mergeModalMergeButton": {
+    "message": "Merge",
+    "description": "Button to perform merge action."
+  },
+  "delimiterNewline": {
+    "message": "Newline (\\n)",
+    "description": "Delimiter option."
+  },
+  "delimiterComma": {
+    "message": "Comma (,)",
+    "description": "Delimiter option."
+  },
+  "delimiterSemicolon": {
+    "message": "Semicolon (;)",
+    "description": "Delimiter option."
+  },
+  "delimiterSpace": {
+    "message": "Space ( )",
+    "description": "Delimiter option."
+  },
+  "delimiterTab": {
+    "message": "Tab (\\t)",
+    "description": "Delimiter option."
+  },
+  "delimiterNone": {
+    "message": "None",
+    "description": "Delimiter option."
+  },
+  "delimiterCustom": {
+    "message": "Custom...",
+    "description": "Delimiter option."
+  },
+  "storageUsageUsed": {
+    "message": "Storage Used",
+    "description": "Title for total storage used."
+  },
+  "storageUsageItemsCount": {
+    "message": "$COUNT$ items",
+    "description": "Item count formatted text.",
+    "placeholders": {
+      "count": { "content": "$1" }
+    }
+  },
+  "storageUsageLocal": {
+    "message": "Local",
+    "description": "Label for local storage usage."
+  },
+  "storageUsageCloud": {
+    "message": "Cloud",
+    "description": "Label for cloud storage usage."
+  },
+  "storageUsageItemStats": {
+    "message": "Item Statistics",
+    "description": "Header for item stats section."
+  },
+  "storageUsageAverageSize": {
+    "message": "Average Size",
+    "description": "Statistic for average item size."
+  },
+  "storageUsageLargestItem": {
+    "message": "Largest Item",
+    "description": "Statistic for largest item size."
+  },
+  "storageUsagePerformanceImpact": {
+    "message": "Performance Impact",
+    "description": "Header for performance impact section."
+  },
+  "storageUsagePerformanceDescription": {
+    "message": "The extension supports unlimited storage and is optimized to handle large collections efficiently, but performance may degrade with excessive items. Removing old entries helps maintain optimal speed.",
+    "description": "Explanation of storage impact on extension speed."
+  },
+  "settingsModalTitle": {
+    "message": "Settings",
+    "description": "Title for settings modal."
+  },
+  "settingsTabGeneral": {
+    "message": "General",
+    "description": "Settings tab name."
+  },
+  "settingsTabInterface": {
+    "message": "Interface",
+    "description": "Settings tab name."
+  },
+  "settingsTabStorage": {
+    "message": "Storage",
+    "description": "Settings tab name."
+  },
+  "settingsTabImportExport": {
+    "message": "Import / Export",
+    "description": "Settings tab name."
+  },
+  "settingsTabCloud": {
+    "message": "Cloud",
+    "description": "Settings tab name."
+  },
+  "settingsShortcutTitle": {
+    "message": "Extension Activation Shortcut",
+    "description": "Setting title for shortcut configuration."
+  },
+  "settingsShortcutPress": {
+    "message": "Press",
+    "description": "Prefix in shortcut instruction."
+  },
+  "settingsShortcutToOpen": {
+    "message": "to quickly open the extension.",
+    "description": "Suffix in shortcut instruction."
+  },
+  "settingsBlankItemsTitle": {
+    "message": "Blank Items",
+    "description": "Setting title for allowing blank items."
+  },
+  "settingsBlankItemsDesc": {
+    "message": "Allow blank items to be added to the clipboard history.",
+    "description": "Setting description for allowing blank items."
+  },
+  "settingsSortByTitle": {
+    "message": "Sort Items By",
+    "description": "Setting title for sorting mode."
+  },
+  "settingsSortByDesc": {
+    "message": "Select how items are sorted.",
+    "description": "Setting description for sorting mode."
+  },
+  "settingsSortByDateCreated": {
+    "message": "Date Created",
+    "description": "Sort option."
+  },
+  "settingsSortByDateCopied": {
+    "message": "Date Last Copied",
+    "description": "Sort option."
+  },
+  "settingsStorageLocTitle": {
+    "message": "Default Storage Location",
+    "description": "Setting title for default storage location."
+  },
+  "settingsStorageLocDesc": {
+    "message": "Select where new items are stored. When offline or not subscribed to Pro, this setting is ignored and new items will be stored locally.",
+    "description": "Setting description for default storage location."
+  },
+  "settingsTotalBadgeTitle": {
+    "message": "Total Items Badge",
+    "description": "Setting title for icon badge."
+  },
+  "settingsTotalBadgeDesc": {
+    "message": "Show number of items in the clipboard history on the extension icon.",
+    "description": "Setting description for icon badge."
+  },
+  "settingsContextMenuTitle": {
+    "message": "Paste From Context Menu",
+    "description": "Setting title for context menu pasting."
+  },
+  "settingsContextMenuDesc": {
+    "message": "Enable pasting clipboard history items from the context menu.",
+    "description": "Setting description for context menu pasting."
+  },
+  "settingsChangelogIndTitle": {
+    "message": "Changelog Indicator",
+    "description": "Setting title for changelog indicator."
+  },
+  "settingsChangelogIndDesc": {
+    "message": "Display an indicator on the changelog button if the extension was updated since the changelog was last viewed.",
+    "description": "Setting description for changelog indicator."
+  },
+  "settingsDefaultTabTitle": {
+    "message": "Default Tab",
+    "description": "Setting title for default tab."
+  },
+  "settingsDefaultTabDesc": {
+    "message": "Select the tab shown when the extension is opened.",
+    "description": "Setting description for default tab."
+  },
+  "settingsDisplayModeTitle": {
+    "message": "Display Mode",
+    "description": "Setting title for display mode."
+  },
+  "settingsDisplayModeDesc": {
+    "message": "Select how the extension opens when clicking the icon. Changing this will close the extension.",
+    "description": "Setting description for display mode."
+  },
+  "settingsDisplayModePopup": {
+    "message": "Popup",
+    "description": "Display mode option."
+  },
+  "settingsDisplayModeSidePanel": {
+    "message": "Side Panel",
+    "description": "Display mode option."
+  },
+  "settingsThemeTitle": {
+    "message": "Theme",
+    "description": "Setting title for theme."
+  },
+  "settingsThemeDesc": {
+    "message": "Select the extension's color scheme.",
+    "description": "Setting description for theme."
+  },
+  "settingsThemeSystem": {
+    "message": "System ($MODE$)",
+    "description": "Theme option with dynamic system mode name.",
+    "placeholders": {
+      "mode": { "content": "$1" }
+    }
+  },
+  "settingsThemeLight": {
+    "message": "Light",
+    "description": "Theme option."
+  },
+  "settingsThemeDark": {
+    "message": "Dark",
+    "description": "Theme option."
+  },
+  "settingsLocalLimitTitle": {
+    "message": "Item Limit",
+    "description": "Setting title for local item limit."
+  },
+  "settingsLocalLimitDesc": {
+    "message": "Set the maximum number of non-favorited items that will be stored locally.",
+    "description": "Setting description for local item limit."
+  },
+  "settingsLocalCharLimitTitle": {
+    "message": "Item Character Limit",
+    "description": "Setting title for local character limit."
+  },
+  "settingsLocalCharLimitDesc": {
+    "message": "Set the maximum number of characters an item may have before it's ignored by the clipboard monitor and not added to the clipboard history.",
+    "description": "Setting description for local character limit."
+  },
+  "settingsSavedSuccess": {
+    "message": "Changes were successfully saved.",
+    "description": "Success message when saving settings."
+  },
+  "settingsImportTitle": {
+    "message": "Import",
+    "description": "Header for import section."
+  },
+  "settingsImportDesc": {
+    "message": "Select a file to import items from. Only files exported from this extension and the old Clipboard History Pro are supported.",
+    "description": "Instructions for import section."
+  },
+  "settingsImportPlaceholder": {
+    "message": "Select a file",
+    "description": "Placeholder for file import input."
+  },
+  "settingsImportButton": {
+    "message": "Import",
+    "description": "Button to run import."
+  },
+  "settingsImportSuccess": {
+    "message": "Items were successfully imported from the selected file.",
+    "description": "Notification message on successful import."
+  },
+  "settingsImportError": {
+    "message": "The selected file could not be processed. Please try again with another file.",
+    "description": "Notification message on import error."
+  },
+  "settingsExportTitle": {
+    "message": "Export",
+    "description": "Header for export section."
+  },
+  "settingsExportDesc": {
+    "message": "Back up or transfer your clipboard history by exporting it to a file.",
+    "description": "Instructions for export section."
+  },
+  "settingsExportButton": {
+    "message": "Export",
+    "description": "Button to run export."
+  },
+  "settingsCloudOfflineDesc": {
+    "message": "Connect to the internet to access cloud settings.",
+    "description": "Notice when offline on cloud tab."
+  },
+  "settingsCloudGetStartedTitle": {
+    "message": "Get Started with Pro",
+    "description": "Header when user is not subscribed to Pro on cloud settings tab."
+  },
+  "settingsCloudGetStartedDesc": {
+    "message": "Subscribe to Clipboard History IO Pro to access cloud settings.",
+    "description": "Instructions to subscribe on cloud settings tab."
+  },
+  "settingsCloudLimitTitle": {
+    "message": "Cloud Item Limit",
+    "description": "Setting title for cloud item limit."
+  },
+  "settingsCloudLimitDesc": {
+    "message": "Set the maximum number of non-favorited items that will be stored in the cloud.",
+    "description": "Setting description for cloud item limit."
+  },
+  "errorModalMessage": {
+    "message": "An unexpected error occurred. Please try again. If the issue persists, consider submitting a bug report to help us resolve it.",
+    "description": "Explanation message on error modal."
+  },
+  "errorModalSubmitBug": {
+    "message": "Submit Bug Report",
+    "description": "Button to report bug."
   }
 }
